@@ -1,0 +1,221 @@
+# Implementation on real Lbr iiwa 7
+
+
+
+# Fake Trajectory
+
+### Implicit Controller
+
+```sh
+python3 scripts/fake_trajectory/test_implicit.py
+```
+
+this script reads and publishes the joint position of `input_files/implicit/ft_implicit.csv` in `200` Hz frequency.
+
+the following data will be recorded in `output_files/ft/implicit`.
+
+- `received_joint_pos`
+- `received_joint_vel`
+- `eceived_ee_pos`
+- `received_ee_orient` in quaternion
+- `received_ee_lin_vel`
+
+then, to compare the recorded joint positions w.r.t the simulation environment, the following command should be run:
+
+- **Joint Position**
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:set_target_:200::input_files/implicit/ft_implicit.csv:joint_pos_:200::output_files/ft/implicit/ft_received_joint_pos_np.csv:joint_:200]
+```
+
+- **Joint Velocity**
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:joint_vel_:200::output_files/ft/implicit/ft_received_joint_vel_np.csv:joint_:200]
+```
+
+- ****End effector Position****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:end_effector_pos_:200::output_files/ft/implicit/ft_received_ee_pos_np.csv:pos_:200]
+```
+
+- ****End effector Orientation****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:ee_orien:200::output_files/ft/implicit/ft_received_ee_orient_np.csv:or_:200]
+```
+
+- ****End effector Linear Velocity****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:end_effector_lin_vel_:200::output_files/ft/implicit/ft_received_ee_lin_vel_np.csv:lin_vel_:200]
+```
+
+### IdealPD Controller
+
+```sh
+python3 scripts/fake_trajectory/test_idealpd.py
+```
+this script reads and publishes the joint position of `input_files/idealpd/ft_idealpd.csv` in `200` Hz frequency.
+
+the following data will be recorded in `output_files/ft/idealpd`.
+
+- `received_joint_pos`
+- `received_joint_vel`
+- `eceived_ee_pos`
+- `received_ee_orient` in quaternion
+- `received_ee_lin_vel`
+
+then, to compare the recorded joint positions w.r.t the simulation environment, the following command should be run:
+
+- **Joint Position**
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_9.csv:set_target_:200::input_files/idealpd/ft_idealpd_9.csv:joint_pos_:200::output_files/ft/idealpd_9_2/ft_received_joint_pos_np.csv:joint_:200]
+```
+
+
+- **Joint Velocity**
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_8.csv:joint_vel_:200::output_files/ft/idealpd_8/ft_received_joint_vel_np.csv:joint_:200]
+```
+
+- ****End effector Position****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_8.csv:end_effector_pos_:200::output_files/ft/idealpd_8/ft_received_ee_pos_np.csv:pos_:200]
+```
+
+- ****End effector Orientation****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_8.csv:end_effector_rot_:200::output_files/ft/idealpd_8/ft_received_ee_orient_np.csv:or_:200]
+```
+
+- ****End effector Linear Velocity****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_8.csv:end_effector_lin_vel_:200::output_files/ft/idealpd_8/ft_received_ee_lin_vel_np.csv:lin_vel_:200]
+```
+
+# Trained Models
+
+### Implicit Controller
+
+```sh
+python3 scripts/implementation/trained_implicit.py
+```
+
+this script reads and publishes the joint position of `input_files/implicit/ft_implicit.csv` in `200` Hz frequency. Then, the collected data through real Lbr iiwa manipulator and the csv file fed into the network and the target joint positions are published to the manipulator.
+
+the following data will be recorded in `output_files/tm/implicit`.
+
+- `joint_target`
+- `received_joint_pos`
+- `received_joint_vel`
+- `eceived_ee_pos`
+- `received_ee_orient` in quaternion
+- `received_ee_lin_vel`
+
+then, to compare the recorded joint positions w.r.t the simulation environment, the following command should be run:
+
+- **Joint Position**
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:set_target_:200::input_files/implicit/ft_implicit.csv:joint_pos_:200::output_files/tm/implicit/tm_received_joint_target_np.csv:joint_:200::output_files/tm/implicit/tm_received_joint_pos_np.csv:joint_:200]
+```
+
+
+- **Joint Velocity**
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:joint_vel_:200::output_files/tm/implicit/tm_received_joint_vel_np.csv:joint_:200]
+```
+
+- ****End effector Position****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:end_effector_pos_:200::output_files/tm/implicit/tm_received_ee_pos_np.csv:pos_:200]
+```
+
+- ****End effector Orientation****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:ee_orien:200::output_files/tm/implicit/tm_received_ee_orientation_np.csv:or_:200]
+```
+
+- ****End effector Linear Velocity****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/implicit/ft_implicit.csv:end_effector_lin_vel_:200::output_files/tm/implicit/tm_received_ee_vel_np.csv:lin_vel_:200]
+```
+
+### IdealPD Controller
+
+```sh
+python3 scripts/implementation/trained_idealpd.py
+```
+this script reads and publishes the joint position of `input_files/idealpd/ft_idealpd.csv` in `200` Hz frequency.
+
+the following data will be recorded in `output_files/tm/idealpd`.
+- `joint_target`
+- `received_joint_pos`
+- `received_joint_vel`
+- `eceived_ee_pos`
+- `received_ee_orient` in quaternion
+- `received_ee_lin_vel`
+
+then, to compare the recorded joint positions w.r.t the simulation environment, the following command should be run:
+
+- **Joint Position**
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_9.csv:set_target_:200::input_files/idealpd/ft_idealpd_9.csv:joint_pos_:200::output_files/tm/idealpd_9/tm_received_joint_target_np.csv:joint_:200::output_files/tm/idealpd_9/tm_received_joint_pos_np.csv:joint_:200]
+```
+
+
+- **Joint Velocity**
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_7.csv:joint_vel_:200::output_files/tm/idealpd_7/tm_received_joint_vel_np.csv:joint_:200]
+```
+
+- ****End effector Position****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_7.csv:end_effector_pos_:200::output_files/tm/idealpd_7/tm_received_ee_pos_np.csv:pos_:200]
+```
+
+- ****End effector Orientation****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_7.csv:end_effector_rot_:200::output_files/tm/idealpd_7/tm_received_ee_orientation_np.csv:or_:200]
+```
+
+- ****End effector Linear Velocity****
+
+```sh
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_5.csv:end_effector_lin_vel_:200::output_files/tm/idealpd_6s/tm_received_ee_vel_np.csv:lin_vel_:200]
+```
