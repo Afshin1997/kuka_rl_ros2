@@ -239,7 +239,7 @@ class JointStateNode:
             activation="elu"
         )
 
-        model_path = rospy.get_param('~model_path', default='/home/user/ros_ws/src/python_communication/input_files/idealpd/model_idealpd_3.pt')
+        model_path = rospy.get_param('~model_path', default='/home/user/ros_ws/src/catch_and_throw/input_files/idealpd/model_idealpd_3.pt')
         if not os.path.exists(model_path):
             rospy.logerr(f"Model file not found: {model_path}")
             rospy.signal_shutdown("Missing model file.")

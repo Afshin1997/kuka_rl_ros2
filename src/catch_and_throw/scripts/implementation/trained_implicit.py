@@ -205,7 +205,7 @@ class JointStateNode:
             activation="elu",
         )
         # Load model state
-        checkpoint = torch.load('/home/user/ros_ws/src/python_communication/input_files/implicit/model_implicit.pt', map_location=torch.device('cpu'))
+        checkpoint = torch.load('/home/user/ros_ws/src/catch_and_throw/input_files/implicit/model_implicit.pt', map_location=torch.device('cpu'))
         model_state_dict = checkpoint['model_state_dict']
         # Filter out critic parameters
         actor_state_dict = {k: v for k, v in model_state_dict.items() if 'critic' not in k}

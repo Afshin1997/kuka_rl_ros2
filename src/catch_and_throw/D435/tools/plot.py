@@ -34,8 +34,8 @@ def plot_function(dir1, dir2, col1, col2):
 
 if __name__ == "__main__":
 
-    dir1 = '/home/afshin/kuka_repo_ros/src/python_communication/D435/tracking/recorded_data/ball_tracking_data_3_tracking.csv'
-    dir2 = '/home/afshin/kuka_repo_ros/src/python_communication/D435/tracking/recorded_data/ball_tracking_data_3_predictions.csv'
+    dir1 = '/home/afshin/kuka_repo_ros/src/catch_and_throw/D435/tracking/recorded_data/ball_tracking_data_3_tracking.csv'
+    dir2 = '/home/afshin/kuka_repo_ros/src/catch_and_throw/D435/tracking/recorded_data/ball_tracking_data_3_predictions.csv'
     col_1_pos = ['x', 'y', 'z']
     col_2_ekf_pos = ['e_x', 'e_y', 'e_z']
     col_1_vel = ['vx', 'vy', 'vz']
