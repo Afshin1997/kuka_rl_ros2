@@ -7,7 +7,7 @@ import numpy as np
 from geometry_msgs.msg import Pose, Twist
 import matplotlib
 import matplotlib.pyplot as plt
-import os  # Import os module for path handling
+import os
 
 received_joint_pos = []
 received_joint_vel = []
@@ -48,13 +48,13 @@ def joint_pos_test():
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the input file path
-    input_file_path = os.path.join(script_dir, '../../input_files/idealpd/ft_idealpd_9.csv')
+    input_file_path = os.path.join(script_dir, '../../input_files/idealpd/ft_idealpd.csv')
     input_file_path = os.path.abspath(input_file_path)  # Convert to absolute path
 
     # Read the observation data
     obs_data = pd.read_csv(input_file_path)
-    set_target = obs_data.iloc[:1200, 21:28].values
-    # set_target = obs_data.iloc[:1200, 14:21].values
+    set_target = obs_data.iloc[:800, 21:28].values  ## joint position
+    # set_target = obs_data.iloc[:800, 14:21].values  ## set target
 
     # Set up ROS publishers and subscribers
     pub = rospy.Publisher("/joint_reference", JointState, queue_size=10)
@@ -87,7 +87,7 @@ def joint_pos_test():
     recording = False
 
     # Construct the output directory path
-    output_dir = os.path.join(script_dir, '../../output_files/ft/idealpd_9_2')
+    output_dir = os.path.join(script_dir, '../../output_files/ft/idealpd')
     output_dir = os.path.abspath(output_dir)
     os.makedirs(output_dir, exist_ok=True)  # Ensure the output directory exists
 
