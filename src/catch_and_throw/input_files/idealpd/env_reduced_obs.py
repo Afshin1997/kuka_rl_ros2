@@ -31,53 +31,32 @@ from omni.isaac.lab.utils.math import sample_uniform, quat_unique
 from omni.isaac.lab.sim.spawners.materials.physics_materials_cfg import RigidBodyMaterialCfg
 from .noise import GaussianNoiseCfg, NoiseModelWithAdditiveBiasCfgObsv2, NoiseModelWithAdditiveBiasCfgActionv2
 
-
-# num_record_envs = 5
-# num_observations = 59
-# data_buffers = [[] for _ in range(num_record_envs)]
-# done_flags = [False] * num_record_envs
-# headers = []
-# headers += [f'torque{i}' for i in range(7)]
-# headers += [f'action{i}' for i in range(7)]
-# headers += [f'set_target_{i}' for i in range(7)]
-# headers += [f'joint_pos_{i}' for i in range(7)]
-# headers += [f'joint_vel_{i}' for i in range(7)]
-# headers += [f'joint_vel_disc_{i}' for i in range(7)]
-# headers += [f'tennisball_pos_{i}' for i in range(3)]
-# headers += [f'tennisball_lin_vel_{i}' for i in range(3)]
-# headers += [f'end_effector_pos_{i}' for i in range(3)]
-# headers += [f'end_effector_rot_{i}' for i in range(4)]
-# headers += [f'end_effector_lin_vel_{i}' for i in range(3)]
-# headers += [f'obs_task_{i}' for i in range(7)]
-# headers += [f'to_final_target_{i}' for i in range(3)]
-# headers += [f'joint_acc_{i}' for i in range(7)]
-# headers += [f'joint_acc_disc_{i}' for i in range(7)]
-
-
-
-####################
-
 num_record_envs = 5
-num_observations = 67
+num_observations = 59
 data_buffers = [[] for _ in range(num_record_envs)]
 done_flags = [False] * num_record_envs
 headers = []
-headers += [f'pure_actions_{i}' for i in range(7)]
-headers += [f'action_history_actor_{i}' for i in range(14)]
-headers += [f'dof_pos_scaled_{i}' for i in range(7)]
+headers += [f'torque{i}' for i in range(7)]
+headers += [f'action{i}' for i in range(7)]
+headers += [f'set_target_{i}' for i in range(7)]
+headers += [f'joint_pos_{i}' for i in range(7)]
 headers += [f'joint_vel_{i}' for i in range(7)]
+headers += [f'joint_vel_disc_{i}' for i in range(7)]
+# headers += [f'to_target_pos{i}' for i in range(3)]
+# headers += [f'to_target_vel{i}' for i in range(3)]
+# headers += [f'ee_orien{i}' for i in range(4)]
 headers += [f'tennisball_pos_{i}' for i in range(3)]
-headers += [f'end_effector_pos_{i}' for i in range(3)]
 headers += [f'tennisball_lin_vel_{i}' for i in range(3)]
+# headers += [f'to_target_{i}' for i in range(3)]
+headers += [f'end_effector_pos_{i}' for i in range(3)]
 headers += [f'end_effector_rot_{i}' for i in range(4)]
 headers += [f'end_effector_lin_vel_{i}' for i in range(3)]
-headers += [f'to_final_target_{i}' for i in range(3)]
-headers += [f'to_throwing_pos_{i}' for i in range(3)]
-headers += [f'to_throwing_vel_{i}' for i in range(3)]
 headers += [f'obs_task_{i}' for i in range(7)]
+headers += [f'to_final_target_{i}' for i in range(3)]
+headers += [f'joint_acc_{i}' for i in range(7)]
+headers += [f'joint_acc_disc_{i}' for i in range(7)]
+# headers += [f'joint_jerk_{i}' for i in range(7)]
 
-
-######################
 
 @configclass
 class EventCfg:
@@ -90,7 +69,7 @@ class EventCfg:
             "asset_cfg": SceneEntityCfg("robot", body_names="iiwa_link_7"),
             "static_friction_range": (0.5, 0.7),
             "dynamic_friction_range": (0.5, 0.7), 
-            "restitution_range": (0.1, 0.3),
+            "restitution_range": (0.2, 0.55),
             "num_buckets": 250,
         },
     )
@@ -102,7 +81,7 @@ class EventCfg:
             "asset_cfg": SceneEntityCfg("tennisball", body_names=".*"),
             "static_friction_range": (0.4, 0.6),
             "dynamic_friction_range": (0.4, 0.6),
-            "restitution_range": (0.1, 0.3),
+            "restitution_range": (0.2, 0.55),
             "num_buckets": 250,
         },
     )
@@ -122,7 +101,7 @@ class EventCfg:
         func=mdp.randomize_physics_scene_gravity,
         mode="reset",
         params={
-            "gravity_distribution_params": ([0.0, 0.0, -0.05], [0.0, 0.0, 0.05]),
+            "gravity_distribution_params": ([0.0, 0.0, -0.1], [0.0, 0.0, 0.1]),
             "operation": "add",
             "distribution": "gaussian",
         },
@@ -133,24 +112,13 @@ class EventCfg:
       mode="reset",
       params={
           "asset_cfg": SceneEntityCfg("robot", joint_names=".*"),
-          "stiffness_distribution_params": (0.97, 1.03),
-          "damping_distribution_params": (0.97, 1.03),
+          "stiffness_distribution_params": (0.95, 1.05),
+          "damping_distribution_params": (0.95, 1.05),
           "operation": "scale",
           "distribution": "gaussian",
       },
     )
 
-    # robot_joint_stiffness_and_damping = EventTerm(
-    #   func=mdp.randomize_joint_parameters,
-    #   mode="reset",
-    #   params={
-    #       "asset_cfg": SceneEntityCfg("robot", joint_names=".*"),
-    #       "friction_distribution_params": (0.01, 0.08),
-    #       "operation": "abs",
-    #       "distribution": "gaussian",
-    #   },
-    # )
-    
     robot_scale_mass = EventTerm(
         func=mdp.randomize_rigid_body_mass,
         mode="startup",
@@ -168,7 +136,7 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
     episode_length_s = 40  # 500 timesteps
     decimation = 1
     action_space = 7
-    observation_space = 67
+    observation_space = 48
     state_space = 0
 
     ###
@@ -178,67 +146,7 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
     dof_velocity_scale = 0.31
     dof_acc_scale = 0.01
     dof_jerk_scale = 1e-6
-    dof_torque_scale = 8e-3  
-    # # ############################################################################################
-        # row_counter = {env: 0 for env in range(num_record_envs)}
-        # max_rows_to_save = 2000  # Set the limit to 50 rows
-
-        # # data_set = torch.cat(
-        # #     (   self._robot.data.applied_torque,
-        # #         self.pure_actions,  # 7
-        # #         self.robot_dof_targets,  # 7
-        # #         self._robot.data.joint_pos,  # 7
-        # #         self._robot.data.joint_vel,  # 7
-        # #         self.joint_vel,
-        # #         self.tennisball_pos,  # 3
-        # #         self.tennisball_lin_vel,  # 3
-        # #         self.end_effector_pos,  # 3
-        # #         self.end_effector_rot,  # 3
-        # #         self.end_effector_lin_vel,  # 4
-        # #         obs_task,  # 5
-        # #         self.to_final_target,  # 3
-        # #         self._robot.data.joint_acc,
-        # #         self.joint_acc,
-        # #     ),
-        # #     dim=-1,
-        # # )
-
-        # data_set = torch.cat(
-        #     (   self.pure_actions,
-        #         self.action_history_actor.flatten(start_dim=1),
-        #         self.dof_pos_scaled, # 7
-        #         self.joint_vel * self.cfg.dof_velocity_scale, # 7
-        #         self.tennisball_pos * self.cfg.tennis_ball_pos_scale, # 3
-        #         self.end_effector_pos, #3
-        #         self.tennisball_lin_vel * self.cfg.lin_vel_scale, #3
-        #         self.end_effector_lin_vel * self.cfg.lin_vel_scale, #3
-        #         self.end_effector_rot, #4
-        #         self.to_final_target * self.cfg.to_final_target_scale, #3
-        #         self.to_throwing_pos * self.cfg.to_throwing_pos_scale, #3
-        #         self.to_throwing_vel * self.cfg.to_throwing_vel_scale, #3
-        #         obs_task , #7
-        #     ),
-        #     dim=-1,
-        # )
-
-        # for env in range(num_record_envs):
-        #     # Check if the row count for this environment is less than the maximum allowed rows
-        #     if row_counter[env] < max_rows_to_save:
-
-        #         data_per_env = data_set[env].cpu().numpy()
-        #         data_buffers[env].append(data_per_env)
-        #         row_counter[env] += 1  # Increment the row counter for this environment
-
-        # # Save the data to CSV files
-        # for env in range(num_record_envs):
-        #     filename = f'env_{env}_data.csv'
-        #     data_array = np.array(data_buffers[env])  # Convert list of observations to NumPy array
-        #     with open(filename, 'w', newline='') as csvfile:
-        #         writer = csv.writer(csvfile)
-        #         writer.writerow(headers)
-        #         writer.writerows(data_array)
-
-       
+    dof_torque_scale = 8e-3      
     tennis_ball_pos_scale = 0.25
     lin_vel_scale = 0.15
     lin_acc_scale = 0.05
@@ -266,7 +174,7 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
     scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=2048, env_spacing=7.0, replicate_physics=True)
 
     # domain randomization config
-    events: EventCfg = EventCfg()
+    # events: EventCfg = EventCfg()
 
     tennisball_radius = 0.031
     stiffness_f = 700
@@ -276,7 +184,6 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
     robot = ArticulationCfg(
         prim_path="/World/envs/env_.*/Robot",
         spawn=sim_utils.UsdFileCfg(
-            # usd_path=f"/home/prisma-lab-ws/Scrivania/Omniverse/IsaacLab/source/IsaacSimPrismaLab/Lbr_iiwa/assets/lbr_iiwa7/iiwa_description/urdf/iiwa7_2.usd",
             usd_path=f"/home/prisma-lab-ws/Scrivania/Omniverse/IsaacLab/source/IsaacSimPrismaLab/Lbr_iiwa/assets/lbr_iiwa7_3/lbr_description/urdf/iiwa7/lbr_iiwa7_3.usd",
 
             activate_contact_sensors=False,
@@ -315,10 +222,6 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
                 effort_limit=176.0,
                 stiffness=324,
                 damping=25.2,
-                # stiffness=400,
-                # damping=28,
-                # min_delay=0,
-                # max_delay=1,
             ),
             "A2": IdealPDActuatorCfg(
                 joint_names_expr=["iiwa_joint_2"],
@@ -326,10 +229,6 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
                 effort_limit=176.0,
                 stiffness=324,
                 damping=25.2,
-                # stiffness=400,
-                # damping=28,
-                # min_delay=0,
-                # max_delay=1,
             ),
             "A3": IdealPDActuatorCfg(
                 joint_names_expr=["iiwa_joint_3"],
@@ -337,10 +236,6 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
                 effort_limit=110.0,
                 stiffness=324,
                 damping=25.2,
-                # stiffness=400,
-                # damping=28,
-                # min_delay=0,
-                # max_delay=1,
             ),
             "A4": IdealPDActuatorCfg(
                 joint_names_expr=["iiwa_joint_4"],
@@ -348,10 +243,6 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
                 effort_limit=110.0,
                 stiffness=324,
                 damping=25.2,
-                # stiffness=400,
-                # damping=28,
-                # min_delay=0,
-                # max_delay=1,
             ),
             "A5": IdealPDActuatorCfg(
                 joint_names_expr=["iiwa_joint_5"],
@@ -359,10 +250,6 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
                 effort_limit=110.0,
                 stiffness=100,
                 damping=14,
-                # stiffness=400,
-                # damping=28,
-                # min_delay=0,
-                # max_delay=1,
             ),
             "A6": IdealPDActuatorCfg(
                 joint_names_expr=["iiwa_joint_6"],
@@ -370,10 +257,6 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
                 effort_limit=40.0,
                 stiffness=49,
                 damping=9.8,
-                # stiffness=100,
-                # damping=14,
-                # min_delay=0,
-                # max_delay=1,
             ),
             "A7": IdealPDActuatorCfg(
                 joint_names_expr=["iiwa_joint_7"],
@@ -381,10 +264,6 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
                 effort_limit=40.0,
                 stiffness=49,
                 damping=9.8,
-                # stiffness=100,
-                # damping=14,
-                # min_delay=0,
-                # max_delay=1,
             ),
         },
         
@@ -448,7 +327,7 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
     tasks = ['Catching_Ball', 'Stabilizing_Ball', 'Stabilized_Ball', 'Moving_to_target_pos', 'Stabilized_at_Target', 'Throwing_Ball', 'Stop']
 
     # reward scales
-    dist_reward_scale = 2.2
+    dist_reward_scale = 1.7
     stability_reward_scale = 1.5
     dist_to_target_pos_reward_scale = 2.0
     dof_at_limit_cost_scale = 0.2
@@ -458,7 +337,7 @@ class Lbr_iiwaSixStatesEnvCfg(DirectRLEnvCfg):
     joint_jerk_scale = 4.0e-10
     joint_torque_scale = 2.0e-5
     to_throwing_pos_reward_scale = 2.5
-    relative_velocity_reward_scale = 1.5
+    relative_velocity_reward_scale = 1.0
 
     # action_noise_model: NoiseModelWithAdditiveBiasCfgActionv2 = NoiseModelWithAdditiveBiasCfgActionv2(
     #     noise_cfg=GaussianNoiseCfg(mean=0.0, std=0.002, operation="add"),
@@ -500,9 +379,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         self.robot_dof_targets = torch.tensor([45 * math.pi / 180, 0 * math.pi / 180, 76 * math.pi / 180,
                                                70 * math.pi / 180, 92 * math.pi / 180, -52 * math.pi / 180,
                                                90 * math.pi / 180], dtype=torch.float, device=self.device).repeat((self.num_envs, 1))
-
-        # self.stiffness = torch.tensor([2025, 2025, 1600, 1600, 1600, 256, 25], dtype=torch.float, device=self.device).repeat((self.num_envs, 1))
-        # self.damping = torch.tensor([63, 63, 56, 56, 56, 22.4, 7], dtype=torch.float, device=self.device).repeat((self.num_envs, 1))
         
         self.stiffness = torch.tensor([324, 324, 324, 324, 100, 49, 49], dtype=torch.float, device=self.device).repeat((self.num_envs, 1))
         self.damping = torch.tensor([25.2, 25.2, 25.2, 25.2, 14, 9.8, 9.8], dtype=torch.float, device=self.device).repeat((self.num_envs, 1))
@@ -521,11 +397,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         self.end_effector_idx = self._robot.find_bodies("ee_surface")[0][0]
 
         self.tennisball_idx = self._tennisball.find_bodies("tennisball")[0][0]
-
-        # self.end_effector_rot = torch.zeros((self.num_envs, 4), device=self.device)
-        # self.end_effector_pos = torch.zeros((self.num_envs, 3), device=self.device)
-        # self.end_effector_lin_vel = torch.zeros((self.num_envs, 3), device=self.device)
-        # self.tennisball_pos = torch.zeros((self.num_envs,3), device=self.device)
 
         # unit tensors
         self.x_unit_tensor = torch.tensor([1, 0, 0], dtype=torch.float, device=self.device).repeat((self.num_envs, 1))
@@ -596,86 +467,40 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
 
         self.action_history_actor = torch.roll(self.action_history_actor, shifts=-1, dims=1)
         self.action_history_actor[:, -1] = actions.clone()
-        
-        
-        # self.actions - self.last_actions
-        # self.actions = (self.cfg.act_moving_average * self.last_actions.clone()) + ((1 - self.cfg.act_moving_average) * self.actions.clone())
-        
         targets = self.robot_dof_pos + self.actions * 0.1
         self.target_term = targets
-        # self.robot_dof_targets = torch.clamp(targets, 0.98 * self.robot_dof_lower_limits, 0.98 * self.robot_dof_upper_limits)
-        # pos_error = self.robot_dof_targets - self.robot_dof_pos
-        # vel_error = -self.robot_dof_vel  # desired velocity is zero
-        
-        # mass_matrix = self._robot.root_physx_view.get_mass_matrices()
-        # diagonal_mass = mass_matrix.diagonal(dim1=-2, dim2=-1)
-        # damping_coef = 2 * 0.7 * torch.sqrt(self.stiffness * diagonal_mass)
-        # # # des_acc = self.stiffness * pos_error + damping_coef * vel_error
-        # gravity_forces = self._robot.root_physx_view.get_generalized_gravity_forces()
-        # coriolis_centrifugal = self._robot.root_physx_view.get_coriolis_and_centrifugal_forces()
-        # # # torques = torch.bmm(mass_matrix, des_acc.unsqueeze(-1)).squeeze(-1) + gravity_forces + coriolis_centrifugal
-
-        # pd_torques = self.stiffness * pos_error + damping_coef * vel_error
-        # torques = pd_torques + gravity_forces + coriolis_centrifugal
-        # self.torque_target = torch.clip(torques, min=-self.effort_limit, max=self.effort_limit)
-
-
-
         self.robot_dof_targets = torch.clamp(targets, 0.96 * self.robot_dof_lower_limits, 0.96 * self.robot_dof_upper_limits)
-
         pos_error = self.robot_dof_targets - self.robot_dof_pos
         vel_error = -self.robot_dof_vel  # desired velocity is zero
-
         des_acc = self.stiffness * pos_error + self.damping * vel_error
 
         mass_matrix = self._robot.root_physx_view.get_mass_matrices()
         gravity_forces = self._robot.root_physx_view.get_generalized_gravity_forces()
         coriolis_centrifugal = self._robot.root_physx_view.get_coriolis_and_centrifugal_forces()
         torques = torch.bmm(mass_matrix, des_acc.unsqueeze(-1)).squeeze(-1) + gravity_forces + coriolis_centrifugal
-
         self.torque_target = torch.clip(torques, min=-self.effort_limit, max=self.effort_limit)
-        # print("gravity", self._robot.root_physx_view.get_gravity())
-        # print("mass",mass_matrix[0])
-        # print("gravity", gravity_forces[0])
-        # print(self._robot.root_physx_view.get_dof_stiffnesses())
-        # print("coriolis_centrifugal", torch.bmm(mass_matrix, gravity_forces.unsqueeze(-1)) )
-    def _apply_action(self):
-        # print("self.torque_target", self.torque_target[0])
-        # self.robot_dof_targets = torch.tensor([45 * math.pi / 180, 0 * math.pi / 180, 76 * math.pi / 180,
-                                            #    70 * math.pi / 180, 92 * math.pi / 180, -52 * math.pi / 180,
-                                            #    90 * math.pi / 180], dtype=torch.float, device=self.device).repeat((self.num_envs, 1))
-        # self._robot.set_joint_position_target(self.robot_dof_targets)
-        self._robot.set_joint_effort_target(self.torque_target)
-        # self._robot.set_joint_effort_target(torch.zeros((self.num_envs, 7), device=self.device))
-        
-        # self._robot.write_data_to_sim()
 
+    def _apply_action(self):
+        self._robot.set_joint_effort_target(self.torque_target)
 
     def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
         self._compute_intermediate_values()
-        # print("pure_actions111", self.pure_actions[0])
-        # print("self.last_actions1111", self.last_actions[0])
-        # print("1111######")
         conditions = [
             torch.any((self.dof_pos_scaled.abs() > 0.98), dim=-1),
             torch.any((self.robot_dof_vel.abs() > 0.98 * self.robot_dof_vel_limit), dim=-1),
+            torch.any((self.pure_actions.abs() > 0.92), dim=-1),
             self.end_effector_pos[:, 2] < 0.30,
             torch.logical_and(self.rel_position_termination < 0, self.tennisball_pos[:, 0] < 2.0),
             torch.logical_and(self.tennisball_pos[:, 2] - self.end_effector_pos[:, 2] < -0.1, torch.logical_and(self.tennisball_pos[:, 0] < 1.0, self.task[:, -1]==0))
         ]
-
-        
         terminated = reduce(torch.logical_or, conditions)
         self.terminated_penalty = terminated
         truncated = (self.episode_length_buf >= self.max_episode_length - 1) | (self.finished_episode) | torch.logical_and(self.tennisball_pos[:, 0] > 2.0, self.task[:, -1]==1)
-        # print("truncated", terminated.shape)
         self.truncated_test = truncated
 
         return terminated, truncated
 
     def _get_rewards(self) -> torch.Tensor:
-
-        # self._compute_intermediate_values()
 
         return self._compute_rewards(
             self.actions,
@@ -702,8 +527,8 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
 
         # robot state
         # joint_pos = self._robot.data.default_joint_pos[env_ids] + sample_uniform(
-        #     -0.04,
-        #     0.04,
+        #     -0.06,
+        #     0.06,
         #     (len(env_ids), self._robot.num_joints),
         #     self.device,
         # )
@@ -715,9 +540,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         
         joint_vel = torch.zeros_like(joint_pos)
         self.robot_dof_vel_targets[env_ids] = joint_vel
-        
-        # joint_effort = torch.zeros_like(joint_pos)
-        # self.torque_target[env_ids] = joint_effort
         
         self._robot.set_joint_position_target(joint_pos, env_ids=env_ids)
         self._robot.set_joint_velocity_target(joint_vel, env_ids=env_ids)
@@ -771,80 +593,53 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
 
     def _get_observations(self) -> dict:
 
-        # print(EventCfg.actuator.stiffness)
-               
-
-        condition_final_target = (self.task[:, -3] == 1.0) | (self.task[:, -4] == 1.0)
-        condition_throwing = (self.task[:, -2] == 1.0)
-
-
-        self.to_final_target = torch.where(
-            condition_final_target.unsqueeze(-1),  # Shape: (num_envs, 1)
-            (self.final_target_pos - self.tennisball_pos),  # Shape: (num_envs, 1)
-            torch.zeros((self.num_envs, 3), device=self.device)  # Shape: (num_envs, 1)
-        )
-
-        self.to_throwing_vel = torch.where(
-            condition_throwing.unsqueeze(-1),  # Shape: (num_envs, 1)
-            (self.throwing_vel - self.tennisball_lin_vel),  # Shape: (num_envs, 1)
-            torch.zeros((self.num_envs, 3), device=self.device)  # Shape: (num_envs, 1)
-        )
-
-        self.to_throwing_pos = torch.where(
-            condition_throwing.unsqueeze(-1),  # Shape: (num_envs, 1)
-            (self.throwing_pos - self.tennisball_pos),  # Shape: (num_envs, 1)
-            torch.zeros((self.num_envs, 3), device=self.device)  # Shape: (num_envs, 1)
-        )
+        self.to_final_target = self.final_target_pos - self.tennisball_pos
+        self.to_throwing_vel = self.throwing_vel - self.tennisball_lin_vel
+        self.to_throwing_pos = self.throwing_pos - self.tennisball_pos
 
         obs_task = self.task
         self.joint_vel = (self.robot_dof_pos - self.prev_joint_pos)/self.dt
         self.joint_acc = (self.joint_vel - self.prev_joint_vel)/self.dt
-        # self.joint_jerk = (self.joint_acc - self.prev_joint_acc) / self.dt        
         self.prev_joint_vel = self.joint_vel
-        # self.prev_joint_acc = self.joint_acc
         self.prev_joint_pos = self.robot_dof_pos
 
         # # ############################################################################################
         row_counter = {env: 0 for env in range(num_record_envs)}
         max_rows_to_save = 2000  # Set the limit to 50 rows
 
-        # data_set = torch.cat(
-        #     (   self._robot.data.applied_torque,
-        #         self.pure_actions,  # 7
-        #         self.robot_dof_targets,  # 7
-        #         self._robot.data.joint_pos,  # 7
-        #         self._robot.data.joint_vel,  # 7
-        #         self.joint_vel,
-        #         self.tennisball_pos,  # 3
-        #         self.tennisball_lin_vel,  # 3
-        #         self.end_effector_pos,  # 3
-        #         self.end_effector_rot,  # 3
-        #         self.end_effector_lin_vel,  # 4
-        #         obs_task,  # 5
-        #         self.to_final_target,  # 3
-        #         self._robot.data.joint_acc,
-        #         self.joint_acc,
-        #     ),
-        #     dim=-1,
-        # )
-
         data_set = torch.cat(
-            (   self.pure_actions,
-                self.action_history_actor.flatten(start_dim=1),
-                self.dof_pos_scaled, # 7
-                self.joint_vel * self.cfg.dof_velocity_scale, # 7
-                self.tennisball_pos * self.cfg.tennis_ball_pos_scale, # 3
-                self.end_effector_pos, #3
-                self.tennisball_lin_vel * self.cfg.lin_vel_scale, #3
-                self.end_effector_lin_vel * self.cfg.lin_vel_scale, #3
-                self.end_effector_rot, #4
-                self.to_final_target * self.cfg.to_final_target_scale, #3
-                self.to_throwing_pos * self.cfg.to_throwing_pos_scale, #3
-                self.to_throwing_vel * self.cfg.to_throwing_vel_scale, #3
-                obs_task , #7
+            (   self._robot.data.applied_torque,
+                self.actions,  # 7
+                self.robot_dof_targets,  # 7
+                self._robot.data.joint_pos,  # 7
+                self._robot.data.joint_vel,  # 7
+                self.joint_vel,
+                self.tennisball_pos,  # 3
+                self.tennisball_lin_vel,  # 3
+                self.end_effector_pos,  # 3
+                self.end_effector_rot,  # 3
+                self.end_effector_lin_vel,  # 4
+                obs_task,  # 5
+                self.to_final_target,  # 3
+                self._robot.data.joint_acc,
+                self.joint_acc,
             ),
             dim=-1,
         )
+
+        # data_set = torch.cat(
+        #     (
+        #         self.actions, # 7
+        #         dof_pos_scaled, # 7
+        #         self._robot.data.joint_vel * self.cfg.dof_velocity_scale, # 7
+        #         to_target * self.cfg.tennis_ball_pos_scale, # 3
+        #         to_target_vel * self.cfg.lin_vel_scale, #3
+        #         self.end_effector_rot, #4
+        #         obs_task , #5
+        #         self.to_final_target * self.cfg.to_final_target_scale, #3
+        #     ),
+        #     dim=-1,
+        # )
 
         for env in range(num_record_envs):
             # Check if the row count for this environment is less than the maximum allowed rows
@@ -863,42 +658,24 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
                 writer.writerow(headers)
                 writer.writerows(data_array)
 
-        # # #######################################################################################################
-        # print("pure_actions", self.pure_actions[0])
-        # print("self.last_actions", self.last_actions[0])
-        # print("history",self.action_history_actor[0])
-        # print("######")
+        # #######################################################################################################
+        
+
         obs_actor = torch.cat(
             (   self.pure_actions,
-                self.action_history_actor.flatten(start_dim=1),
+                self.action_history_actor.flatten(start_dim=1), #35
                 self.dof_pos_scaled, # 7
                 self.joint_vel * self.cfg.dof_velocity_scale, # 7
                 self.tennisball_pos * self.cfg.tennis_ball_pos_scale, # 3
-                self.end_effector_pos, #3
                 self.tennisball_lin_vel * self.cfg.lin_vel_scale, #3
-                self.end_effector_lin_vel * self.cfg.lin_vel_scale, #3
-                self.end_effector_rot, #4
-                self.to_final_target * self.cfg.to_final_target_scale, #3
-                self.to_throwing_pos * self.cfg.to_throwing_pos_scale, #3
-                self.to_throwing_vel * self.cfg.to_throwing_vel_scale, #3
-                obs_task , #7
+                self.end_effector_lin_vel * self.cfg.lin_vel_scale,
+                self.end_effector_rot,
             ),
             dim=-1,
         )
-        
-        print("obs_actor", obs_actor.shape)
-        # print("self.task",self.task[0])
-        # print(obs_actor.shape)
-        # print(self.rel_position_termination.unsqueeze(-1).shape)
-        # print(self.end_effector_pos.shape)
-        # print(self.action_history_critic.flatten(start_dim=1)[0,:])
-        # print(self._robot.data.joint_stiffness)
         obs_critic = torch.cat(
             (   self.pure_actions,
-                # self._robot.data.joint_stiffness * 0.003,
-                # self._robot.data.joint_damping * 0.04,
                 self._robot.data.applied_torque * self.cfg.dof_torque_scale,
-                # self.actions, #7
                 self.action_history_critic.flatten(start_dim=1),
                 self.dof_pos_scaled, # 7
                 self._robot.data.joint_vel * self.cfg.dof_velocity_scale,
@@ -926,11 +703,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
     def _compute_intermediate_values(self, env_ids: torch.Tensor | None = None):
         if env_ids is None:
             env_ids = self._robot._ALL_INDICES
-
-        #######################
-        # self.joint_acc_obs = self._robot.data.joint_acc
-        # self.joint_stiffness = self._robot.data.joint_stiffness
-        #################
             
         self.revert_penalty = torch.zeros((self.num_envs), device=self.device)
         # Compute positions and velocities
@@ -986,7 +758,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         in_throwing_ball = current_task_indices == throwing_ball_index
         in_stop_manipulator = current_task_indices == stop_manipulator_index
 
-
         # Check if the ball is caught
         self.catched_ball = (distance < 0.12) & (self.rel_position_termination < self.cfg.tennisball_radius * 1.5)
 
@@ -1022,7 +793,7 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         
         rel_velocity_condition_to_taret = torch.norm(self.tennisball_lin_vel - self.end_effector_lin_vel, p=2, dim=-1) < 0.1
 
-        self.moving_to_target_pos = (self.stabilized_ball_counter > 150) & distance_condition & rel_velocity_condition_to_taret
+        self.moving_to_target_pos = (self.stabilized_ball_counter > 20) & distance_condition & rel_velocity_condition_to_taret
         can_revert_to_stabilized_ball = ~self.moving_to_target_pos & in_moving_to_target
 
         if self.moving_to_target_pos.any():
@@ -1045,10 +816,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
             & final_target_dist_reward
             & (in_moving_to_target | in_stabilized_at_target)
         )
-        # print("final_rel_dis_cond", final_rel_dis_cond[0])
-        # print("final_vel_cond", final_vel_cond[0])
-        # print("final_rel_velocity_condition", final_rel_velocity_condition[0])
-        # print("final_target_dist_reward", final_target_dist_reward[0])
 
         can_revert_to_moving_to_target = ~final_rel_dis_cond & in_stabilized_at_target
 
@@ -1060,7 +827,7 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
             self.stabilized_ball_counter_at_target[can_revert_to_moving_to_target] += -1
             self.revert_penalty[can_revert_to_moving_to_target] = -0.4
 
-        self.throwing_ball = (self.stabilized_ball_counter_at_target > 50)
+        self.throwing_ball = (self.stabilized_ball_counter_at_target > 20)
 
         if self.throwing_ball.any():
             self.task[self.throwing_ball] = self.one_hot_encoding[throwing_ball_index]
@@ -1070,7 +837,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
 
         if self.stop_manipulator.any():
             self.task[self.stop_manipulator] = self.one_hot_encoding[stop_manipulator_index]
-        # self.termination_state = (self.throwing_termination & ~self.throwing_ball) | (self.throwing_ball & (self.throwing_pos[:, 0] - self.tennisball_pos[:, 0] < 0.0) & (torch.norm(self.throwing_pos - self.tennisball_pos, p=2, dim=-1) > 0.1))
 
         self.finished_episode = self.stop_manipulator & torch.all(self.robot_dof_vel.abs()< 0.05, dim=-1)
 
@@ -1093,7 +859,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         to_throwing_pos_reward_scale,
         relative_velocity_reward_scale,
         task,
-
     ):
         # distance from end effector to the tennisball
         d = torch.norm(end_effector_pos - tennisball_pos, p=2, dim=-1)
@@ -1101,9 +866,10 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         tennisball_lin_vel_normalized[:, 2] = -torch.abs(tennisball_lin_vel_normalized[:, 2])
         dist_reward = 1.0 / (1.0 + d**2)
 
+        #Relative speed between end effecor and tennisball
         r_v = torch.norm(end_effector_lin_vel - tennisball_lin_vel, p=2, dim=-1)
         r_v = 1.0 / (1.0 + r_v**2)
-        r_v_reward = dist_reward * r_v
+        r_v_reward = r_v
 
         # Penalty while reaching the terminations
         termination_penalty = torch.zeros((self.num_envs), device=self.device)
@@ -1115,7 +881,6 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         tennisball_linear_vel_mag = torch.norm(tennisball_lin_vel, p=2, dim=-1)
         
         dist_to_target_pos =  torch.norm((self.final_target_pos - self.tennisball_pos), p=2, dim=-1)
-        # print(dist_to_target_pos[0])
 
         finished_reward = torch.zeros((self.num_envs), device=self.device)
         finished_reward[self.finished_episode] = 400
@@ -1143,25 +908,13 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
         dof_at_limit_cost = torch.sum((self.dof_pos_scaled).abs() > 0.97, dim=-1)
         dof_vel_lim_penalty = torch.sum((self.robot_dof_vel).abs() > 0.97 * self.robot_dof_vel_limit, dim=-1)
 
-        # print(self.dof_pos_scaled[0])
-        # print(self.end_effector_pos[0])
-        # print(self.tennisball_pos[0])
-        # print("#########")
-        # # self.joint_jerk_penalty = torch.sum(self.joint_jerk**2 + 2 * ((self.joint_jerk.abs() - 1000).clamp(min=0))**2, dim=-1)
         self.joint_jerk_penalty = torch.sum(self.joint_jerk**2, dim=-1)
         self.joint_torque_rate_penalty = torch.sum(self.joint_torque_rate**2, dim=-1)
 
         self.joint_acc_penalty = torch.sum(self._robot.data.joint_acc**2, dim=-1)
 
-        action_rate_penalty = torch.sum((self.pure_actions - self.last_actions).abs(), dim=-1)**2
-        # print("action", self.actions[0])
-        # print("last_action", self.last_actions[0])
-        # print("###########")
-        
-
         action_sign_change = torch.sign(actions) - torch.sign(self.last_actions)
         action_sign_change_penalty = torch.sum(action_sign_change**2, dim=-1)
-        # self.last_actions = actions.clone()
         self.last_actions = self.pure_actions.clone()
         
         if stop_manipulator.any():
@@ -1170,7 +923,7 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
             dist_to_target_pos_reward[stop_manipulator] = 1.2
             to_throwing_pos_reward[stop_manipulator] = 3.0
             alive_reward[stop_manipulator] += 1.8
-            r_v_reward[stop_manipulator] = 1.5
+            r_v_reward[stop_manipulator] = 1.6
             joint_vel_penalty[stop_manipulator] =  1.0 / (1.0 + 2.5 * torch.norm(self.joint_vel[stop_manipulator], p=2, dim=-1)**2)
         
         if throwing_ball_mask.any():
@@ -1178,90 +931,61 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
             stability_reward[throwing_ball_mask] = 1.6
             dist_to_target_pos_reward[throwing_ball_mask] = 1.2
             alive_reward[throwing_ball_mask] += 1.6
-            r_v_reward[throwing_ball_mask] = 1.3
+            r_v_reward[throwing_ball_mask] = 1.6
             to_throwing_vel_normalized_reward[throwing_ball_mask] = (self.throwing_vel_norm[throwing_ball_mask] * F.normalize(self.tennisball_lin_vel[throwing_ball_mask], p=2, dim=-1)).sum(dim=-1)
             to_throwing_vel_reward[throwing_ball_mask] = (1.5 / (1.0 + 0.2 * torch.norm(self.throwing_vel[throwing_ball_mask] - self.tennisball_lin_vel[throwing_ball_mask], p=2, dim=-1)**2))
             to_throwing_pos_reward[throwing_ball_mask] = 1.5 / (1.0 + 1.0 * torch.norm(self.throwing_pos[throwing_ball_mask] - self.tennisball_pos[throwing_ball_mask], p=2, dim=-1)**2)
             to_throwing_pos_reward[throwing_ball_mask] = to_throwing_pos_reward[throwing_ball_mask] * to_throwing_vel_reward[throwing_ball_mask] * torch.norm(self.tennisball_lin_vel[throwing_ball_mask], p=2, dim=-1)
 
         if final_target_reached_mask.any():
-            # dist_reward[final_target_reached_mask] = 1.7 * dist_reward[final_target_reached_mask]
             dist_reward[final_target_reached_mask] = 1.6 * dist_reward[final_target_reached_mask]
-            # dist_reward[final_target_reached_mask] = 1.7
             stability_reward[final_target_reached_mask] = 1.6 / (1.0 + tennisball_linear_vel_mag[final_target_reached_mask])
             dist_to_target_pos_reward[final_target_reached_mask] = (1.2/ (1.0 + 5.0 * (dist_to_target_pos[final_target_reached_mask])**2))
             alive_reward[final_target_reached_mask] += 1.4
-            r_v_reward[final_target_reached_mask] = 1.3
+            r_v_reward[final_target_reached_mask] = 1.6 * r_v_reward[final_target_reached_mask]
 
         if moving_to_target_mask.any():
-            # dist_reward[moving_to_target_mask] = 1.5 * dist_reward[moving_to_target_mask]
             dist_reward[moving_to_target_mask] = 1.5 * dist_reward[moving_to_target_mask]
-            # dist_reward[moving_to_target_mask] = 1.5
-            # stability_reward[moving_to_target_mask] = 2.5 / (1.0 + tennisball_linear_vel_mag[moving_to_target_mask])
             stability_reward[moving_to_target_mask] = 1.3
             dist_to_target_pos_reward[moving_to_target_mask] = (1.0 / (1.0 + 5.0 * (dist_to_target_pos[moving_to_target_mask])**2))
             alive_reward[moving_to_target_mask] += 1.0
-            r_v_reward[moving_to_target_mask] = 1.3
-            # print([dist_to_target_pos_reward[0]])
+            r_v_reward[moving_to_target_mask] = 1.5 * r_v_reward[moving_to_target_mask]
 
         if stabilized_ball_mask.any():
             dist_reward[stabilized_ball_mask] = 1.3 * dist_reward[stabilized_ball_mask]
-            # dist_reward[stabilized_ball_mask] = 1.3
-            # stability_reward[stabilized_ball_mask] = 1.3 / (1.0 + tennisball_linear_vel_mag[stabilized_ball_mask])
             stability_reward[stabilized_ball_mask] = 1.3 / (1.0 + tennisball_linear_vel_mag[stabilized_ball_mask])
             alive_reward[stabilized_ball_mask] += 0.6
             r_v_reward[stabilized_ball_mask] = 1.3 * r_v_reward[stabilized_ball_mask]
 
         if catched_ball_mask.any():
-            # dist_reward[catched_ball_mask] = 1.1 * dist_reward[catched_ball_mask]
             dist_reward[catched_ball_mask] = 1.1 * dist_reward[catched_ball_mask]
             stability_reward[catched_ball_mask] = 1.1 / (1.0 + tennisball_linear_vel_mag[catched_ball_mask])
             alive_reward[catched_ball_mask] += 0.2
             r_v_reward[catched_ball_mask] = 1.1 * r_v_reward[catched_ball_mask]
 
-        # print(self.task[0])
-        
-        # print("dist_reward",dist_reward.shape)
-        # print("stability_reward",stability_reward.shape)
-        # print("dist_to_target_pos_reward",dist_to_target_pos_reward.shape)
-        # print("to_throwing_pos_reward",to_throwing_pos_reward.shape)
-        # print("termination_penalty",termination_penalty.shape)
-        # print("dof_at_limit_cost",dof_at_limit_cost.shape)
-        # print("dof_vel_lim_penalty",dof_vel_lim_penalty.shape)
-        # print("self.joint_acc_penalty",self.joint_acc_penalty.shape)
-        # print("self.joint_jerk_penalty",self.joint_jerk_penalty.shape)
-        # print("self.joint_torque_rate_penalty",self.joint_torque_rate_penalty.shape)
-        # print("alive_reward",alive_reward.shape)
-        # print("self.revert_penalty",self.revert_penalty.shape)
-        # print("finished_reward",finished_reward.shape)
-        # print("joint_vel_penalty",joint_vel_penalty.shape)
-        # print("action_rate_penalty",action_rate_penalty.shape)
-
-        # print(self.end_effector_pos[0])
 
         rewards = (
-            dist_reward_scale * dist_reward 
-            # + r_v_reward * relative_velocity_reward_scale
-            + stability_reward * stability_reward_scale
-            + dist_to_target_pos_reward * dist_to_target_pos_reward_scale
-            + to_throwing_pos_reward * to_throwing_pos_reward_scale
-            - termination_penalty
-            - dof_at_limit_cost * dof_at_limit_cost_scale
-            - dof_vel_lim_penalty * dof_vel_lim_penalty_scale
-            - self.joint_acc_penalty * joint_accel_scale
-            - self.joint_jerk_penalty * joint_jerk_scale
-            - self.joint_torque_rate_penalty * joint_torque_scale
-            - action_sign_change_penalty * 0.02
-            + alive_reward
-            + self.revert_penalty
-            + finished_reward
-            + joint_vel_penalty * 4.0
-            # - action_rate_penalty * 0.005
+            dist_reward_scale * dist_reward     #wt
+            + r_v_reward * relative_velocity_reward_scale       #wt
+            + stability_reward * stability_reward_scale     #wt                                                                                         
+            + dist_to_target_pos_reward * dist_to_target_pos_reward_scale       #wt
+            + to_throwing_pos_reward * to_throwing_pos_reward_scale #w
+            - termination_penalty       #wt
+            - dof_at_limit_cost * dof_at_limit_cost_scale       #w
+            - dof_vel_lim_penalty * dof_vel_lim_penalty_scale     #w  
+            - self.joint_acc_penalty * joint_accel_scale        #wt
+            - self.joint_jerk_penalty * joint_jerk_scale        #wt
+            - self.joint_torque_rate_penalty * joint_torque_scale       #w
+            - action_sign_change_penalty * 0.02     #w
+            # + alive_reward
+            + self.revert_penalty       #w
+            + finished_reward #w
+            + joint_vel_penalty * 5.0 #w
         )
 
         self.extras["log"] = {
             "dist_reward": (dist_reward_scale * dist_reward).mean(),
-            # "r_v_reward": (relative_velocity_reward_scale * r_v_reward).mean(),
+            "r_v_reward": (relative_velocity_reward_scale * r_v_reward).mean(),
             "stability_reward": (stability_reward * stability_reward_scale).mean(),
             "dist_to_final_target_pos_reward": (dist_to_target_pos_reward * dist_to_target_pos_reward_scale).mean(),
             "to_throwing_pos": (to_throwing_pos_reward * to_throwing_pos_reward_scale).mean(),
@@ -1275,8 +999,7 @@ class Lbr_iiwaSixStatesEnv(DirectRLEnv):
             "alive_reward": (alive_reward).mean(),
             "revert_penalty": (self.revert_penalty).mean(),
             "finished_reward": (finished_reward).mean(),
-            "joint_vel_penalty": (joint_vel_penalty * 4.0).mean(),
-            # "action_rate_penalty": (-action_rate_penalty * 0.005).mean(),
+            "joint_vel_penalty": (joint_vel_penalty * 5.0).mean(),
         }
 
         return rewards
