@@ -37,6 +37,9 @@ class OptitrackListener( Node ):
 
         self.ball_marker_publisher = self.create_publisher(PoseStamped, "optitrack/ball_marker", 1)
 
+        self.ball_pose_stamped = PoseStamped()
+
+
         # self.declare_parameter('frame_transformation',  [0.0, 0.0, 0.0])
         # self.frame_transformation = self.get_parameter('frame_transformation').get_parameter_value().double_array_value
 
@@ -112,8 +115,6 @@ class OptitrackListener( Node ):
               
         ps = PoseStamped()
 
-        ball_pose_stamped = PoseStamped()
-
         first = True
         while rclpy.ok():
             try:
@@ -150,19 +151,23 @@ class OptitrackListener( Node ):
                 #     else: 
                 #         self.get_logger().warn(f"Id: {body_id} not present in the configuration file")
 
+                #Fill message header
+                self.ball_pose_stamped.header.stamp = self.get_clock().now().to_msg()
+                self.ball_pose_stamped.header.frame_id = self.frame
+                
                 #Find the ball marker (closest to the old position, initialized with a known configuration)
                 ball_marker=self.find_closest_array_numpy(packet.other_markers, self.ball_marker_old)
-                self.ball_marker_old = ball_marker
-                #Fill the message (just position, orientation is not used)
-                # print("ball marker x: ", ball_marker[0], "y: ", ball_marker[1], "z: ", ball_marker[2])
-                # print("ball_marker: ", ball_marker)
-
-                ball_pose_stamped.header.stamp = self.get_clock().now().to_msg()
-                ball_pose_stamped.header.frame_id = self.frame
-                ball_pose_stamped.pose.position = Point(x=ball_marker[0], y=ball_marker[1], z=ball_marker[2])
-                ball_pose_stamped.pose.orientation = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
+                
+                if ball_marker is not None: #Position is updated only if at least a marker is found, otherwise the old position is kept
+                    #update the old position
+                    self.ball_marker_old = ball_marker
+                    #Fill the message (just position, orientation is not used)
+                    self.ball_pose_stamped.pose.position = Point(x=ball_marker[0], y=ball_marker[1], z=ball_marker[2])
+                    self.ball_pose_stamped.pose.orientation = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
+                
                 #Publish the ball marker
-                self.ball_marker_publisher.publish(ball_pose_stamped)
+                self.ball_marker_publisher.publish(self.ball_pose_stamped)
+                    
                 #Add here tf if needed ...
 
 def main(args=None):
