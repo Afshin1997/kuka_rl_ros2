@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-8e287e63b4af91cddf6e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "lbr_ros2_control",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "lbr_ros2_control::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lbr_ros2_control-Release-dc0128bf3b52547898c4.json",
+					"name" : "lbr_ros2_control",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "lbr_ros2_control_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lbr_ros2_control_uninstall-Release-441ca4c4184ff3825382.json",
+					"name" : "lbr_ros2_control_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-3734ddb3002a55fb08f9.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/user/kuka_rl_ros2/src/build/lbr_ros2_control",
+		"source" : "/home/user/kuka_rl_ros2/src/lbr-stack/lbr_fri_ros2_stack/lbr_ros2_control"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

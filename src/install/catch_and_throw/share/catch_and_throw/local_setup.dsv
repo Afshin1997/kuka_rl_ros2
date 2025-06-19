@@ -1,0 +1,2 @@
+source;share/catch_and_throw/environment/ament_prefix_path.sh
+source;share/catch_and_throw/environment/path.sh

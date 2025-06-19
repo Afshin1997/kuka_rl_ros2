@@ -1,3 +1,4 @@
 [submodule "src/lbr-stack"]
 	path = src/lbr-stack
 	url = https://github.com/prisma-lab/lbr-stack
+	branch = ball_catching

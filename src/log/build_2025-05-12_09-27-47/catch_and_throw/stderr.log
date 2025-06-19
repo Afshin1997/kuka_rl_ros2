@@ -1,0 +1,19 @@
+[01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node.cpp:[m[K In member function ‘[01m[Kvoid JointStateNode::publish_joint_commands(const std::vector<std::vector<double, std::allocator<double> > >&, int)[m[K’:
+[01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node.cpp:43:34:[m[K [01;31m[Kerror: [m[Kno match for ‘[01m[Koperator=[m[K’ (operand types are ‘[01m[Klbr_fri_idl::msg::LBRJointPositionCommand_<std::allocator<void> >::_joint_position_type[m[K’ {aka ‘[01m[Kstd::array<double, 7>[m[K’} and ‘[01m[Kconst std::vector<double, std::allocator<double> >[m[K’)
+   43 |          msg.joint_position = [01;31m[Kjoint_pos[m[K;
+      |                               [01;31m[K^~~~~~~~~[m[K
+
+In file included from [01m[K/usr/include/c++/11/tuple:39[m[K,
+                 from [01m[K/usr/include/c++/11/bits/unique_ptr.h:37[m[K,
+                 from [01m[K/usr/include/c++/11/memory:76[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:153[m[K,
+                 from [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node.cpp:1[m[K:
+[01m[K/usr/include/c++/11/array:95:12:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kconstexpr std::array<double, 7>& std::array<double, 7>::operator=(const std::array<double, 7>&)[m[K’
+   95 |     struct [01;36m[Karray[m[K
+      |            [01;36m[K^~~~~[m[K
+[01m[K/usr/include/c++/11/array:95:12:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kconst std::vector<double, std::allocator<double> >[m[K’ to ‘[01m[Kconst std::array<double, 7>&[m[K’
+[01m[K/usr/include/c++/11/array:95:12:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kconstexpr std::array<double, 7>& std::array<double, 7>::operator=(std::array<double, 7>&&)[m[K’
+[01m[K/usr/include/c++/11/array:95:12:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kconst std::vector<double, std::allocator<double> >[m[K’ to ‘[01m[Kstd::array<double, 7>&&[m[K’
+gmake[2]: *** [CMakeFiles/joint_state_node.dir/build.make:76: CMakeFiles/joint_state_node.dir/src/joint_state_node.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/joint_state_node.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

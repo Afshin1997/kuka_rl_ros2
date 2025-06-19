@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-eb9e06fea30474c7cf07.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "lbr_bringup",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_lbr_bringup_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_lbr_bringup_egg-c87769083d702ce04fc5.json",
+					"name" : "ament_cmake_python_build_lbr_bringup_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_copy_lbr_bringup::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_copy_lbr_bringup-87ad1d982642abf1ce5f.json",
+					"name" : "ament_cmake_python_copy_lbr_bringup",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "lbr_bringup_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lbr_bringup_uninstall-3ba1b898bd40574ce20c.json",
+					"name" : "lbr_bringup_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-2cb3a64a2ae2248859dd.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/user/kuka_rl_ros2/src/build/lbr_bringup",
+		"source" : "/home/user/kuka_rl_ros2/src/lbr-stack/lbr_fri_ros2_stack/lbr_bringup"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

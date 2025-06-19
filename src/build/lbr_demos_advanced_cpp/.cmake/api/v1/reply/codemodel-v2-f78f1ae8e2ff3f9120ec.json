@@ -1,0 +1,124 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-258595627020993f6738.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "lbr_demos_advanced_cpp",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "lbr_demos_advanced_cpp_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lbr_demos_advanced_cpp_uninstall-Release-a2b37db55a2702d0f976.json",
+					"name" : "lbr_demos_advanced_cpp_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pose_control::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pose_control-Release-0895af152668d61fcb47.json",
+					"name" : "pose_control",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pose_control_component::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pose_control_component-Release-c6c389e5986d37135272.json",
+					"name" : "pose_control_component",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pose_planning::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pose_planning-Release-91351552d677fb3e788b.json",
+					"name" : "pose_planning",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pose_planning_component::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pose_planning_component-Release-d36b85cdb2c37b9af8fa.json",
+					"name" : "pose_planning_component",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pose_streaming::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pose_streaming-Release-a94689fad7b6f1581781.json",
+					"name" : "pose_streaming",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pose_streaming_component::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pose_streaming_component-Release-36b14506b35a8724eda2.json",
+					"name" : "pose_streaming_component",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-ce219e39ae7f1f7b7d48.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/user/kuka_rl_ros2/src/build/lbr_demos_advanced_cpp",
+		"source" : "/home/user/kuka_rl_ros2/src/lbr-stack/lbr_fri_ros2_stack/lbr_demos/lbr_demos_advanced_cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

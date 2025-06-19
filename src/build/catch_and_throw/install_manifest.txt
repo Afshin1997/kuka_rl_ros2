@@ -1,0 +1,17 @@
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/lib/catch_and_throw/joint_state_node
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/lib/catch_and_throw/joint_state_node_trained
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/package_run_dependencies/catch_and_throw
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/parent_prefix_path/catch_and_throw
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/ament_prefix_path.sh
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/ament_prefix_path.dsv
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/path.sh
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/path.dsv
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.bash
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.sh
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.zsh
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.dsv
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/package.dsv
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/packages/catch_and_throw
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/cmake/catch_and_throwConfig.cmake
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/cmake/catch_and_throwConfig-version.cmake
+/home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/package.xml

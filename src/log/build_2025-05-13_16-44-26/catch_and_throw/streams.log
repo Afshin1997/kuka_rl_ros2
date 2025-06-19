@@ -1,0 +1,105 @@
+[0.019s] Invoking command in '/home/user/kuka_rl_ros2/src/build/catch_and_throw': AMENT_PREFIX_PATH=/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/opt/ros/humble LD_LIBRARY_PATH=/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/pkgconfig:${PKG_CONFIG_PATH} PYTHONPATH=/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/user/kuka_rl_ros2/src/build/catch_and_throw -- -j8 -l8
+[0.086s] [35m[1mConsolidate compiler generated dependencies of target joint_state_node_trained[0m
+[0.124s] [ 50%] Built target joint_state_node
+[0.183s] [ 75%] [32mBuilding CXX object CMakeFiles/joint_state_node_trained.dir/src/joint_state_node_trained.cpp.o[0m
+[11.547s] In file included from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40[m[K,
+[11.548s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24[m[K,
+[11.548s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20[m[K,
+[11.548s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25[m[K,
+[11.548s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18[m[K,
+[11.548s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20[m[K,
+[11.548s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37[m[K,
+[11.548s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25[m[K,
+[11.549s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21[m[K,
+[11.549s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155[m[K,
+[11.549s]                  from [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1[m[K:
+[11.549s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:[m[K In function ‘[01m[Kvoid signal_handler(int)[m[K’:
+[11.549s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:31:[m[K [01;31m[Kerror: [m[Kinvalid use of incomplete type ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.549s]    33 |         RCLCPP_INFO(g_node_ptr[01;31m[K->[m[Kget_logger(), "Received signal %d. Saving data and shutting down...", signum);
+[11.549s]       |                               [01;31m[K^~[m[K
+[11.549s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:[m[K [01;36m[Knote: [m[Kforward declaration of ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.549s]    28 | std::shared_ptr<class [01;36m[KJointStateNode[m[K> g_node_ptr = nullptr;
+[11.549s]       |                       [01;36m[K^~~~~~~~~~~~~~[m[K
+[11.550s] In file included from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21[m[K,
+[11.550s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155[m[K,
+[11.550s]                  from [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1[m[K:
+[11.551s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:31:[m[K [01;31m[Kerror: [m[Kinvalid use of incomplete type ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.551s]    33 |         RCLCPP_INFO(g_node_ptr[01;31m[K->[m[Kget_logger(), "Received signal %d. Saving data and shutting down...", signum);
+[11.551s]       |                               [01;31m[K^~[m[K
+[11.551s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:[m[K [01;36m[Knote: [m[Kforward declaration of ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.551s]    28 | std::shared_ptr<class [01;36m[KJointStateNode[m[K> g_node_ptr = nullptr;
+[11.551s]       |                       [01;36m[K^~~~~~~~~~~~~~[m[K
+[11.551s] In file included from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40[m[K,
+[11.551s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24[m[K,
+[11.551s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20[m[K,
+[11.551s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25[m[K,
+[11.552s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18[m[K,
+[11.552s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20[m[K,
+[11.552s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37[m[K,
+[11.552s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25[m[K,
+[11.552s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21[m[K,
+[11.552s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155[m[K,
+[11.552s]                  from [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1[m[K:
+[11.552s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:9:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+[11.552s]    33 |         [01;31m[KRCLCPP_INFO[m[K(g_node_ptr->get_logger(), "Received signal %d. Saving data and shutting down...", signum);
+[11.552s]       |         [01;31m[K^~~~~~~~~~~[m[K
+[11.553s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:9:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+[11.553s]    33 |         [01;31m[KRCLCPP_INFO[m[K(g_node_ptr->get_logger(), "Received signal %d. Saving data and shutting down...", signum);
+[11.553s]       |         [01;31m[K^~~~~~~~~~~[m[K
+[11.553s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:9:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+[11.553s]    33 |         [01;31m[KRCLCPP_INFO[m[K(g_node_ptr->get_logger(), "Received signal %d. Saving data and shutting down...", signum);
+[11.553s]       |         [01;31m[K^~~~~~~~~~~[m[K
+[11.553s] In file included from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/logging.hpp:24[m[K,
+[11.553s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40[m[K,
+[11.553s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24[m[K,
+[11.553s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20[m[K,
+[11.554s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25[m[K,
+[11.554s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18[m[K,
+[11.554s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20[m[K,
+[11.554s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37[m[K,
+[11.554s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25[m[K,
+[11.554s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21[m[K,
+[11.554s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155[m[K,
+[11.554s]                  from [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1[m[K:
+[11.554s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:31:[m[K [01;31m[Kerror: [m[Kinvalid use of incomplete type ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.555s]    33 |         RCLCPP_INFO(g_node_ptr[01;31m[K->[m[Kget_logger(), "Received signal %d. Saving data and shutting down...", signum);
+[11.555s]       |                               [01;31m[K^~[m[K
+[11.555s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:[m[K [01;36m[Knote: [m[Kforward declaration of ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.555s]    28 | std::shared_ptr<class [01;36m[KJointStateNode[m[K> g_node_ptr = nullptr;
+[11.555s]       |                       [01;36m[K^~~~~~~~~~~~~~[m[K
+[11.555s] In file included from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/logging.hpp:24[m[K,
+[11.555s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40[m[K,
+[11.555s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24[m[K,
+[11.555s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20[m[K,
+[11.556s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25[m[K,
+[11.556s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18[m[K,
+[11.556s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20[m[K,
+[11.556s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37[m[K,
+[11.556s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25[m[K,
+[11.556s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21[m[K,
+[11.556s]                  from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155[m[K,
+[11.556s]                  from [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1[m[K:
+[11.556s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:31:[m[K [01;31m[Kerror: [m[Kinvalid use of incomplete type ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.557s]    33 |         RCLCPP_INFO(g_node_ptr[01;31m[K->[m[Kget_logger(), "Received signal %d. Saving data and shutting down...", signum);
+[11.557s]       |                               [01;31m[K^~[m[K
+[11.557s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:[m[K [01;36m[Knote: [m[Kforward declaration of ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.557s]    28 | std::shared_ptr<class [01;36m[KJointStateNode[m[K> g_node_ptr = nullptr;
+[11.557s]       |                       [01;36m[K^~~~~~~~~~~~~~[m[K
+[11.557s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:34:19:[m[K [01;31m[Kerror: [m[Kinvalid use of incomplete type ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.557s]    34 |         g_node_ptr[01;31m[K->[m[Ksave_output_data();
+[11.557s]       |                   [01;31m[K^~[m[K
+[11.557s] [01m[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:[m[K [01;36m[Knote: [m[Kforward declaration of ‘[01m[Kusing element_type = class JointStateNode[m[K’ {aka ‘[01m[Kclass JointStateNode[m[K’}
+[11.557s]    28 | std::shared_ptr<class [01;36m[KJointStateNode[m[K> g_node_ptr = nullptr;
+[11.558s]       |                       [01;36m[K^~~~~~~~~~~~~~[m[K
+[19.614s] gmake[2]: *** [CMakeFiles/joint_state_node_trained.dir/build.make:76: CMakeFiles/joint_state_node_trained.dir/src/joint_state_node_trained.cpp.o] Error 1
+[19.614s] gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/joint_state_node_trained.dir/all] Error 2
+[19.615s] gmake: *** [Makefile:146: all] Error 2
+[19.617s] Invoked command in '/home/user/kuka_rl_ros2/src/build/catch_and_throw' returned '2': AMENT_PREFIX_PATH=/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/opt/ros/humble LD_LIBRARY_PATH=/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/pkgconfig:${PKG_CONFIG_PATH} PYTHONPATH=/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/user/kuka_rl_ros2/src/build/catch_and_throw -- -j8 -l8

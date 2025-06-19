@@ -1,0 +1,13 @@
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/libFRIClient.so
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friClientApplication.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friUdpConnection.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friTransformationClient.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friLBRState.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friConnectionIf.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friClientVersion.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friClientIf.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friLBRClient.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/include/friLBRCommand.h
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/cmake/FRIClient/FRIClientConfig.cmake
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/cmake/FRIClient/FRIClientConfig-release.cmake
+/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/cmake/FRIClient/FRIClientConfigVersion.cmake

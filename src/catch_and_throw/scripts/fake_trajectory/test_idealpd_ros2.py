@@ -3,12 +3,20 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
+from lbr_fri_idl.msg import LBRJointPositionCommand, LBRState
 from geometry_msgs.msg import Pose, Twist
 import pandas as pd
 import numpy as np
 import os
 import threading
 from rclpy.executors import MultiThreadedExecutor
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
+# from rclpy.qos import QoSProfile, QoSReliabilityPolicy
+qos = QoSProfile(
+  depth=1,
+  reliability=ReliabilityPolicy.RELIABLE,
+  history=HistoryPolicy.KEEP_LAST
+)
 
 def save_output(outputs, output_file_path, header=None):
     np.savetxt(output_file_path, outputs, delimiter=',', header=header, comments='')
@@ -23,36 +31,55 @@ class JointStateNode(Node):
             JointState,
             '/lbr/joint_states',
             self.joint_states_callback,
-            10
+            qos_profile=qos
         )
         self.ee_pose_sub = self.create_subscription(
             Pose,
             '/lbr/state/pose',
             self.ee_pose_callback,
-            10
+            qos_profile=qos
         )
         self.ee_vel_sub = self.create_subscription(
             Twist,
             '/lbr/state/twist',
             self.ee_vel_callback,
-            10
+            qos_profile=qos
         )
         
         # Publisher
-        self.joint_ref_pub = self.create_publisher(JointState, '/joint_reference', 10)
-        
+        self.joint_ref_pub = self.create_publisher(LBRJointPositionCommand, '/lbr/command/joint_position', 0)
+
         # Data storage
         self.received_joint_pos = []
         self.received_joint_vel = []
+        self.received_joint_eff = []
         self.received_ee_pos = []
         self.received_ee_orient = []
         self.received_ee_lin_vel = []
         self.recording = False
 
+    # def joint_states_callback(self, msg):
+    #     if self.recording:
+    #         self.received_joint_pos.append(list(msg.position))
+    #         self.received_joint_vel.append(list(msg.velocity))
+
     def joint_states_callback(self, msg):
         if self.recording:
-            self.received_joint_pos.append(list(msg.position))
-            self.received_joint_vel.append(list(msg.velocity))
+            # Define desired joint order (A1 to A7)
+            desired_order = ['lbr_A1', 'lbr_A2', 'lbr_A3', 'lbr_A4', 
+                            'lbr_A5', 'lbr_A6', 'lbr_A7']
+            
+            # Get indices for proper ordering
+            indices = [msg.name.index(name) for name in desired_order]
+            
+            # Reorder and store data
+            ordered_positions = [msg.position[i] for i in indices]
+            ordered_velocities = [msg.velocity[i] for i in indices]
+            ordered_efforts = [msg.effort[i] for i in indices]
+            
+            self.received_joint_pos.append(ordered_positions)
+            self.received_joint_vel.append(ordered_velocities)
+            self.received_joint_eff.append(ordered_efforts)
 
     def ee_pose_callback(self, msg):
         if self.recording:
@@ -84,22 +111,26 @@ def main():
         input_file_path = os.path.join(script_dir, '../../input_files/idealpd/ft_idealpd.csv')
         input_file_path = os.path.abspath(input_file_path)
         obs_data = pd.read_csv(input_file_path)
-        set_target = obs_data.iloc[:800, 21:28].values  # Joint positions
-        # set_target = obs_data.iloc[:800, 14:21].values  ## set target
+        set_target = obs_data.iloc[:1032, 21:28].values  # Joint positions
+        # set_target = obs_data.iloc[:1032, 14:21].values  ## set target
 
-        # Start recording
-        node.recording = True
+        
 
         # Publish joint references at 200Hz
         rate = node.create_rate(200)
         for t in range(set_target.shape[0]):
             if not rclpy.ok():
                 break
-            
-            msg = JointState()
-            msg.position = list(set_target[t])
+            # Start recording
+            node.recording = True
+            msg = LBRJointPositionCommand()
+            msg.joint_position = list(set_target[t])
+            # print(set_target[t])
             node.joint_ref_pub.publish(msg)
+            # print(f"Number of subscribers: {node.joint_ref_pub.get_subscription_count()}")
             rate.sleep()
+        
+        node.recording = False
 
         node.get_logger().info("Finished publishing all targets")
 
@@ -115,7 +146,7 @@ def main():
         executor_thread.join()
 
         # Save outputs
-        output_dir = os.path.join(script_dir, '../../output_files/ft/idealpd')
+        output_dir = os.path.join(script_dir, '../../output_files/ft/idealpd_6')
         output_dir = os.path.abspath(output_dir)
         os.makedirs(output_dir, exist_ok=True)
 
@@ -127,6 +158,11 @@ def main():
         save_output(
             np.array(node.received_joint_vel), 
             os.path.join(output_dir, "ft_received_joint_vel_np.csv"),
+            "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6"
+        )
+        save_output(
+            np.array(node.received_joint_eff), 
+            os.path.join(output_dir, "ft_received_joint_effort_np.csv"),
             "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6"
         )
         save_output(

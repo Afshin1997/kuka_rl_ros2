@@ -1,0 +1,25 @@
+[35m[1mConsolidate compiler generated dependencies of target joint_state_node_trained[0m
+[35m[1mConsolidate compiler generated dependencies of target joint_state_node[0m
+[ 50%] Built target joint_state_node
+[ 75%] [32mBuilding CXX object CMakeFiles/joint_state_node_trained.dir/src/joint_state_node_trained.cpp.o[0m
+[100%] [32m[1mLinking CXX executable joint_state_node_trained[0m
+[100%] Built target joint_state_node_trained
+-- Install configuration: ""
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/lib/catch_and_throw/joint_state_node
+-- Installing: /home/user/kuka_rl_ros2/src/install/catch_and_throw/lib/catch_and_throw/joint_state_node_trained
+-- Set runtime path of "/home/user/kuka_rl_ros2/src/install/catch_and_throw/lib/catch_and_throw/joint_state_node_trained" to ""
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/package_run_dependencies/catch_and_throw
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/parent_prefix_path/catch_and_throw
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/ament_prefix_path.sh
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/path.sh
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/path.dsv
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.bash
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.sh
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.zsh
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.dsv
+-- Installing: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/package.dsv
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/packages/catch_and_throw
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/cmake/catch_and_throwConfig.cmake
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/cmake/catch_and_throwConfig-version.cmake
+-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/package.xml

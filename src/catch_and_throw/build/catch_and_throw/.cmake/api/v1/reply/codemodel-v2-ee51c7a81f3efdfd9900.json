@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-fd89a89ffea11b5ca614.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "catch_and_throw",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "catch_and_throw_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-catch_and_throw_uninstall-a21a8692f49a8ff325a4.json",
+					"name" : "catch_and_throw_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "joint_state_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-joint_state_node-2711d6d40f0344d8a849.json",
+					"name" : "joint_state_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "joint_state_node_trained::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-joint_state_node_trained-d509d9f7fa747b8226fd.json",
+					"name" : "joint_state_node_trained",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-bfe60db301b1405e725e.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/user/kuka_rl_ros2/src/catch_and_throw/build/catch_and_throw",
+		"source" : "/home/user/kuka_rl_ros2/src/catch_and_throw"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

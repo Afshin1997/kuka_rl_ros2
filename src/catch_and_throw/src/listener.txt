@@ -1,0 +1,1712 @@
+# import rclpy
+# from rclpy.node import Node
+# from threading import Thread
+# import optirx as rx
+# import socket
+# from geometry_msgs.msg import PoseStamped
+# from geometry_msgs.msg import Point
+# from geometry_msgs.msg import Quaternion
+# from geometry_msgs.msg import PoseStamped, TransformStamped, Quaternion, Point
+# from tf2_ros import TransformBroadcaster
+# from tf2_geometry_msgs import do_transform_pose
+# import numpy as np
+# import re   
+# import csv
+# from collections import deque
+# from scipy.signal import butter, lfilter
+# import os
+# from datetime import datetime
+
+# class RealTimeFilter:
+#     """Real-time causal filters for low-latency smoothing"""
+    
+#     def __init__(self, filter_type='exponential', **kwargs):
+#         self.filter_type = filter_type
+#         self.reset()
+        
+#         if filter_type == 'exponential':
+#             self.alpha = kwargs.get('alpha', 0.35)  # Higher alpha = less smoothing
+#         elif filter_type == 'lowpass':
+#             self.cutoff_freq = kwargs.get('cutoff_freq', 10.0)  # Hz
+#             self.sample_freq = kwargs.get('sample_freq', 200.0)  # Hz
+#             # Design Butterworth low-pass filter
+#             nyquist = 0.5 * self.sample_freq
+#             normal_cutoff = self.cutoff_freq / nyquist
+#             self.b, self.a = butter(2, normal_cutoff, btype='low', analog=False)
+#             # Initialize filter memory
+#             self.zi = None
+#         elif filter_type == 'moving_average':
+#             self.window_size = kwargs.get('window_size', 5)
+#             self.buffer = deque(maxlen=self.window_size)
+    
+#     def reset(self):
+#         """Reset filter state"""
+#         self.prev_output = None
+#         if hasattr(self, 'zi'):
+#             self.zi = None
+#         if hasattr(self, 'buffer'):
+#             self.buffer.clear()
+    
+#     def update(self, new_value):
+#         """Update filter with new value and return filtered output"""
+#         if self.filter_type == 'exponential':
+#             if self.prev_output is None:
+#                 self.prev_output = new_value
+#             else:
+#                 self.prev_output = self.alpha * new_value + (1 - self.alpha) * self.prev_output
+#             return self.prev_output
+            
+#         elif self.filter_type == 'lowpass':
+#             if self.zi is None:
+#                 # Initialize filter memory with current value
+#                 from scipy.signal import lfilter_zi
+#                 self.zi = lfilter_zi(self.b, self.a) * new_value
+            
+#             # Apply filter
+#             filtered_value, self.zi = lfilter(self.b, self.a, [new_value], zi=self.zi)
+#             return filtered_value[0]
+            
+#         elif self.filter_type == 'moving_average':
+#             self.buffer.append(new_value)
+#             return np.mean(list(self.buffer))
+        
+#         else:
+#             return new_value  # No filtering
+
+# class OptitrackListener( Node ):
+#     def __init__(self):
+#         super().__init__('optitrack_listener')
+#         self.declare_parameter('local_interface',  "192.168.1.100")
+#         self.ipaddr = self.get_parameter('local_interface').get_parameter_value().string_value
+#         self.declare_parameter('fixed_frame', 'world')
+#         self.frame = self.get_parameter('fixed_frame').get_parameter_value().string_value
+#         self.declare_parameter('rigid_object_list', "")
+#         rigid_object_list = self.get_parameter('rigid_object_list').get_parameter_value().string_value
+#         split_string = rigid_object_list.split(', ')
+#         self.declare_parameter('publish_tf', False)
+
+#         ###
+#         self.declare_parameter('csv_base_path', 'optitrack_data')  # Base name without extension
+#         self.declare_parameter('csv_directory', './recorded_data')  # Directory to save CSV files
+#         self.csv_base_path = self.get_parameter('csv_base_path').value
+#         self.csv_directory = self.get_parameter('csv_directory').value
+        
+#         # Auto-recording parameters
+#         self.declare_parameter('detection_threshold_frames', 10)  # Frames to wait before stopping recording
+#         self.detection_threshold = self.get_parameter('detection_threshold_frames').value
+        
+#         # Real-time smoothing parameters
+#         self.declare_parameter('enable_smoothing', True)
+#         self.declare_parameter('filter_type', 'exponential')  # 'exponential', 'lowpass', 'moving_average'
+#         self.declare_parameter('exponential_alpha', 0.35)  # For exponential smoothing
+#         self.declare_parameter('lowpass_cutoff_freq', 10.0)  # For low-pass filter (Hz)
+#         self.declare_parameter('lowpass_sample_freq', 200.0)  # OptiTrack sampling frequency
+#         self.declare_parameter('moving_avg_window', 5)  # For moving average
+        
+#         self.enable_smoothing = self.get_parameter('enable_smoothing').value
+#         self.filter_type = self.get_parameter('filter_type').value
+#         self.exponential_alpha = self.get_parameter('exponential_alpha').value
+#         self.lowpass_cutoff_freq = self.get_parameter('lowpass_cutoff_freq').value
+#         self.lowpass_sample_freq = self.get_parameter('lowpass_sample_freq').value
+#         self.moving_avg_window = self.get_parameter('moving_avg_window').value
+#         ###
+
+#         self.publish_tf = self.get_parameter( 'publish_tf').get_parameter_value().bool_value
+#         names = rigid_object_list.split(',')
+
+#         ### Initialize CSV writing components with auto-switching
+#         self.csv_file = None
+#         self.csv_writer = None
+#         self.csv_initialized = False
+#         self.current_csv_path = None
+#         self.csv_file_counter = 1
+        
+#         # Detection tracking
+#         self.frames_without_detection = {}  # Track per body_id
+#         self.detected_bodies_in_frame = set()  # Bodies detected in current frame
+#         self.recording_active = False
+        
+#         # Create directory if it doesn't exist
+#         os.makedirs(self.csv_directory, exist_ok=True)
+#         ###
+
+#         ### Initialize real-time filters for each rigid body
+#         self.position_filters = {}  # Dictionary: body_id -> {'x': filter, 'y': filter, 'z': filter}
+#         self.orientation_filters = {}  # Dictionary: body_id -> {'x': filter, 'y': filter, 'z': filter, 'w': filter}
+#         ###
+
+#         self.get_logger().info(f"Real-time smoothing enabled: {self.enable_smoothing}")
+#         self.get_logger().info(f"Filter type: {self.filter_type}")
+#         self.get_logger().info(f"Detection threshold: {self.detection_threshold} frames")
+#         self.get_logger().info(f"CSV directory: {self.csv_directory}")
+
+#         self.id_trackable_dict = {}   # Dictionary: from object id to trackable name
+#         self.id_publisher_dict = {}   # Dictionary: from object id to publisher id 
+#         self.get_logger().info("Trackable configuration")
+#         self.trackable_publishers = []
+#         index = 0
+
+#         for name in names:
+#             name = name.strip()
+#             self.declare_parameter(f'trackables.{name}.id', 0)
+#             self.declare_parameter(f'trackables.{name}.name', "trackable")
+#             id_param = self.get_parameter(f'trackables.{name}.id').get_parameter_value().integer_value
+#             name_param = self.get_parameter(f'trackables.{name}.name').get_parameter_value().string_value
+            
+#             self.get_logger().info(f"Name: '{name}'")
+#             self.get_logger().info(f"id: {id_param}")
+#             self.get_logger().info(f"name: {name_param}")
+
+#             self.id_trackable_dict[id_param] = name_param
+#             self.id_publisher_dict[id_param] = index 
+
+#             # Initialize detection counter for each body
+#             self.frames_without_detection[id_param] = 0
+
+#             self.trackable_publishers.append ( self.create_publisher(PoseStamped, "optitrack/" + name_param, 1))
+#             index = index+1
+
+#         self.tf_broadcaster = TransformBroadcaster(self)
+#         self.thread = Thread(target = self.get_optitrack_data, args = ())
+#         self.thread.start()
+
+#     def create_filter_set(self):
+#         """Create a set of filters for position and orientation"""
+#         filter_kwargs = {}
+        
+#         if self.filter_type == 'exponential':
+#             filter_kwargs['alpha'] = self.exponential_alpha
+#         elif self.filter_type == 'lowpass':
+#             filter_kwargs['cutoff_freq'] = self.lowpass_cutoff_freq
+#             filter_kwargs['sample_freq'] = self.lowpass_sample_freq
+#         elif self.filter_type == 'moving_average':
+#             filter_kwargs['window_size'] = self.moving_avg_window
+        
+#         return {
+#             'x': RealTimeFilter(self.filter_type, **filter_kwargs),
+#             'y': RealTimeFilter(self.filter_type, **filter_kwargs),
+#             'z': RealTimeFilter(self.filter_type, **filter_kwargs)
+#         }
+
+#     def create_orientation_filter_set(self):
+#         """Create filters for quaternion components"""
+#         filter_kwargs = {}
+        
+#         if self.filter_type == 'exponential':
+#             filter_kwargs['alpha'] = self.exponential_alpha
+#         elif self.filter_type == 'lowpass':
+#             filter_kwargs['cutoff_freq'] = self.lowpass_cutoff_freq
+#             filter_kwargs['sample_freq'] = self.lowpass_sample_freq
+#         elif self.filter_type == 'moving_average':
+#             filter_kwargs['window_size'] = self.moving_avg_window
+        
+#         return {
+#             'x': RealTimeFilter(self.filter_type, **filter_kwargs),
+#             'y': RealTimeFilter(self.filter_type, **filter_kwargs),
+#             'z': RealTimeFilter(self.filter_type, **filter_kwargs),
+#             'w': RealTimeFilter(self.filter_type, **filter_kwargs)
+#         }
+
+#     def initialize_filters_for_body(self, body_id):
+#         """Initialize real-time filters for a new rigid body"""
+#         if body_id not in self.position_filters:
+#             self.position_filters[body_id] = self.create_filter_set()
+#             self.orientation_filters[body_id] = self.create_orientation_filter_set()
+
+#     def apply_realtime_smoothing(self, body_id, pos_opt, rot_opt):
+#         """Apply real-time smoothing with zero latency"""
+#         # Initialize filters if needed
+#         self.initialize_filters_for_body(body_id)
+        
+#         try:
+#             # Apply filtering to position components
+#             smoothed_pos = np.array([
+#                 self.position_filters[body_id]['x'].update(pos_opt[0]),
+#                 self.position_filters[body_id]['y'].update(pos_opt[1]),
+#                 self.position_filters[body_id]['z'].update(pos_opt[2])
+#             ])
+            
+#             # Apply filtering to orientation components
+#             smoothed_rot = np.array([
+#                 self.orientation_filters[body_id]['x'].update(rot_opt[0]),
+#                 self.orientation_filters[body_id]['y'].update(rot_opt[1]),
+#                 self.orientation_filters[body_id]['z'].update(rot_opt[2]),
+#                 self.orientation_filters[body_id]['w'].update(rot_opt[3])
+#             ])
+            
+#             # Normalize quaternion to ensure it remains valid
+#             smoothed_rot = smoothed_rot / np.linalg.norm(smoothed_rot)
+            
+#             return smoothed_pos, smoothed_rot
+            
+#         except Exception as e:
+#             self.get_logger().warn(f"Real-time smoothing failed for body {body_id}: {str(e)}")
+#             return pos_opt, rot_opt
+
+#     def generate_csv_filename(self):
+#         """Generate a new CSV filename with timestamp and counter"""
+#         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+#         filename = f"{self.csv_base_path}_{timestamp}_{self.csv_file_counter:03d}.csv"
+#         return os.path.join(self.csv_directory, filename)
+
+#     def start_new_csv_recording(self):
+#         """Start recording to a new CSV file"""
+#         try:
+#             # Close current file if open
+#             self.close_csv()
+            
+#             # Generate new filename
+#             self.current_csv_path = self.generate_csv_filename()
+            
+#             # Open new file
+#             self.csv_file = open(self.current_csv_path, mode='w', newline='')
+#             self.csv_writer = csv.writer(self.csv_file)
+#             self.csv_writer.writerow(['timestamp', 'body_id', 'x', 'y', 'z', 'x_smooth', 'y_smooth', 'z_smooth'])
+#             self.csv_initialized = True
+#             self.recording_active = True
+            
+#             self.get_logger().info(f"Started new CSV recording: {self.current_csv_path}")
+            
+#         except Exception as e:
+#             self.get_logger().error(f"Failed to start new CSV recording: {str(e)}")
+
+#     def close_csv(self):
+#         """Close the current CSV file"""
+#         if self.csv_file is not None:
+#             try:
+#                 self.csv_file.close()
+#                 self.get_logger().info(f"Closed CSV recording: {self.current_csv_path}")
+#             except Exception as e:
+#                 self.get_logger().error(f"Error closing CSV file: {str(e)}")
+#             finally:
+#                 self.csv_file = None
+#                 self.csv_writer = None
+#                 self.csv_initialized = False
+#                 self.recording_active = False
+#                 self.csv_file_counter += 1
+
+#     def update_detection_status(self):
+#         """Update detection status and manage CSV recording"""
+#         # Check which bodies were detected in this frame
+#         for body_id in self.frames_without_detection:
+#             if body_id in self.detected_bodies_in_frame:
+#                 # Body was detected - reset counter
+#                 self.frames_without_detection[body_id] = 0
+#             else:
+#                 # Body was not detected - increment counter
+#                 self.frames_without_detection[body_id] += 1
+
+#         # Check if any body is being detected
+#         any_body_detected = any(count < self.detection_threshold for count in self.frames_without_detection.values())
+        
+#         # Manage recording state
+#         if any_body_detected and not self.recording_active:
+#             # Start new recording
+#             self.start_new_csv_recording()
+#             self.get_logger().info("Object detected - starting new recording session")
+            
+#         elif not any_body_detected and self.recording_active:
+#             # Stop recording
+#             self.close_csv()
+#             self.get_logger().info(f"No objects detected for {self.detection_threshold} frames - stopping recording")
+
+#         # Clear detected bodies for next frame
+#         self.detected_bodies_in_frame.clear()
+
+#     def pose_to_tf(self, pose_msg, parent_frame, target_frame):
+#         # Create a TransformStamped message
+#         transform_stamped = TransformStamped()
+        
+#         # Set the header of the TF message
+#         transform_stamped.header.stamp = pose_msg.header.stamp
+#         transform_stamped.header.frame_id = parent_frame  
+#         transform_stamped.child_frame_id = target_frame  
+
+#         # Extract position and orientation from PoseStamped message
+#         position = pose_msg.pose.position
+#         orientation = pose_msg.pose.orientation
+        
+#         # Set translation and rotation in the TF message
+#         transform_stamped.transform.translation.x = position.x
+#         transform_stamped.transform.translation.y = position.y
+#         transform_stamped.transform.translation.z = position.z
+#         transform_stamped.transform.rotation = orientation
+
+#         return transform_stamped  
+
+#     def get_optitrack_data(self):
+        
+#         self.version = (2, 7, 0, 0)  # the latest SDK version
+#         self.get_logger().warn(f"address: {self.ipaddr}")
+
+#         # self.optitrack = rx.mkdatasock(ip_address=self.ipaddr)#(ip_address=get_ip_address(iface))
+#         # self.optitrack = rx.mkdatasock(ip_address="0.0.0.0")
+#         self.optitrack = rx.mkdatasock(ip_address="172.31.1.145")
+
+#         ps = PoseStamped()
+#         first = True
+        
+#         try:
+#             while rclpy.ok():
+#                 try:
+#                     data = self.optitrack.recv(rx.MAX_PACKETSIZE)
+#                 except socket.error:
+#                     self.get_logger().info(f"Failed to receive packet from optitrack")
+#                     break  # Exit the loop if no data is received
+
+#                 packet = rx.unpack(data, version=self.version)
+#                 if first == True:
+#                     self.get_logger().info(f"NatNet version received {self.version}")
+#                     first = False
+                    
+#                 if type(packet) is rx.SenderData:
+#                     self.version = packet.natnet_version
+#                     self.get_logger().info(f"NatNet version received {self.version}")
+
+#                 if type(packet) in [rx.SenderData, rx.ModelDefs, rx.FrameOfData]:
+#                     # Process rigid bodies
+#                     for i, rigid_body in enumerate(packet.rigid_bodies):
+#                         body_id = rigid_body.id
+#                         pos_opt = np.array(rigid_body.position)
+#                         rot_opt = np.array(rigid_body.orientation)
+                        
+#                         # Mark this body as detected in current frame
+#                         self.detected_bodies_in_frame.add(body_id)
+                        
+#                         # Apply real-time smoothing if enabled
+#                         if self.enable_smoothing:
+#                             pos_smooth, rot_smooth = self.apply_realtime_smoothing(body_id, pos_opt, rot_opt)
+#                         else:
+#                             pos_smooth, rot_smooth = pos_opt, rot_opt
+                        
+#                         # Create pose message with smoothed data (REAL-TIME!)
+#                         ps.header.stamp = self.get_clock().now().to_msg()  
+#                         ps.header.frame_id = self.frame
+#                         ps.pose.position = Point(x=pos_smooth[0], y=pos_smooth[1], z=pos_smooth[2])  
+#                         ps.pose.orientation = Quaternion(x=rot_smooth[0], y=rot_smooth[1], z=rot_smooth[2], w=rot_smooth[3])  
+
+#                         # Write to CSV if recording is active
+#                         if self.recording_active and self.csv_initialized and self.csv_file is not None:
+#                             try:
+#                                 # Apply coordinate transformation
+#                                 X_orig = -pos_opt[2] + 0.792
+#                                 Y_orig = -pos_opt[0] + 0.00154
+#                                 Z_orig = pos_opt[1] + 0.5106
+                                
+#                                 X_smooth = -pos_smooth[2] + 0.792
+#                                 Y_smooth = -pos_smooth[0] + 0.00154
+#                                 Z_smooth = pos_smooth[1] + 0.5106
+
+#                                 print(f"Writing to CSV: {body_id}, X: {X_smooth:.3f}, Y: {Y_smooth:.3f}, Z: {Z_smooth:.3f}")
+                                
+#                                 timestamp = ps.header.stamp.sec + ps.header.stamp.nanosec / 1e9
+#                                 if X_smooth >= 0.0 and X_smooth <= 3.0 and Y_smooth < 0.0 and Z_smooth >= 0.0:
+#                                     self.csv_writer.writerow([
+#                                         timestamp,
+#                                         body_id,
+#                                         X_orig,
+#                                         Y_orig,
+#                                         Z_orig,
+#                                         X_smooth,
+#                                         Y_smooth,
+#                                         Z_smooth
+#                                     ])
+#                                     self.csv_file.flush()  # Ensure data is written to disk
+#                             except Exception as e:
+#                                 self.get_logger().error(f"CSV write error: {str(e)}")
+
+#                         # Publish smoothed pose IMMEDIATELY (no latency!)
+#                         if body_id in self.id_publisher_dict:
+#                             self.trackable_publishers[ self.id_publisher_dict[body_id] ].publish( ps )
+#                             if( self.publish_tf):
+#                                 transform_stamped = self.pose_to_tf(ps, self.frame, self.id_trackable_dict[body_id] )                    
+#                                 self.tf_broadcaster.sendTransform(transform_stamped)
+#                         else: 
+#                             self.get_logger().warn(f"Id: {body_id} not present in the configuration file")
+                    
+#                     # Update detection status and manage CSV recording after processing all rigid bodies
+#                     self.update_detection_status()
+        
+#         finally:
+#             # Close CSV file when the loop exits
+#             self.close_csv()
+
+# def main(args=None):
+#     rclpy.init(args=args)
+#     node = OptitrackListener()
+
+#     try:
+#         rclpy.spin(node)
+#     except KeyboardInterrupt:
+#         pass
+
+#     node.destroy_node()
+#     rclpy.shutdown()
+
+# if __name__ == '__main__':
+#     main()
+
+
+# import rclpy
+# from rclpy.node import Node
+# from threading import Thread
+# import optirx as rx
+# import socket
+# from geometry_msgs.msg import PoseStamped
+# from geometry_msgs.msg import Point
+# from geometry_msgs.msg import Quaternion
+# from geometry_msgs.msg import PoseStamped, TransformStamped, Quaternion, Point
+# from tf2_ros import TransformBroadcaster
+# from tf2_geometry_msgs import do_transform_pose
+# import numpy as np
+# import re   
+# import csv
+# from collections import deque
+# import os
+# from datetime import datetime
+
+# class BallTrajectoryEKF:
+#     """Extended Kalman Filter for ball trajectory tracking with gravity model and stationary detection"""
+    
+#     def __init__(self, dt=0.005, process_noise_std=0.001, measurement_noise_std=0.002, 
+#                  gravity=-9.81, optitrack_frame=True, velocity_process_noise_factor=0.05,
+#                  velocity_damping=0.995):
+#         """
+#         Initialize EKF for ball tracking with OptiTrack system
+        
+#         Args:
+#             dt: Time step (default 5ms for 200Hz OptiTrack)
+#             process_noise_std: Standard deviation of process noise (default 0.001m = 1mm)
+#             measurement_noise_std: Standard deviation of measurement noise (default 0.002m = 2mm)
+#             gravity: Gravitational acceleration (m/s^2)
+#             optitrack_frame: If True, work in OptiTrack frame. If False, work in world frame.
+#             velocity_process_noise_factor: Multiplier for velocity process noise (default 0.05)
+#             velocity_damping: Damping factor for velocity (default 0.995, i.e., 0.5% damping per timestep)
+#         """
+#         self.dt = dt
+#         self.g = gravity
+#         self.optitrack_frame = optitrack_frame
+#         self.velocity_damping = velocity_damping
+#         self.process_noise_std = process_noise_std
+#         self.velocity_process_noise_factor = velocity_process_noise_factor
+        
+#         # State vector: [x, y, z, vx, vy, vz]
+#         self.state = np.zeros(6)
+        
+#         # State covariance matrix
+#         self.P = np.eye(6)
+#         self.P[0:3, 0:3] *= 0.001**2  # Initial position uncertainty: 1mm
+#         self.P[3:6, 3:6] *= 0.2**2    # Initial velocity uncertainty: 0.2 m/s
+        
+#         # Process noise covariance matrix (will be adaptive)
+#         self.Q = self._compute_process_noise(dt, process_noise_std)
+        
+#         # Measurement noise covariance matrix (based on OptiTrack accuracy)
+#         self.R = np.eye(3) * measurement_noise_std**2
+        
+#         # Measurement matrix (we only observe position)
+#         self.H = np.zeros((3, 6))
+#         self.H[0:3, 0:3] = np.eye(3)
+        
+#         # Stationary detection parameters
+#         self.velocity_threshold = 0.4  # 5 cm/s threshold for stationary
+#         self.position_change_threshold = 0.003  # 3mm movement threshold
+#         self.stationary_count = 0
+#         self.stationary_threshold = 3  # Number of consecutive stationary detections
+#         self.last_positions = []
+#         self.max_position_history = 10
+#         self.is_stationary = False
+        
+#         # Zero velocity update parameters
+#         self.zero_velocity_threshold = 0.01  # 1 cm/s
+#         self.zero_velocity_noise = 0.001  # 1 mm/s measurement noise for zero velocity
+        
+#         self.initialized = False
+#         self.last_update_time = None
+#         self.innovation_threshold = 5.0  # Threshold for outlier rejection (5 sigma)
+        
+#     def _compute_process_noise(self, dt, noise_std, stationary=False):
+#         """Compute process noise covariance matrix"""
+#         Q = np.zeros((6, 6))
+        
+#         if stationary:
+#             # Very small noise for stationary ball
+#             Q[0:3, 0:3] = np.eye(3) * (0.0001 * dt)**2  # 0.1mm position noise
+#             Q[3:6, 3:6] = np.eye(3) * (0.001 * dt)**2   # 1mm/s velocity noise
+#         else:
+#             # Normal process noise for moving ball
+#             Q[0:3, 0:3] = np.eye(3) * (noise_std * dt)**2
+#             Q[3:6, 3:6] = np.eye(3) * (noise_std * self.velocity_process_noise_factor * dt)**2
+        
+#         return Q
+        
+#     def predict(self, dt=None):
+#         """Predict step of EKF with ball physics model and damping"""
+#         if dt is None:
+#             dt = self.dt
+        
+#         # Apply damping factor (models air resistance/friction)
+#         damping = self.velocity_damping if not self.is_stationary else 0.99
+        
+#         # State transition matrix for ballistic motion with damping
+#         F = np.eye(6)
+#         F[0:3, 3:6] = np.eye(3) * dt  # Position update from velocity
+#         F[3:6, 3:6] = np.eye(3) * damping  # Velocity damping
+        
+#         # Predict state
+#         self.state[0:3] += self.state[3:6] * dt  # Update position
+#         self.state[3:6] *= damping  # Apply damping to velocity
+        
+#         # Apply gravity
+#         if self.optitrack_frame:
+#             # In OptiTrack frame: gravity acts on Y axis (index 1)
+#             self.state[4] += self.g * dt  # Update y-velocity with gravity
+#         else:
+#             # In world frame: gravity acts on -Z axis (index 2)
+#             self.state[5] += self.g * dt  # Update z-velocity with gravity
+        
+#         # Update process noise based on stationary state
+#         self.Q = self._compute_process_noise(dt, self.process_noise_std, self.is_stationary)
+        
+#         # Update state covariance
+#         self.P = F @ self.P @ F.T + self.Q
+        
+#     def update(self, measurement):
+#         """Update step of EKF with position measurement"""
+#         # Ensure measurement is 3D position
+#         z = np.array(measurement[:3])
+        
+#         # Innovation (measurement residual)
+#         y = z - self.H @ self.state
+        
+#         # Innovation covariance
+#         S = self.H @ self.P @ self.H.T + self.R
+        
+#         # Check for outliers using Mahalanobis distance
+#         mahalanobis_dist = np.sqrt(y.T @ np.linalg.inv(S) @ y)
+#         if mahalanobis_dist > self.innovation_threshold * np.sqrt(3):  # 3 DOF
+#             # Outlier detected - increase measurement noise temporarily
+#             R_temp = self.R * 10.0
+#             S = self.H @ self.P @ self.H.T + R_temp
+#         else:
+#             R_temp = self.R
+        
+#         # Kalman gain
+#         K = self.P @ self.H.T @ np.linalg.inv(S)
+        
+#         # Reduce Kalman gain for velocity to prevent oscillations
+#         if self.is_stationary:
+#             K[3:6, :] *= 0.3  # Even slower velocity updates when stationary
+#         else:
+#             K[3:6, :] *= 0.5  # Normal velocity update rate
+        
+#         # Update state estimate
+#         self.state += K @ y
+        
+#         # Update state covariance (Joseph form for numerical stability)
+#         I_KH = np.eye(6) - K @ self.H
+#         self.P = I_KH @ self.P @ I_KH.T + K @ R_temp @ K.T
+        
+#     def zero_velocity_update(self):
+#         """Apply zero velocity update when ball is stationary"""
+#         # Create zero velocity measurement
+#         z_vel = np.zeros(3)
+        
+#         # Measurement matrix for velocity
+#         H_vel = np.zeros((3, 6))
+#         H_vel[0:3, 3:6] = np.eye(3)
+        
+#         # Innovation
+#         y = z_vel - H_vel @ self.state
+        
+#         # Use tight measurement noise for zero velocity
+#         R_vel = np.eye(3) * self.zero_velocity_noise**2
+        
+#         # Innovation covariance
+#         S = H_vel @ self.P @ H_vel.T + R_vel
+        
+#         # Kalman gain
+#         K = self.P @ H_vel.T @ np.linalg.inv(S)
+        
+#         # Update state and covariance
+#         self.state += K @ y
+#         self.P = (np.eye(6) - K @ H_vel) @ self.P
+        
+#     def detect_stationary(self):
+#         """Detect if the ball is stationary based on velocity and position history"""
+#         # Check velocity magnitude
+#         velocity_magnitude = np.linalg.norm(self.state[3:6])
+        
+#         # Check position variance over recent measurements
+#         stationary = False
+#         if len(self.last_positions) >= 5:
+#             positions = np.array(self.last_positions[-5:])
+#             position_std = np.std(positions, axis=0)
+#             max_position_std = np.max(position_std)
+            
+#             # Check if both velocity and position variation are small
+#             if velocity_magnitude < self.velocity_threshold and max_position_std < self.position_change_threshold:
+#                 self.stationary_count += 1
+#                 if self.stationary_count >= self.stationary_threshold:
+#                     stationary = True
+#             else:
+#                 self.stationary_count = 0
+        
+#         return stationary
+    
+#     def initialize(self, position, velocity=None):
+#         """Initialize filter with first measurement"""
+#         self.state[0:3] = position
+#         if velocity is not None:
+#             self.state[3:6] = velocity
+#         else:
+#             self.state[3:6] = np.zeros(3)  # Assume stationary initially
+        
+#         # Reset covariance with appropriate initial uncertainty
+#         self.P = np.eye(6)
+#         self.P[0:3, 0:3] = np.eye(3) * 0.001**2  # 1mm position uncertainty
+#         self.P[3:6, 3:6] = np.eye(3) * 0.1**2    # 0.1 m/s velocity uncertainty
+        
+#         self.initialized = True
+#         self.last_positions = [position]
+#         self.stationary_count = 0
+#         self.is_stationary = False
+        
+#     def process_measurement(self, position, timestamp=None):
+#         """Process a new position measurement with stationary detection"""
+#         if not self.initialized:
+#             self.initialize(position)
+#             self.last_update_time = timestamp
+#             return self.get_position()
+        
+#         # Store position history
+#         self.last_positions.append(position.copy())
+#         if len(self.last_positions) > self.max_position_history:
+#             self.last_positions.pop(0)
+        
+#         # Calculate dt if timestamp provided
+#         dt = self.dt
+#         if timestamp is not None and self.last_update_time is not None:
+#             dt = timestamp - self.last_update_time
+#             self.last_update_time = timestamp
+        
+#         # Detect if stationary
+#         self.is_stationary = self.detect_stationary()
+        
+#         # Predict and update
+#         self.predict(dt)
+#         self.update(position)
+        
+#         # Apply zero velocity update if stationary
+#         if self.is_stationary:
+#             # Force very small velocities to zero
+#             if np.linalg.norm(self.state[3:6]) < self.zero_velocity_threshold:
+#                 self.state[3:6] = 0
+#                 # Apply zero velocity update for better convergence
+#                 self.zero_velocity_update()
+        
+#         return self.get_position()
+    
+#     def get_position(self):
+#         """Get current position estimate"""
+#         return self.state[0:3].copy()
+    
+#     def get_velocity(self):
+#         """Get current velocity estimate"""
+#         return self.state[3:6].copy()
+    
+#     def get_state(self):
+#         """Get full state vector"""
+#         return self.state.copy()
+    
+#     def get_covariance(self):
+#         """Get state covariance matrix"""
+#         return self.P.copy()
+    
+#     def get_position_uncertainty(self):
+#         """Get position uncertainty (3-sigma bounds)"""
+#         return 3 * np.sqrt(np.diag(self.P[0:3, 0:3]))
+    
+#     def get_velocity_uncertainty(self):
+#         """Get velocity uncertainty (3-sigma bounds)"""
+#         return 3 * np.sqrt(np.diag(self.P[3:6, 3:6]))
+    
+#     def is_ball_stationary(self):
+#         """Check if ball is currently detected as stationary"""
+#         return self.is_stationary
+    
+#     def reset(self):
+#         """Reset the filter"""
+#         self.state = np.zeros(6)
+#         self.P = np.eye(6) * 0.001
+#         self.initialized = False
+#         self.last_update_time = None
+#         self.last_positions = []
+#         self.stationary_count = 0
+#         self.is_stationary = False
+
+
+# class OptitrackListener(Node):
+#     def __init__(self):
+#         super().__init__('optitrack_listener')
+#         self.declare_parameter('local_interface',  "192.168.1.100")
+#         self.ipaddr = self.get_parameter('local_interface').get_parameter_value().string_value
+#         self.declare_parameter('fixed_frame', 'world')
+#         self.frame = self.get_parameter('fixed_frame').get_parameter_value().string_value
+#         self.declare_parameter('rigid_object_list', "")
+#         rigid_object_list = self.get_parameter('rigid_object_list').get_parameter_value().string_value
+#         split_string = rigid_object_list.split(', ')
+#         self.declare_parameter('publish_tf', False)
+
+#         ###
+#         self.declare_parameter('csv_base_path', 'optitrack_data')  # Base name without extension
+#         self.declare_parameter('csv_directory', './recorded_data')  # Directory to save CSV files
+#         self.csv_base_path = self.get_parameter('csv_base_path').value
+#         self.csv_directory = self.get_parameter('csv_directory').value
+        
+#         # Auto-recording parameters
+#         self.declare_parameter('detection_threshold_frames', 10)  # Frames to wait before stopping recording
+#         self.detection_threshold = self.get_parameter('detection_threshold_frames').value
+        
+#         # EKF parameters
+#         self.declare_parameter('enable_ekf', True)
+#         self.declare_parameter('ekf_process_noise', 0.1)  # Process noise standard deviation
+#         self.declare_parameter('ekf_measurement_noise', 0.01)  # Measurement noise standard deviation
+#         self.declare_parameter('ekf_gravity', -9.81)  # Gravitational acceleration
+#         self.declare_parameter('ekf_sample_rate', 200.0)  # OptiTrack sampling rate (Hz)
+#         self.declare_parameter('ekf_reset_threshold', 50)  # Frames without detection before reset
+#         self.declare_parameter('ekf_use_world_frame', True)  # If True, apply EKF in world frame
+        
+#         self.enable_ekf = self.get_parameter('enable_ekf').value
+#         self.ekf_process_noise = self.get_parameter('ekf_process_noise').value
+#         self.ekf_measurement_noise = self.get_parameter('ekf_measurement_noise').value
+#         self.ekf_gravity = self.get_parameter('ekf_gravity').value
+#         self.ekf_sample_rate = self.get_parameter('ekf_sample_rate').value
+#         self.ekf_reset_threshold = self.get_parameter('ekf_reset_threshold').value
+#         self.ekf_use_world_frame = self.get_parameter('ekf_use_world_frame').value
+#         ###
+
+#         self.publish_tf = self.get_parameter('publish_tf').get_parameter_value().bool_value
+#         names = rigid_object_list.split(',')
+
+#         ### Initialize CSV writing components with auto-switching
+#         self.csv_file = None
+#         self.csv_writer = None
+#         self.csv_initialized = False
+#         self.current_csv_path = None
+#         self.csv_file_counter = 1
+        
+#         # Detection tracking
+#         self.frames_without_detection = {}  # Track per body_id
+#         self.detected_bodies_in_frame = set()  # Bodies detected in current frame
+#         self.recording_active = False
+        
+#         # Create directory if it doesn't exist
+#         os.makedirs(self.csv_directory, exist_ok=True)
+#         ###
+
+#         ### Initialize EKF for each rigid body
+#         self.ekf_filters = {}  # Dictionary: body_id -> BallTrajectoryEKF
+#         self.ekf_timestamps = {}  # Track timestamps for dt calculation
+#         ###
+
+#         self.get_logger().info(f"EKF enabled: {self.enable_ekf}")
+#         self.get_logger().info(f"EKF frame: {'world' if self.ekf_use_world_frame else 'OptiTrack'}")
+#         self.get_logger().info(f"EKF process noise: {self.ekf_process_noise}")
+#         self.get_logger().info(f"EKF measurement noise: {self.ekf_measurement_noise}")
+#         self.get_logger().info(f"EKF gravity: {self.ekf_gravity} m/s²")
+#         self.get_logger().info(f"Detection threshold: {self.detection_threshold} frames")
+#         self.get_logger().info(f"CSV directory: {self.csv_directory}")
+
+#         self.id_trackable_dict = {}   # Dictionary: from object id to trackable name
+#         self.id_publisher_dict = {}   # Dictionary: from object id to publisher id 
+#         self.get_logger().info("Trackable configuration")
+#         self.trackable_publishers = []
+#         index = 0
+
+#         for name in names:
+#             name = name.strip()
+#             self.declare_parameter(f'trackables.{name}.id', 0)
+#             self.declare_parameter(f'trackables.{name}.name', "trackable")
+#             id_param = self.get_parameter(f'trackables.{name}.id').get_parameter_value().integer_value
+#             name_param = self.get_parameter(f'trackables.{name}.name').get_parameter_value().string_value
+            
+#             self.get_logger().info(f"Name: '{name}'")
+#             self.get_logger().info(f"id: {id_param}")
+#             self.get_logger().info(f"name: {name_param}")
+
+#             self.id_trackable_dict[id_param] = name_param
+#             self.id_publisher_dict[id_param] = index 
+
+#             # Initialize detection counter for each body
+#             self.frames_without_detection[id_param] = 0
+
+#             self.trackable_publishers.append(self.create_publisher(PoseStamped, "optitrack/" + name_param, 1))
+#             index = index+1
+
+#         self.tf_broadcaster = TransformBroadcaster(self)
+#         self.thread = Thread(target = self.get_optitrack_data, args = ())
+#         self.thread.start()
+
+#     def initialize_ekf_for_body(self, body_id):
+#         """Initialize EKF for a new rigid body"""
+#         if body_id not in self.ekf_filters:
+#             dt = 1.0 / self.ekf_sample_rate
+#             self.ekf_filters[body_id] = BallTrajectoryEKF(
+#                 dt=dt,
+#                 process_noise_std=self.ekf_process_noise,
+#                 measurement_noise_std=self.ekf_measurement_noise,
+#                 gravity=self.ekf_gravity,
+#                 optitrack_frame=not self.ekf_use_world_frame  # Invert flag for EKF
+#             )
+#             self.ekf_timestamps[body_id] = None
+#             self.get_logger().info(f"Initialized EKF for body {body_id} in {'world' if self.ekf_use_world_frame else 'OptiTrack'} frame")
+
+#     def transform_to_world_frame(self, pos_optitrack):
+#         """Transform position from OptiTrack frame to world frame"""
+#         X = -pos_optitrack[2] + 0.792
+#         Y = -pos_optitrack[0] + 0.00154
+#         Z = pos_optitrack[1] + 0.5106
+#         return np.array([X, Y, Z])
+    
+#     def transform_velocity_to_world_frame(self, vel_optitrack):
+#         """Transform velocity from OptiTrack frame to world frame"""
+#         # Same rotation as position, but no translation
+#         vx = -vel_optitrack[2]
+#         vy = -vel_optitrack[0]
+#         vz = vel_optitrack[1]
+#         return np.array([vx, vy, vz])
+
+#     def apply_ekf_filtering(self, body_id, pos_opt, timestamp):
+#         """Apply EKF filtering to position measurement"""
+#         # Initialize EKF if needed
+#         self.initialize_ekf_for_body(body_id)
+        
+#         try:
+#             if self.ekf_use_world_frame:
+#                 # Transform to world frame before filtering
+#                 pos_world = self.transform_to_world_frame(pos_opt)
+#                 smoothed_pos_world = self.ekf_filters[body_id].process_measurement(pos_world, timestamp)
+#                 # Return in OptiTrack frame for consistency with rest of the code
+#                 # Inverse transformation: solve for pos_opt given pos_world
+#                 smoothed_pos = np.array([
+#                     -smoothed_pos_world[1] + 0.00154,  # Y_world = -X_opt + 0.00154 => X_opt = -Y_world + 0.00154
+#                     smoothed_pos_world[2] - 0.5106,     # Z_world = Y_opt + 0.5106 => Y_opt = Z_world - 0.5106
+#                     -smoothed_pos_world[0] + 0.792      # X_world = -Z_opt + 0.792 => Z_opt = -X_world + 0.792
+#                 ])
+#             else:
+#                 # Process in OptiTrack frame directly
+#                 smoothed_pos = self.ekf_filters[body_id].process_measurement(pos_opt, timestamp)
+            
+#             # Store timestamp for next iteration
+#             self.ekf_timestamps[body_id] = timestamp
+            
+#             return smoothed_pos
+            
+#         except Exception as e:
+#             self.get_logger().warn(f"EKF filtering failed for body {body_id}: {str(e)}")
+#             return pos_opt
+
+#     def reset_ekf_for_body(self, body_id):
+#         """Reset EKF when object hasn't been detected for a while"""
+#         if body_id in self.ekf_filters:
+#             self.ekf_filters[body_id].reset()
+#             self.ekf_timestamps[body_id] = None
+#             self.get_logger().info(f"Reset EKF for body {body_id}")
+
+#     def generate_csv_filename(self):
+#         """Generate a new CSV filename with timestamp and counter"""
+#         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+#         filename = f"{self.csv_base_path}_{timestamp}_{self.csv_file_counter:03d}.csv"
+#         return os.path.join(self.csv_directory, filename)
+
+#     def start_new_csv_recording(self):
+#         """Start recording to a new CSV file"""
+#         try:
+#             # Close current file if open
+#             self.close_csv()
+            
+#             # Generate new filename
+#             self.current_csv_path = self.generate_csv_filename()
+            
+#             # Open new file
+#             self.csv_file = open(self.current_csv_path, mode='w', newline='')
+#             self.csv_writer = csv.writer(self.csv_file)
+#             # Updated header to include velocity estimates
+#             self.csv_writer.writerow(['timestamp', 'body_id', 'x', 'y', 'z', 'x_smooth', 'y_smooth', 'z_smooth', 
+#                                     'vx', 'vy', 'vz'])
+#             self.csv_initialized = True
+#             self.recording_active = True
+            
+#             self.get_logger().info(f"Started new CSV recording: {self.current_csv_path}")
+            
+#         except Exception as e:
+#             self.get_logger().error(f"Failed to start new CSV recording: {str(e)}")
+
+#     def close_csv(self):
+#         """Close the current CSV file"""
+#         if self.csv_file is not None:
+#             try:
+#                 self.csv_file.close()
+#                 self.get_logger().info(f"Closed CSV recording: {self.current_csv_path}")
+#             except Exception as e:
+#                 self.get_logger().error(f"Error closing CSV file: {str(e)}")
+#             finally:
+#                 self.csv_file = None
+#                 self.csv_writer = None
+#                 self.csv_initialized = False
+#                 self.recording_active = False
+#                 self.csv_file_counter += 1
+
+#     def update_detection_status(self):
+#         """Update detection status and manage CSV recording"""
+#         # Check which bodies were detected in this frame
+#         for body_id in self.frames_without_detection:
+#             if body_id in self.detected_bodies_in_frame:
+#                 # Body was detected - reset counter
+#                 self.frames_without_detection[body_id] = 0
+#             else:
+#                 # Body was not detected - increment counter
+#                 self.frames_without_detection[body_id] += 1
+                
+#                 # Reset EKF if object hasn't been seen for too long
+#                 if self.frames_without_detection[body_id] > self.ekf_reset_threshold:
+#                     self.reset_ekf_for_body(body_id)
+
+#         # Check if any body is being detected
+#         any_body_detected = any(count < self.detection_threshold for count in self.frames_without_detection.values())
+        
+#         # Manage recording state
+#         if any_body_detected and not self.recording_active:
+#             # Start new recording
+#             self.start_new_csv_recording()
+#             self.get_logger().info("Object detected - starting new recording session")
+            
+#         elif not any_body_detected and self.recording_active:
+#             # Stop recording
+#             self.close_csv()
+#             self.get_logger().info(f"No objects detected for {self.detection_threshold} frames - stopping recording")
+
+#         # Clear detected bodies for next frame
+#         self.detected_bodies_in_frame.clear()
+
+#     def pose_to_tf(self, pose_msg, parent_frame, target_frame):
+#         # Create a TransformStamped message
+#         transform_stamped = TransformStamped()
+        
+#         # Set the header of the TF message
+#         transform_stamped.header.stamp = pose_msg.header.stamp
+#         transform_stamped.header.frame_id = parent_frame  
+#         transform_stamped.child_frame_id = target_frame  
+
+#         # Extract position and orientation from PoseStamped message
+#         position = pose_msg.pose.position
+#         orientation = pose_msg.pose.orientation
+        
+#         # Set translation and rotation in the TF message
+#         transform_stamped.transform.translation.x = position.x
+#         transform_stamped.transform.translation.y = position.y
+#         transform_stamped.transform.translation.z = position.z
+#         transform_stamped.transform.rotation = orientation
+
+#         return transform_stamped  
+
+#     def get_optitrack_data(self):
+        
+#         self.version = (2, 7, 0, 0)  # the latest SDK version
+#         self.get_logger().warn(f"address: {self.ipaddr}")
+
+#         # self.optitrack = rx.mkdatasock(ip_address=self.ipaddr)#(ip_address=get_ip_address(iface))
+#         # self.optitrack = rx.mkdatasock(ip_address="0.0.0.0")
+#         self.optitrack = rx.mkdatasock(ip_address="172.31.1.145")
+
+#         ps = PoseStamped()
+#         first = True
+        
+#         try:
+#             while rclpy.ok():
+#                 try:
+#                     data = self.optitrack.recv(rx.MAX_PACKETSIZE)
+#                 except socket.error:
+#                     self.get_logger().info(f"Failed to receive packet from optitrack")
+#                     break  # Exit the loop if no data is received
+
+#                 packet = rx.unpack(data, version=self.version)
+#                 if first == True:
+#                     self.get_logger().info(f"NatNet version received {self.version}")
+#                     first = False
+                    
+#                 if type(packet) is rx.SenderData:
+#                     self.version = packet.natnet_version
+#                     self.get_logger().info(f"NatNet version received {self.version}")
+
+#                 if type(packet) in [rx.SenderData, rx.ModelDefs, rx.FrameOfData]:
+#                     # Get current timestamp
+#                     current_time = self.get_clock().now()
+#                     timestamp_sec = current_time.seconds_nanoseconds()[0] + current_time.seconds_nanoseconds()[1] / 1e9
+                    
+#                     # Process rigid bodies
+#                     for i, rigid_body in enumerate(packet.rigid_bodies):
+#                         body_id = rigid_body.id
+#                         pos_opt = np.array(rigid_body.position)
+#                         rot_opt = np.array(rigid_body.orientation)
+                        
+#                         # Mark this body as detected in current frame
+#                         self.detected_bodies_in_frame.add(body_id)
+                        
+#                         # Apply EKF filtering if enabled
+#                         if self.enable_ekf:
+#                             pos_smooth = self.apply_ekf_filtering(body_id, pos_opt, timestamp_sec)
+#                             # Keep original orientation (EKF only tracks position)
+#                             rot_smooth = rot_opt
+#                         else:
+#                             pos_smooth, rot_smooth = pos_opt, rot_opt
+                        
+#                         # Create pose message with smoothed data
+#                         ps.header.stamp = current_time.to_msg()  
+#                         ps.header.frame_id = self.frame
+#                         ps.pose.position = Point(x=pos_smooth[0], y=pos_smooth[1], z=pos_smooth[2])  
+#                         ps.pose.orientation = Quaternion(x=rot_smooth[0], y=rot_smooth[1], z=rot_smooth[2], w=rot_smooth[3])  
+
+#                         # Write to CSV if recording is active
+#                         if self.recording_active and self.csv_initialized and self.csv_file is not None:
+#                             try:
+#                                 # Apply coordinate transformation
+#                                 X_orig = -pos_opt[2] + 0.792
+#                                 Y_orig = -pos_opt[0] + 0.00154
+#                                 Z_orig = pos_opt[1] + 0.5106
+                                
+#                                 X_smooth = -pos_smooth[2] + 0.792
+#                                 Y_smooth = -pos_smooth[0] + 0.00154
+#                                 Z_smooth = pos_smooth[1] + 0.5106
+                                
+#                                 # Get velocity estimates from EKF if available
+#                                 vx, vy, vz = 0.0, 0.0, 0.0
+#                                 if self.enable_ekf and body_id in self.ekf_filters:
+#                                     if self.ekf_use_world_frame:
+#                                         # Get velocity in world frame directly from EKF
+#                                         velocity_world = self.ekf_filters[body_id].get_velocity()
+#                                         vx, vy, vz = velocity_world[0], velocity_world[1], velocity_world[2]
+#                                     else:
+#                                         # Get velocity in OptiTrack frame and transform
+#                                         velocity_opt = self.ekf_filters[body_id].get_velocity()
+#                                         velocity_world = self.transform_velocity_to_world_frame(velocity_opt)
+#                                         vx, vy, vz = velocity_world[0], velocity_world[1], velocity_world[2]
+
+#                                 print(f"Writing to CSV: {body_id}, X: {X_smooth:.3f}, Y: {Y_smooth:.3f}, Z: {Z_smooth:.3f}, VX: {vx:.3f}, VY: {vy:.3f}, VZ: {vz:.3f}")
+                                
+#                                 if X_smooth >= 0.0 and X_smooth <= 3.0 and Y_smooth < 0.0 and Z_smooth >= 0.0:
+#                                     self.csv_writer.writerow([
+#                                         timestamp_sec,
+#                                         body_id,
+#                                         X_orig,
+#                                         Y_orig,
+#                                         Z_orig,
+#                                         X_smooth,
+#                                         Y_smooth,
+#                                         Z_smooth,
+#                                         vx,
+#                                         vy,
+#                                         vz
+#                                     ])
+#                                     self.csv_file.flush()  # Ensure data is written to disk
+#                             except Exception as e:
+#                                 self.get_logger().error(f"CSV write error: {str(e)}")
+
+#                         # Publish smoothed pose
+#                         if body_id in self.id_publisher_dict:
+#                             self.trackable_publishers[self.id_publisher_dict[body_id]].publish(ps)
+#                             if(self.publish_tf):
+#                                 transform_stamped = self.pose_to_tf(ps, self.frame, self.id_trackable_dict[body_id])                    
+#                                 self.tf_broadcaster.sendTransform(transform_stamped)
+#                         else: 
+#                             self.get_logger().warn(f"Id: {body_id} not present in the configuration file")
+                    
+#                     # Update detection status and manage CSV recording after processing all rigid bodies
+#                     self.update_detection_status()
+        
+#         finally:
+#             # Close CSV file when the loop exits
+#             self.close_csv()
+
+# def main(args=None):
+#     rclpy.init(args=args)
+#     node = OptitrackListener()
+
+#     try:
+#         rclpy.spin(node)
+#     except KeyboardInterrupt:
+#         pass
+
+#     node.destroy_node()
+#     rclpy.shutdown()
+
+# if __name__ == '__main__':
+#     main()
+
+
+import rclpy
+from rclpy.node import Node
+from threading import Thread
+import optirx as rx
+import socket
+from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import Point
+from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import PoseStamped, TransformStamped, Quaternion, Point
+from tf2_ros import TransformBroadcaster
+from tf2_geometry_msgs import do_transform_pose
+import numpy as np
+from scipy.signal import savgol_coeffs
+import re   
+import csv
+from collections import deque
+import os
+from datetime import datetime
+
+
+class RealTimeSavitzkyGolay:
+    """Real-time Savitzky-Golay filter implementation for smoothing 3D position data"""
+    
+    def __init__(self, window_length=7, polyorder=2, deriv=0, delta=1.0, initial_values=None):
+        """
+        Initialize real-time Savitzky-Golay filter
+        
+        Args:
+            window_length: Length of the filter window (must be odd)
+            polyorder: Order of the polynomial fit
+            deriv: Derivative order (0 for position, 1 for velocity, etc.)
+            delta: Sample spacing (for derivative calculation)
+            initial_values: Initial buffer values (optional)
+        """
+        # Ensure window_length is odd
+        if window_length % 2 == 0:
+            window_length += 1
+            print(f"Warning: window_length adjusted to odd value: {window_length}")
+        
+        # Ensure polyorder is valid
+        if polyorder >= window_length:
+            polyorder = window_length - 1
+            print(f"Warning: polyorder too large, reduced to {polyorder}")
+        
+        self.window_length = window_length
+        self.polyorder = polyorder
+        self.deriv = deriv
+        self.delta = delta
+        
+        # Compute Savitzky-Golay coefficients
+        # For real-time filtering, we need coefficients for the last point in the window
+        self.coeffs = savgol_coeffs(window_length, polyorder, deriv=deriv, delta=delta, pos=window_length-1)
+        
+        # Initialize circular buffer
+        if initial_values is not None:
+            if isinstance(initial_values, np.ndarray):
+                if initial_values.ndim == 1:
+                    # 1D data
+                    if len(initial_values) >= window_length:
+                        self.buffer = initial_values[-window_length:].copy()
+                    else:
+                        # Pad with first value
+                        padding = np.full(window_length - len(initial_values), initial_values[0])
+                        self.buffer = np.concatenate([padding, initial_values])
+                else:
+                    # Multi-dimensional data
+                    if initial_values.shape[0] >= window_length:
+                        self.buffer = initial_values[-window_length:].copy()
+                    else:
+                        # Pad with first value
+                        padding = np.repeat(initial_values[0:1], window_length - initial_values.shape[0], axis=0)
+                        self.buffer = np.concatenate([padding, initial_values], axis=0)
+            else:
+                self.buffer = np.zeros((window_length, 3))  # Default for 3D position
+                self.buffer_initialized = False
+        else:
+            self.buffer = np.zeros((window_length, 3))  # Default for 3D position
+            self.buffer_initialized = False
+        
+        self.current_idx = 0
+        self.buffer_initialized = initial_values is not None
+    
+    def __call__(self, x):
+        """
+        Apply Savitzky-Golay filter to new data point
+        
+        Args:
+            x: New data point (can be scalar or array)
+            
+        Returns:
+            Filtered value
+        """
+        # Convert to numpy array if needed
+        if not isinstance(x, np.ndarray):
+            x = np.array(x)
+        
+        # Initialize buffer shape on first real data
+        if not self.buffer_initialized:
+            if x.ndim == 0:
+                self.buffer = np.zeros(self.window_length)
+            else:
+                self.buffer = np.zeros((self.window_length, *x.shape))
+            self.buffer_initialized = True
+        
+        # Store new value in circular buffer
+        self.buffer[self.current_idx] = x
+        self.current_idx = (self.current_idx + 1) % self.window_length
+        
+        # Reorder buffer to have oldest to newest
+        if self.current_idx == 0:
+            ordered_buffer = self.buffer
+        else:
+            ordered_buffer = np.concatenate([
+                self.buffer[self.current_idx:],
+                self.buffer[:self.current_idx]
+            ])
+        
+        # Apply Savitzky-Golay coefficients
+        if ordered_buffer.ndim == 1:
+            # 1D data
+            filtered_value = np.dot(ordered_buffer, self.coeffs)
+        else:
+            # Multi-dimensional data - apply filter to each dimension
+            filtered_value = np.zeros_like(x)
+            for i in range(ordered_buffer.shape[1]):
+                filtered_value[i] = np.dot(ordered_buffer[:, i], self.coeffs)
+        
+        return filtered_value
+    
+    def reset(self):
+        """Reset the filter buffer"""
+        self.buffer[:] = 0
+        self.current_idx = 0
+        self.buffer_initialized = False
+
+
+class VelocityEstimator:
+    """Estimate velocity using finite differences with smoothing"""
+    
+    def __init__(self, dt=0.005, alpha=0.9):
+        """
+        Initialize velocity estimator
+        
+        Args:
+            dt: Time step
+            alpha: Smoothing factor (0-1, higher = more smoothing)
+        """
+        self.dt = dt
+        self.alpha = alpha
+        self.last_position = None
+        self.velocity = np.zeros(3)
+        self.initialized = False
+    
+    def update(self, position):
+        """Update velocity estimate"""
+        if not self.initialized:
+            self.last_position = position.copy()
+            self.velocity = np.zeros(3)
+            self.initialized = True
+            return self.velocity
+        
+        # Calculate instantaneous velocity
+        instant_velocity = (position - self.last_position) / self.dt
+        
+        # Apply exponential smoothing
+        self.velocity = self.alpha * self.velocity + (1 - self.alpha) * instant_velocity
+        
+        # Update last position
+        self.last_position = position.copy()
+        
+        return self.velocity.copy()
+    
+    def reset(self):
+        """Reset the velocity estimator"""
+        self.last_position = None
+        self.velocity = np.zeros(3)
+        self.initialized = False
+
+
+class OptitrackListener(Node):
+    def __init__(self):
+        super().__init__('optitrack_listener')
+        self.declare_parameter('local_interface',  "192.168.1.100")
+        self.ipaddr = self.get_parameter('local_interface').get_parameter_value().string_value
+        self.declare_parameter('fixed_frame', 'world')
+        self.frame = self.get_parameter('fixed_frame').get_parameter_value().string_value
+        self.declare_parameter('rigid_object_list', "")
+        rigid_object_list = self.get_parameter('rigid_object_list').get_parameter_value().string_value
+        split_string = rigid_object_list.split(', ')
+        self.declare_parameter('publish_tf', False)
+
+        ###
+        self.declare_parameter('csv_base_path', 'optitrack_data')  # Base name without extension
+        self.declare_parameter('csv_directory', './recorded_data')  # Directory to save CSV files
+        self.csv_base_path = self.get_parameter('csv_base_path').value
+        self.csv_directory = self.get_parameter('csv_directory').value
+        
+        # Auto-recording parameters
+        self.declare_parameter('detection_threshold_frames', 10)  # Frames to wait before stopping recording
+        self.detection_threshold = self.get_parameter('detection_threshold_frames').value
+        
+        # Savitzky-Golay filter parameters
+        self.declare_parameter('enable_savgol', True)
+        self.declare_parameter('savgol_window_length', 11)  # Window length for filter
+        self.declare_parameter('savgol_polyorder', 3)  # Polynomial order
+        self.declare_parameter('savgol_sample_rate', 120.0)  # OptiTrack sampling rate (Hz)
+        self.declare_parameter('savgol_reset_threshold', 50)  # Frames without detection before reset
+        self.declare_parameter('velocity_smoothing_alpha', 0.8)  # Velocity smoothing factor
+        
+        self.enable_savgol = self.get_parameter('enable_savgol').value
+        self.savgol_window_length = self.get_parameter('savgol_window_length').value
+        self.savgol_polyorder = self.get_parameter('savgol_polyorder').value
+        self.savgol_sample_rate = self.get_parameter('savgol_sample_rate').value
+        self.savgol_reset_threshold = self.get_parameter('savgol_reset_threshold').value
+        self.velocity_smoothing_alpha = self.get_parameter('velocity_smoothing_alpha').value
+        
+        # Calculate dt from sample rate
+        self.dt = 1.0 / self.savgol_sample_rate
+        ###
+
+        self.publish_tf = self.get_parameter('publish_tf').get_parameter_value().bool_value
+        names = rigid_object_list.split(',')
+
+        ### Initialize CSV writing components with auto-switching
+        self.csv_file = None
+        self.csv_writer = None
+        self.csv_initialized = False
+        self.current_csv_path = None
+        self.csv_file_counter = 1
+        
+        # Detection tracking
+        self.frames_without_detection = {}  # Track per body_id
+        self.detected_bodies_in_frame = set()  # Bodies detected in current frame
+        self.recording_active = False
+        
+        # Create directory if it doesn't exist
+        os.makedirs(self.csv_directory, exist_ok=True)
+        ###
+
+        ### Initialize Savitzky-Golay filters and velocity estimators for each rigid body
+        self.savgol_filters = {}  # Dictionary: body_id -> RealTimeSavitzkyGolay
+        self.velocity_estimators = {}  # Dictionary: body_id -> VelocityEstimator
+        ###
+
+        self.get_logger().info(f"Savitzky-Golay filter enabled: {self.enable_savgol}")
+        self.get_logger().info(f"Window length: {self.savgol_window_length}")
+        self.get_logger().info(f"Polynomial order: {self.savgol_polyorder}")
+        self.get_logger().info(f"Sample rate: {self.savgol_sample_rate} Hz")
+        self.get_logger().info(f"Detection threshold: {self.detection_threshold} frames")
+        self.get_logger().info(f"CSV directory: {self.csv_directory}")
+
+        self.id_trackable_dict = {}   # Dictionary: from object id to trackable name
+        self.id_publisher_dict = {}   # Dictionary: from object id to publisher id 
+        self.get_logger().info("Trackable configuration")
+        self.trackable_publishers = []
+        index = 0
+
+        for name in names:
+            name = name.strip()
+            self.declare_parameter(f'trackables.{name}.id', 0)
+            self.declare_parameter(f'trackables.{name}.name', "trackable")
+            id_param = self.get_parameter(f'trackables.{name}.id').get_parameter_value().integer_value
+            name_param = self.get_parameter(f'trackables.{name}.name').get_parameter_value().string_value
+            
+            self.get_logger().info(f"Name: '{name}'")
+            self.get_logger().info(f"id: {id_param}")
+            self.get_logger().info(f"name: {name_param}")
+
+            self.id_trackable_dict[id_param] = name_param
+            self.id_publisher_dict[id_param] = index 
+
+            # Initialize detection counter for each body
+            self.frames_without_detection[id_param] = 0
+
+            self.trackable_publishers.append(self.create_publisher(PoseStamped, "optitrack/" + name_param, 1))
+            index = index+1
+
+        self.tf_broadcaster = TransformBroadcaster(self)
+        self.thread = Thread(target = self.get_optitrack_data, args = ())
+        self.thread.start()
+
+    def initialize_savgol_for_body(self, body_id, initial_position=None):
+        """Initialize Savitzky-Golay filter for a new rigid body"""
+        if body_id not in self.savgol_filters:
+            # Initialize position filter
+            self.savgol_filters[body_id] = RealTimeSavitzkyGolay(
+                window_length=self.savgol_window_length,
+                polyorder=self.savgol_polyorder,
+                deriv=0,  # Position smoothing
+                delta=self.dt,
+                initial_values=initial_position.reshape(1, -1) if initial_position is not None else None
+            )
+            
+            # Initialize velocity estimator
+            self.velocity_estimators[body_id] = VelocityEstimator(
+                dt=self.dt,
+                alpha=self.velocity_smoothing_alpha
+            )
+            
+            self.get_logger().info(f"Initialized Savitzky-Golay filter for body {body_id}")
+
+    def transform_to_world_frame(self, pos_optitrack):
+        """Transform position from OptiTrack frame to world frame"""
+        X = -pos_optitrack[2] + 0.792
+        Y = -pos_optitrack[0] + 0.00154
+        Z = pos_optitrack[1] + 0.5106
+        return np.array([X, Y, Z])
+    
+    def transform_velocity_to_world_frame(self, vel_optitrack):
+        """Transform velocity from OptiTrack frame to world frame"""
+        # Same rotation as position, but no translation
+        vx = -vel_optitrack[2]
+        vy = -vel_optitrack[0]
+        vz = vel_optitrack[1]
+        return np.array([vx, vy, vz])
+
+    def apply_savgol_filtering(self, body_id, pos_opt, timestamp):
+        """Apply Savitzky-Golay filtering to position measurement"""
+        # Initialize filter if needed
+        self.initialize_savgol_for_body(body_id, pos_opt)
+        
+        try:
+            # Apply Savitzky-Golay filter directly in OptiTrack frame
+            smoothed_pos = self.savgol_filters[body_id](pos_opt)
+            
+            # Update velocity estimator with smoothed position
+            self.velocity_estimators[body_id].update(smoothed_pos)
+            
+            return smoothed_pos
+            
+        except Exception as e:
+            self.get_logger().warn(f"Savitzky-Golay filtering failed for body {body_id}: {str(e)}")
+            return pos_opt
+
+    def reset_savgol_for_body(self, body_id):
+        """Reset Savitzky-Golay filter when object hasn't been detected for a while"""
+        if body_id in self.savgol_filters:
+            self.savgol_filters[body_id].reset()
+            self.velocity_estimators[body_id].reset()
+            self.get_logger().info(f"Reset Savitzky-Golay filter for body {body_id}")
+
+    def generate_csv_filename(self):
+        """Generate a new CSV filename with timestamp and counter"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{self.csv_base_path}_{timestamp}_{self.csv_file_counter:03d}.csv"
+        return os.path.join(self.csv_directory, filename)
+
+    def start_new_csv_recording(self):
+        """Start recording to a new CSV file"""
+        try:
+            # Close current file if open
+            self.close_csv()
+            
+            # Generate new filename
+            self.current_csv_path = self.generate_csv_filename()
+            
+            # Open new file
+            self.csv_file = open(self.current_csv_path, mode='w', newline='')
+            self.csv_writer = csv.writer(self.csv_file)
+            # Updated header to include velocity estimates
+            self.csv_writer.writerow(['timestamp', 'body_id', 'x', 'y', 'z', 'x_smooth', 'y_smooth', 'z_smooth', 
+                                    'vx', 'vy', 'vz'])
+            self.csv_initialized = True
+            self.recording_active = True
+            
+            self.get_logger().info(f"Started new CSV recording: {self.current_csv_path}")
+            
+        except Exception as e:
+            self.get_logger().error(f"Failed to start new CSV recording: {str(e)}")
+
+    def close_csv(self):
+        """Close the current CSV file"""
+        if self.csv_file is not None:
+            try:
+                self.csv_file.close()
+                self.get_logger().info(f"Closed CSV recording: {self.current_csv_path}")
+            except Exception as e:
+                self.get_logger().error(f"Error closing CSV file: {str(e)}")
+            finally:
+                self.csv_file = None
+                self.csv_writer = None
+                self.csv_initialized = False
+                self.recording_active = False
+                self.csv_file_counter += 1
+
+    def update_detection_status(self):
+        """Update detection status and manage CSV recording"""
+        # Check which bodies were detected in this frame
+        for body_id in self.frames_without_detection:
+            if body_id in self.detected_bodies_in_frame:
+                # Body was detected - reset counter
+                self.frames_without_detection[body_id] = 0
+            else:
+                # Body was not detected - increment counter
+                self.frames_without_detection[body_id] += 1
+                
+                # Reset filter if object hasn't been seen for too long
+                if self.frames_without_detection[body_id] > self.savgol_reset_threshold:
+                    self.reset_savgol_for_body(body_id)
+
+        # Check if any body is being detected
+        any_body_detected = any(count < self.detection_threshold for count in self.frames_without_detection.values())
+        
+        # Manage recording state
+        if any_body_detected and not self.recording_active:
+            # Start new recording
+            self.start_new_csv_recording()
+            self.get_logger().info("Object detected - starting new recording session")
+            
+        elif not any_body_detected and self.recording_active:
+            # Stop recording
+            self.close_csv()
+            self.get_logger().info(f"No objects detected for {self.detection_threshold} frames - stopping recording")
+
+        # Clear detected bodies for next frame
+        self.detected_bodies_in_frame.clear()
+
+    def pose_to_tf(self, pose_msg, parent_frame, target_frame):
+        # Create a TransformStamped message
+        transform_stamped = TransformStamped()
+        
+        # Set the header of the TF message
+        transform_stamped.header.stamp = pose_msg.header.stamp
+        transform_stamped.header.frame_id = parent_frame  
+        transform_stamped.child_frame_id = target_frame  
+
+        # Extract position and orientation from PoseStamped message
+        position = pose_msg.pose.position
+        orientation = pose_msg.pose.orientation
+        
+        # Set translation and rotation in the TF message
+        transform_stamped.transform.translation.x = position.x
+        transform_stamped.transform.translation.y = position.y
+        transform_stamped.transform.translation.z = position.z
+        transform_stamped.transform.rotation = orientation
+
+        return transform_stamped  
+
+    def get_optitrack_data(self):
+        
+        self.version = (2, 7, 0, 0)  # the latest SDK version
+        self.get_logger().warn(f"address: {self.ipaddr}")
+
+        # self.optitrack = rx.mkdatasock(ip_address=self.ipaddr)#(ip_address=get_ip_address(iface))
+        # self.optitrack = rx.mkdatasock(ip_address="0.0.0.0")
+        self.optitrack = rx.mkdatasock(ip_address="172.31.1.145")
+
+        ps = PoseStamped()
+        first = True
+        
+        try:
+            while rclpy.ok():
+                try:
+                    data = self.optitrack.recv(rx.MAX_PACKETSIZE)
+                except socket.error:
+                    self.get_logger().info(f"Failed to receive packet from optitrack")
+                    break  # Exit the loop if no data is received
+
+                packet = rx.unpack(data, version=self.version)
+                if first == True:
+                    self.get_logger().info(f"NatNet version received {self.version}")
+                    first = False
+                    
+                if type(packet) is rx.SenderData:
+                    self.version = packet.natnet_version
+                    self.get_logger().info(f"NatNet version received {self.version}")
+
+                if type(packet) in [rx.SenderData, rx.ModelDefs, rx.FrameOfData]:
+                    # Get current timestamp
+                    current_time = self.get_clock().now()
+                    timestamp_sec = current_time.seconds_nanoseconds()[0] + current_time.seconds_nanoseconds()[1] / 1e9
+                    
+                    # Process rigid bodies
+                    for i, rigid_body in enumerate(packet.rigid_bodies):
+                        body_id = rigid_body.id
+                        pos_opt = np.array(rigid_body.position)
+                        rot_opt = np.array(rigid_body.orientation)
+                        
+                        # Mark this body as detected in current frame
+                        self.detected_bodies_in_frame.add(body_id)
+                        
+                        # Apply Savitzky-Golay filtering if enabled
+                        if self.enable_savgol:
+                            pos_smooth = self.apply_savgol_filtering(body_id, pos_opt, timestamp_sec)
+                            # Keep original orientation (filter only tracks position)
+                            rot_smooth = rot_opt
+                        else:
+                            pos_smooth, rot_smooth = pos_opt, rot_opt
+                        
+                        # Create pose message with smoothed data
+                        ps.header.stamp = current_time.to_msg()  
+                        ps.header.frame_id = self.frame
+                        ps.pose.position = Point(x=pos_smooth[0], y=pos_smooth[1], z=pos_smooth[2])  
+                        ps.pose.orientation = Quaternion(x=rot_smooth[0], y=rot_smooth[1], z=rot_smooth[2], w=rot_smooth[3])  
+
+                        # Write to CSV if recording is active
+                        if self.recording_active and self.csv_initialized and self.csv_file is not None:
+                            try:
+                                # Apply coordinate transformation
+                                X_orig = -pos_opt[2] + 0.792
+                                Y_orig = -pos_opt[0] + 0.00154
+                                Z_orig = pos_opt[1] + 0.5106
+                                
+                                X_smooth = -pos_smooth[2] + 0.792
+                                Y_smooth = -pos_smooth[0] + 0.00154
+                                Z_smooth = pos_smooth[1] + 0.5106
+                                
+                                # Get velocity estimates if available
+                                vx, vy, vz = 0.0, 0.0, 0.0
+                                if self.enable_savgol and body_id in self.velocity_estimators:
+                                    # Get velocity in OptiTrack frame and transform to world
+                                    velocity_opt = self.velocity_estimators[body_id].velocity
+                                    velocity_world = self.transform_velocity_to_world_frame(velocity_opt)
+                                    vx, vy, vz = velocity_world[0], velocity_world[1], velocity_world[2]
+
+                                print(f"Writing to CSV: {body_id}, X: {X_smooth:.3f}, Y: {Y_smooth:.3f}, Z: {Z_smooth:.3f}, VX: {vx:.3f}, VY: {vy:.3f}, VZ: {vz:.3f}")
+                                
+                                if X_orig >= 0.0 and X_orig <= 3.0 and Y_orig < 0.0 and Y_orig >=-0.7 and Z_orig >= 0.0:
+                                    self.csv_writer.writerow([
+                                        timestamp_sec,
+                                        body_id,
+                                        X_orig,
+                                        Y_orig,
+                                        Z_orig,
+                                        X_smooth,
+                                        Y_smooth,
+                                        Z_smooth,
+                                        vx,
+                                        vy,
+                                        vz
+                                    ])
+                                    self.csv_file.flush()  # Ensure data is written to disk
+                            except Exception as e:
+                                self.get_logger().error(f"CSV write error: {str(e)}")
+
+                        # Publish smoothed pose
+                        if body_id in self.id_publisher_dict:
+                            self.trackable_publishers[self.id_publisher_dict[body_id]].publish(ps)
+                            if(self.publish_tf):
+                                transform_stamped = self.pose_to_tf(ps, self.frame, self.id_trackable_dict[body_id])                    
+                                self.tf_broadcaster.sendTransform(transform_stamped)
+                        else: 
+                            self.get_logger().warn(f"Id: {body_id} not present in the configuration file")
+                    
+                    # Update detection status and manage CSV recording after processing all rigid bodies
+                    self.update_detection_status()
+        
+        finally:
+            # Close CSV file when the loop exits
+            self.close_csv()
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = OptitrackListener()
+
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()

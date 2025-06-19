@@ -1,0 +1,324 @@
+[0.000000] (-) TimerEvent: {}
+[0.000335] (-) JobUnselected: {'identifier': 'fri_client_sdk'}
+[0.000486] (-) JobUnselected: {'identifier': 'iiwa14_moveit_config'}
+[0.000530] (-) JobUnselected: {'identifier': 'iiwa7_moveit_config'}
+[0.000565] (-) JobUnselected: {'identifier': 'lbr_bringup'}
+[0.000584] (-) JobUnselected: {'identifier': 'lbr_demos_advanced_cpp'}
+[0.000941] (-) JobUnselected: {'identifier': 'lbr_demos_advanced_py'}
+[0.000993] (-) JobUnselected: {'identifier': 'lbr_demos_cpp'}
+[0.001013] (-) JobUnselected: {'identifier': 'lbr_demos_py'}
+[0.001038] (-) JobUnselected: {'identifier': 'lbr_description'}
+[0.001063] (-) JobUnselected: {'identifier': 'lbr_fri_idl'}
+[0.001079] (-) JobUnselected: {'identifier': 'lbr_fri_ros2'}
+[0.001238] (-) JobUnselected: {'identifier': 'lbr_fri_ros2_stack'}
+[0.001286] (-) JobUnselected: {'identifier': 'lbr_moveit'}
+[0.001316] (-) JobUnselected: {'identifier': 'lbr_moveit_cpp'}
+[0.001344] (-) JobUnselected: {'identifier': 'lbr_ros2_control'}
+[0.001372] (-) JobUnselected: {'identifier': 'med14_moveit_config'}
+[0.001400] (-) JobUnselected: {'identifier': 'med7_moveit_config'}
+[0.001430] (catch_and_throw) JobQueued: {'identifier': 'catch_and_throw', 'dependencies': OrderedDict([('fri_client_sdk', '/home/user/kuka_rl_ros2/src/install/fri_client_sdk'), ('lbr_fri_idl', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl')])}
+[0.001466] (catch_and_throw) JobStarted: {'identifier': 'catch_and_throw'}
+[0.018263] (catch_and_throw) JobProgress: {'identifier': 'catch_and_throw', 'progress': 'cmake'}
+[0.018988] (catch_and_throw) JobProgress: {'identifier': 'catch_and_throw', 'progress': 'build'}
+[0.019902] (catch_and_throw) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/user/kuka_rl_ros2/src/build/catch_and_throw', '--', '-j8', '-l8'], 'cwd': '/home/user/kuka_rl_ros2/src/build/catch_and_throw', 'env': OrderedDict([('GZ_SIM_RESOURCE_PATH', '/home/user/kuka_rl_ros2/install/lbr_description/share'), ('HOSTNAME', 'prismalab'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib:/home/user/kuka_rl_ros2/install/lbr_ros2_control/lib:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp/lib:/home/user/kuka_rl_ros2/install/lbr_fri_ros2/lib:/home/user/kuka_rl_ros2/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/kuka_rl_ros2'), ('ROS_PYTHON_VERSION', '3'), ('COLCON_PREFIX_PATH', '/home/user/kuka_rl_ros2/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/pkgconfig:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/pkgconfig'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '20'), ('AMENT_PREFIX_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/catch_and_throw:/opt/ros/humble'), ('PWD', '/home/user/kuka_rl_ros2/src/build/catch_and_throw'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/install/lbr_demos_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_bringup/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/install/lbr_moveit/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_fri_idl/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/opt/ros/humble')]), 'shell': False}
+[0.087771] (catch_and_throw) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target joint_state_node_trained\x1b[0m\n'}
+[0.099370] (-) TimerEvent: {}
+[0.125721] (catch_and_throw) StdoutLine: {'line': b'[ 50%] Built target joint_state_node\n'}
+[0.184523] (catch_and_throw) StdoutLine: {'line': b'[ 75%] \x1b[32mBuilding CXX object CMakeFiles/joint_state_node_trained.dir/src/joint_state_node_trained.cpp.o\x1b[0m\n'}
+[0.199476] (-) TimerEvent: {}
+[0.299783] (-) TimerEvent: {}
+[0.400052] (-) TimerEvent: {}
+[0.500382] (-) TimerEvent: {}
+[0.600684] (-) TimerEvent: {}
+[0.700943] (-) TimerEvent: {}
+[0.801207] (-) TimerEvent: {}
+[0.901467] (-) TimerEvent: {}
+[1.001737] (-) TimerEvent: {}
+[1.101999] (-) TimerEvent: {}
+[1.202260] (-) TimerEvent: {}
+[1.302562] (-) TimerEvent: {}
+[1.402830] (-) TimerEvent: {}
+[1.503078] (-) TimerEvent: {}
+[1.603388] (-) TimerEvent: {}
+[1.703656] (-) TimerEvent: {}
+[1.803901] (-) TimerEvent: {}
+[1.904160] (-) TimerEvent: {}
+[2.004428] (-) TimerEvent: {}
+[2.104690] (-) TimerEvent: {}
+[2.204959] (-) TimerEvent: {}
+[2.305230] (-) TimerEvent: {}
+[2.405493] (-) TimerEvent: {}
+[2.505742] (-) TimerEvent: {}
+[2.606038] (-) TimerEvent: {}
+[2.706334] (-) TimerEvent: {}
+[2.806587] (-) TimerEvent: {}
+[2.906831] (-) TimerEvent: {}
+[3.007124] (-) TimerEvent: {}
+[3.107391] (-) TimerEvent: {}
+[3.207683] (-) TimerEvent: {}
+[3.307958] (-) TimerEvent: {}
+[3.408211] (-) TimerEvent: {}
+[3.508480] (-) TimerEvent: {}
+[3.608783] (-) TimerEvent: {}
+[3.709074] (-) TimerEvent: {}
+[3.809339] (-) TimerEvent: {}
+[3.909620] (-) TimerEvent: {}
+[4.009959] (-) TimerEvent: {}
+[4.110220] (-) TimerEvent: {}
+[4.210519] (-) TimerEvent: {}
+[4.310778] (-) TimerEvent: {}
+[4.411071] (-) TimerEvent: {}
+[4.511360] (-) TimerEvent: {}
+[4.611652] (-) TimerEvent: {}
+[4.711940] (-) TimerEvent: {}
+[4.812209] (-) TimerEvent: {}
+[4.912470] (-) TimerEvent: {}
+[5.012726] (-) TimerEvent: {}
+[5.112984] (-) TimerEvent: {}
+[5.213242] (-) TimerEvent: {}
+[5.313495] (-) TimerEvent: {}
+[5.413760] (-) TimerEvent: {}
+[5.514015] (-) TimerEvent: {}
+[5.614214] (-) TimerEvent: {}
+[5.714502] (-) TimerEvent: {}
+[5.814784] (-) TimerEvent: {}
+[5.915074] (-) TimerEvent: {}
+[6.015377] (-) TimerEvent: {}
+[6.115732] (-) TimerEvent: {}
+[6.216028] (-) TimerEvent: {}
+[6.316310] (-) TimerEvent: {}
+[6.416599] (-) TimerEvent: {}
+[6.516907] (-) TimerEvent: {}
+[6.617193] (-) TimerEvent: {}
+[6.717507] (-) TimerEvent: {}
+[6.817782] (-) TimerEvent: {}
+[6.918085] (-) TimerEvent: {}
+[7.018371] (-) TimerEvent: {}
+[7.118657] (-) TimerEvent: {}
+[7.218947] (-) TimerEvent: {}
+[7.319233] (-) TimerEvent: {}
+[7.419521] (-) TimerEvent: {}
+[7.519836] (-) TimerEvent: {}
+[7.620103] (-) TimerEvent: {}
+[7.720395] (-) TimerEvent: {}
+[7.820679] (-) TimerEvent: {}
+[7.920962] (-) TimerEvent: {}
+[8.021241] (-) TimerEvent: {}
+[8.121515] (-) TimerEvent: {}
+[8.221812] (-) TimerEvent: {}
+[8.322072] (-) TimerEvent: {}
+[8.422332] (-) TimerEvent: {}
+[8.522594] (-) TimerEvent: {}
+[8.622854] (-) TimerEvent: {}
+[8.723106] (-) TimerEvent: {}
+[8.823375] (-) TimerEvent: {}
+[8.923641] (-) TimerEvent: {}
+[9.023910] (-) TimerEvent: {}
+[9.124167] (-) TimerEvent: {}
+[9.224428] (-) TimerEvent: {}
+[9.324673] (-) TimerEvent: {}
+[9.424929] (-) TimerEvent: {}
+[9.525192] (-) TimerEvent: {}
+[9.625413] (-) TimerEvent: {}
+[9.725667] (-) TimerEvent: {}
+[9.825919] (-) TimerEvent: {}
+[9.926187] (-) TimerEvent: {}
+[10.026447] (-) TimerEvent: {}
+[10.126707] (-) TimerEvent: {}
+[10.226966] (-) TimerEvent: {}
+[10.327224] (-) TimerEvent: {}
+[10.427491] (-) TimerEvent: {}
+[10.527744] (-) TimerEvent: {}
+[10.628003] (-) TimerEvent: {}
+[10.728263] (-) TimerEvent: {}
+[10.828525] (-) TimerEvent: {}
+[10.928772] (-) TimerEvent: {}
+[11.029010] (-) TimerEvent: {}
+[11.129253] (-) TimerEvent: {}
+[11.229495] (-) TimerEvent: {}
+[11.329736] (-) TimerEvent: {}
+[11.429979] (-) TimerEvent: {}
+[11.530224] (-) TimerEvent: {}
+[11.548582] (catch_and_throw) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40\x1b[m\x1b[K,\n'}
+[11.548953] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24\x1b[m\x1b[K,\n'}
+[11.549160] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20\x1b[m\x1b[K,\n'}
+[11.549308] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25\x1b[m\x1b[K,\n'}
+[11.549534] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18\x1b[m\x1b[K,\n'}
+[11.549637] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20\x1b[m\x1b[K,\n'}
+[11.549747] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37\x1b[m\x1b[K,\n'}
+[11.549845] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[11.549942] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[11.550041] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[11.550188] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1\x1b[m\x1b[K:\n'}
+[11.550288] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:\x1b[m\x1b[K In function \xe2\x80\x98\x1b[01m\x1b[Kvoid signal_handler(int)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[11.550379] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:31:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kinvalid use of incomplete type \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.550478] (catch_and_throw) StderrLine: {'line': b'   33 |         RCLCPP_INFO(g_node_ptr\x1b[01;31m\x1b[K->\x1b[m\x1b[Kget_logger(), "Received signal %d. Saving data and shutting down...", signum);\n'}
+[11.550580] (catch_and_throw) StderrLine: {'line': b'      |                               \x1b[01;31m\x1b[K^~\x1b[m\x1b[K\n'}
+[11.550683] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kforward declaration of \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.550782] (catch_and_throw) StderrLine: {'line': b'   28 | std::shared_ptr<class \x1b[01;36m\x1b[KJointStateNode\x1b[m\x1b[K> g_node_ptr = nullptr;\n'}
+[11.550890] (catch_and_throw) StderrLine: {'line': b'      |                       \x1b[01;36m\x1b[K^~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[11.550993] (catch_and_throw) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40\x1b[m\x1b[K,\n'}
+[11.551089] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24\x1b[m\x1b[K,\n'}
+[11.551187] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20\x1b[m\x1b[K,\n'}
+[11.551287] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25\x1b[m\x1b[K,\n'}
+[11.551381] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18\x1b[m\x1b[K,\n'}
+[11.551460] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20\x1b[m\x1b[K,\n'}
+[11.551535] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37\x1b[m\x1b[K,\n'}
+[11.551617] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[11.551731] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[11.551816] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[11.551922] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1\x1b[m\x1b[K:\n'}
+[11.552004] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:31:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kinvalid use of incomplete type \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.552081] (catch_and_throw) StderrLine: {'line': b'   33 |         RCLCPP_INFO(g_node_ptr\x1b[01;31m\x1b[K->\x1b[m\x1b[Kget_logger(), "Received signal %d. Saving data and shutting down...", signum);\n'}
+[11.552162] (catch_and_throw) StderrLine: {'line': b'      |                               \x1b[01;31m\x1b[K^~\x1b[m\x1b[K\n'}
+[11.552239] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kforward declaration of \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.552345] (catch_and_throw) StderrLine: {'line': b'   28 | std::shared_ptr<class \x1b[01;36m\x1b[KJointStateNode\x1b[m\x1b[K> g_node_ptr = nullptr;\n'}
+[11.552444] (catch_and_throw) StderrLine: {'line': b'      |                       \x1b[01;36m\x1b[K^~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[11.552542] (catch_and_throw) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40\x1b[m\x1b[K,\n'}
+[11.552654] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24\x1b[m\x1b[K,\n'}
+[11.552755] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20\x1b[m\x1b[K,\n'}
+[11.552854] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25\x1b[m\x1b[K,\n'}
+[11.552951] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18\x1b[m\x1b[K,\n'}
+[11.553052] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20\x1b[m\x1b[K,\n'}
+[11.553154] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37\x1b[m\x1b[K,\n'}
+[11.553251] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[11.553349] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[11.553446] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[11.553544] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1\x1b[m\x1b[K:\n'}
+[11.553644] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:9:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 1 is invalid\n'}
+[11.553740] (catch_and_throw) StderrLine: {'line': b'   33 |         \x1b[01;31m\x1b[KRCLCPP_INFO\x1b[m\x1b[K(g_node_ptr->get_logger(), "Received signal %d. Saving data and shutting down...", signum);\n'}
+[11.553838] (catch_and_throw) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[11.553933] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:9:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 1 is invalid\n'}
+[11.554038] (catch_and_throw) StderrLine: {'line': b'   33 |         \x1b[01;31m\x1b[KRCLCPP_INFO\x1b[m\x1b[K(g_node_ptr->get_logger(), "Received signal %d. Saving data and shutting down...", signum);\n'}
+[11.554146] (catch_and_throw) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[11.554287] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:9:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 1 is invalid\n'}
+[11.554385] (catch_and_throw) StderrLine: {'line': b'   33 |         \x1b[01;31m\x1b[KRCLCPP_INFO\x1b[m\x1b[K(g_node_ptr->get_logger(), "Received signal %d. Saving data and shutting down...", signum);\n'}
+[11.554483] (catch_and_throw) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[11.554583] (catch_and_throw) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/logging.hpp:24\x1b[m\x1b[K,\n'}
+[11.554682] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40\x1b[m\x1b[K,\n'}
+[11.554782] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24\x1b[m\x1b[K,\n'}
+[11.554884] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20\x1b[m\x1b[K,\n'}
+[11.554983] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25\x1b[m\x1b[K,\n'}
+[11.555084] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18\x1b[m\x1b[K,\n'}
+[11.555184] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20\x1b[m\x1b[K,\n'}
+[11.555288] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37\x1b[m\x1b[K,\n'}
+[11.555391] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[11.555489] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[11.555585] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[11.555720] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1\x1b[m\x1b[K:\n'}
+[11.555835] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:31:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kinvalid use of incomplete type \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.556011] (catch_and_throw) StderrLine: {'line': b'   33 |         RCLCPP_INFO(g_node_ptr\x1b[01;31m\x1b[K->\x1b[m\x1b[Kget_logger(), "Received signal %d. Saving data and shutting down...", signum);\n'}
+[11.556127] (catch_and_throw) StderrLine: {'line': b'      |                               \x1b[01;31m\x1b[K^~\x1b[m\x1b[K\n'}
+[11.556248] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kforward declaration of \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.556384] (catch_and_throw) StderrLine: {'line': b'   28 | std::shared_ptr<class \x1b[01;36m\x1b[KJointStateNode\x1b[m\x1b[K> g_node_ptr = nullptr;\n'}
+[11.556488] (catch_and_throw) StderrLine: {'line': b'      |                       \x1b[01;36m\x1b[K^~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[11.556595] (catch_and_throw) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/logging.hpp:24\x1b[m\x1b[K,\n'}
+[11.556720] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40\x1b[m\x1b[K,\n'}
+[11.556822] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24\x1b[m\x1b[K,\n'}
+[11.556919] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20\x1b[m\x1b[K,\n'}
+[11.557012] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25\x1b[m\x1b[K,\n'}
+[11.557109] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18\x1b[m\x1b[K,\n'}
+[11.557203] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20\x1b[m\x1b[K,\n'}
+[11.557301] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37\x1b[m\x1b[K,\n'}
+[11.557417] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[11.557540] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[11.557640] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[11.557743] (catch_and_throw) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:1\x1b[m\x1b[K:\n'}
+[11.557872] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:33:31:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kinvalid use of incomplete type \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.557981] (catch_and_throw) StderrLine: {'line': b'   33 |         RCLCPP_INFO(g_node_ptr\x1b[01;31m\x1b[K->\x1b[m\x1b[Kget_logger(), "Received signal %d. Saving data and shutting down...", signum);\n'}
+[11.558095] (catch_and_throw) StderrLine: {'line': b'      |                               \x1b[01;31m\x1b[K^~\x1b[m\x1b[K\n'}
+[11.558193] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kforward declaration of \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.558292] (catch_and_throw) StderrLine: {'line': b'   28 | std::shared_ptr<class \x1b[01;36m\x1b[KJointStateNode\x1b[m\x1b[K> g_node_ptr = nullptr;\n'}
+[11.558390] (catch_and_throw) StderrLine: {'line': b'      |                       \x1b[01;36m\x1b[K^~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[11.558485] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:34:19:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kinvalid use of incomplete type \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.558589] (catch_and_throw) StderrLine: {'line': b'   34 |         g_node_ptr\x1b[01;31m\x1b[K->\x1b[m\x1b[Ksave_output_data();\n'}
+[11.558687] (catch_and_throw) StderrLine: {'line': b'      |                   \x1b[01;31m\x1b[K^~\x1b[m\x1b[K\n'}
+[11.558785] (catch_and_throw) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained.cpp:28:23:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kforward declaration of \xe2\x80\x98\x1b[01m\x1b[Kusing element_type = class JointStateNode\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kclass JointStateNode\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[11.558878] (catch_and_throw) StderrLine: {'line': b'   28 | std::shared_ptr<class \x1b[01;36m\x1b[KJointStateNode\x1b[m\x1b[K> g_node_ptr = nullptr;\n'}
+[11.558973] (catch_and_throw) StderrLine: {'line': b'      |                       \x1b[01;36m\x1b[K^~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[11.630324] (-) TimerEvent: {}
+[11.730630] (-) TimerEvent: {}
+[11.830917] (-) TimerEvent: {}
+[11.931204] (-) TimerEvent: {}
+[12.031489] (-) TimerEvent: {}
+[12.131799] (-) TimerEvent: {}
+[12.232083] (-) TimerEvent: {}
+[12.332397] (-) TimerEvent: {}
+[12.432683] (-) TimerEvent: {}
+[12.533049] (-) TimerEvent: {}
+[12.633329] (-) TimerEvent: {}
+[12.733615] (-) TimerEvent: {}
+[12.833886] (-) TimerEvent: {}
+[12.934161] (-) TimerEvent: {}
+[13.034439] (-) TimerEvent: {}
+[13.134711] (-) TimerEvent: {}
+[13.234983] (-) TimerEvent: {}
+[13.335256] (-) TimerEvent: {}
+[13.435529] (-) TimerEvent: {}
+[13.535849] (-) TimerEvent: {}
+[13.636130] (-) TimerEvent: {}
+[13.736407] (-) TimerEvent: {}
+[13.836689] (-) TimerEvent: {}
+[13.936975] (-) TimerEvent: {}
+[14.037290] (-) TimerEvent: {}
+[14.137605] (-) TimerEvent: {}
+[14.237888] (-) TimerEvent: {}
+[14.338198] (-) TimerEvent: {}
+[14.438484] (-) TimerEvent: {}
+[14.538773] (-) TimerEvent: {}
+[14.639071] (-) TimerEvent: {}
+[14.739339] (-) TimerEvent: {}
+[14.839599] (-) TimerEvent: {}
+[14.939847] (-) TimerEvent: {}
+[15.040102] (-) TimerEvent: {}
+[15.140361] (-) TimerEvent: {}
+[15.240624] (-) TimerEvent: {}
+[15.340926] (-) TimerEvent: {}
+[15.441189] (-) TimerEvent: {}
+[15.541442] (-) TimerEvent: {}
+[15.641747] (-) TimerEvent: {}
+[15.741981] (-) TimerEvent: {}
+[15.842239] (-) TimerEvent: {}
+[15.942500] (-) TimerEvent: {}
+[16.042771] (-) TimerEvent: {}
+[16.143034] (-) TimerEvent: {}
+[16.243293] (-) TimerEvent: {}
+[16.343549] (-) TimerEvent: {}
+[16.443788] (-) TimerEvent: {}
+[16.544037] (-) TimerEvent: {}
+[16.644290] (-) TimerEvent: {}
+[16.744542] (-) TimerEvent: {}
+[16.844795] (-) TimerEvent: {}
+[16.945053] (-) TimerEvent: {}
+[17.045299] (-) TimerEvent: {}
+[17.145618] (-) TimerEvent: {}
+[17.245994] (-) TimerEvent: {}
+[17.346273] (-) TimerEvent: {}
+[17.446558] (-) TimerEvent: {}
+[17.546838] (-) TimerEvent: {}
+[17.647118] (-) TimerEvent: {}
+[17.747400] (-) TimerEvent: {}
+[17.847715] (-) TimerEvent: {}
+[17.947982] (-) TimerEvent: {}
+[18.048261] (-) TimerEvent: {}
+[18.148544] (-) TimerEvent: {}
+[18.248821] (-) TimerEvent: {}
+[18.349110] (-) TimerEvent: {}
+[18.449413] (-) TimerEvent: {}
+[18.549692] (-) TimerEvent: {}
+[18.649971] (-) TimerEvent: {}
+[18.750253] (-) TimerEvent: {}
+[18.850516] (-) TimerEvent: {}
+[18.950788] (-) TimerEvent: {}
+[19.051059] (-) TimerEvent: {}
+[19.151349] (-) TimerEvent: {}
+[19.251653] (-) TimerEvent: {}
+[19.351945] (-) TimerEvent: {}
+[19.452230] (-) TimerEvent: {}
+[19.552512] (-) TimerEvent: {}
+[19.615441] (catch_and_throw) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/joint_state_node_trained.dir/build.make:76: CMakeFiles/joint_state_node_trained.dir/src/joint_state_node_trained.cpp.o] Error 1\n'}
+[19.615848] (catch_and_throw) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/joint_state_node_trained.dir/all] Error 2\n'}
+[19.616073] (catch_and_throw) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[19.618155] (catch_and_throw) CommandEnded: {'returncode': 2}
+[19.629081] (catch_and_throw) JobEnded: {'identifier': 'catch_and_throw', 'rc': 2}
+[19.640153] (-) EventReactorShutdown: {}

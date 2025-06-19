@@ -1,0 +1,342 @@
+[0.000000] (-) TimerEvent: {}
+[0.000508] (-) JobUnselected: {'identifier': 'fri_client_sdk'}
+[0.000592] (-) JobUnselected: {'identifier': 'iiwa14_moveit_config'}
+[0.000628] (-) JobUnselected: {'identifier': 'iiwa7_moveit_config'}
+[0.001003] (-) JobUnselected: {'identifier': 'lbr_bringup'}
+[0.001108] (-) JobUnselected: {'identifier': 'lbr_demos_advanced_cpp'}
+[0.001214] (-) JobUnselected: {'identifier': 'lbr_demos_advanced_py'}
+[0.001249] (-) JobUnselected: {'identifier': 'lbr_demos_cpp'}
+[0.001305] (-) JobUnselected: {'identifier': 'lbr_demos_py'}
+[0.001345] (-) JobUnselected: {'identifier': 'lbr_description'}
+[0.001378] (-) JobUnselected: {'identifier': 'lbr_fri_idl'}
+[0.001406] (-) JobUnselected: {'identifier': 'lbr_fri_ros2'}
+[0.001575] (-) JobUnselected: {'identifier': 'lbr_fri_ros2_stack'}
+[0.001619] (-) JobUnselected: {'identifier': 'lbr_moveit'}
+[0.001729] (-) JobUnselected: {'identifier': 'lbr_moveit_cpp'}
+[0.001757] (-) JobUnselected: {'identifier': 'lbr_ros2_control'}
+[0.001785] (-) JobUnselected: {'identifier': 'med14_moveit_config'}
+[0.001802] (-) JobUnselected: {'identifier': 'med7_moveit_config'}
+[0.001824] (catch_and_throw) JobQueued: {'identifier': 'catch_and_throw', 'dependencies': OrderedDict([('fri_client_sdk', '/home/user/kuka_rl_ros2/src/install/fri_client_sdk'), ('lbr_fri_idl', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl')])}
+[0.001986] (catch_and_throw) JobStarted: {'identifier': 'catch_and_throw'}
+[0.017706] (catch_and_throw) JobProgress: {'identifier': 'catch_and_throw', 'progress': 'cmake'}
+[0.018611] (catch_and_throw) JobProgress: {'identifier': 'catch_and_throw', 'progress': 'build'}
+[0.019262] (catch_and_throw) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/user/kuka_rl_ros2/src/build/catch_and_throw', '--', '-j8', '-l8'], 'cwd': '/home/user/kuka_rl_ros2/src/build/catch_and_throw', 'env': OrderedDict([('GZ_SIM_RESOURCE_PATH', '/home/user/kuka_rl_ros2/install/lbr_description/share'), ('HOSTNAME', 'prismalab'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib:/home/user/kuka_rl_ros2/install/lbr_ros2_control/lib:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp/lib:/home/user/kuka_rl_ros2/install/lbr_fri_ros2/lib:/home/user/kuka_rl_ros2/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/kuka_rl_ros2'), ('ROS_PYTHON_VERSION', '3'), ('COLCON_PREFIX_PATH', '/home/user/kuka_rl_ros2/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/pkgconfig:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/pkgconfig'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '20'), ('AMENT_PREFIX_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/catch_and_throw:/opt/ros/humble'), ('PWD', '/home/user/kuka_rl_ros2/src/build/catch_and_throw'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/install/lbr_demos_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_bringup/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/install/lbr_moveit/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_fri_idl/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/opt/ros/humble')]), 'shell': False}
+[0.073833] (catch_and_throw) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target joint_state_node_trained\x1b[0m\n'}
+[0.074683] (catch_and_throw) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target joint_state_node\x1b[0m\n'}
+[0.100033] (-) TimerEvent: {}
+[0.159363] (catch_and_throw) StdoutLine: {'line': b'[ 50%] Built target joint_state_node\n'}
+[0.191598] (catch_and_throw) StdoutLine: {'line': b'[ 75%] \x1b[32mBuilding CXX object CMakeFiles/joint_state_node_trained.dir/src/joint_state_node_trained.cpp.o\x1b[0m\n'}
+[0.203546] (-) TimerEvent: {}
+[0.303836] (-) TimerEvent: {}
+[0.404095] (-) TimerEvent: {}
+[0.504339] (-) TimerEvent: {}
+[0.604593] (-) TimerEvent: {}
+[0.704850] (-) TimerEvent: {}
+[0.805128] (-) TimerEvent: {}
+[0.905399] (-) TimerEvent: {}
+[1.005653] (-) TimerEvent: {}
+[1.105896] (-) TimerEvent: {}
+[1.206167] (-) TimerEvent: {}
+[1.306514] (-) TimerEvent: {}
+[1.406787] (-) TimerEvent: {}
+[1.507090] (-) TimerEvent: {}
+[1.607343] (-) TimerEvent: {}
+[1.707556] (-) TimerEvent: {}
+[1.807800] (-) TimerEvent: {}
+[1.908042] (-) TimerEvent: {}
+[2.008306] (-) TimerEvent: {}
+[2.108573] (-) TimerEvent: {}
+[2.208836] (-) TimerEvent: {}
+[2.309109] (-) TimerEvent: {}
+[2.409436] (-) TimerEvent: {}
+[2.509714] (-) TimerEvent: {}
+[2.610069] (-) TimerEvent: {}
+[2.710366] (-) TimerEvent: {}
+[2.810625] (-) TimerEvent: {}
+[2.910891] (-) TimerEvent: {}
+[3.011226] (-) TimerEvent: {}
+[3.111516] (-) TimerEvent: {}
+[3.211811] (-) TimerEvent: {}
+[3.312073] (-) TimerEvent: {}
+[3.412337] (-) TimerEvent: {}
+[3.512600] (-) TimerEvent: {}
+[3.612848] (-) TimerEvent: {}
+[3.713021] (-) TimerEvent: {}
+[3.813283] (-) TimerEvent: {}
+[3.913575] (-) TimerEvent: {}
+[4.013881] (-) TimerEvent: {}
+[4.114176] (-) TimerEvent: {}
+[4.214462] (-) TimerEvent: {}
+[4.314759] (-) TimerEvent: {}
+[4.415046] (-) TimerEvent: {}
+[4.515337] (-) TimerEvent: {}
+[4.615572] (-) TimerEvent: {}
+[4.715795] (-) TimerEvent: {}
+[4.816061] (-) TimerEvent: {}
+[4.916304] (-) TimerEvent: {}
+[5.016603] (-) TimerEvent: {}
+[5.116931] (-) TimerEvent: {}
+[5.217225] (-) TimerEvent: {}
+[5.317468] (-) TimerEvent: {}
+[5.417707] (-) TimerEvent: {}
+[5.517953] (-) TimerEvent: {}
+[5.618195] (-) TimerEvent: {}
+[5.718421] (-) TimerEvent: {}
+[5.818674] (-) TimerEvent: {}
+[5.918917] (-) TimerEvent: {}
+[6.019156] (-) TimerEvent: {}
+[6.119396] (-) TimerEvent: {}
+[6.219707] (-) TimerEvent: {}
+[6.319949] (-) TimerEvent: {}
+[6.420191] (-) TimerEvent: {}
+[6.520440] (-) TimerEvent: {}
+[6.620682] (-) TimerEvent: {}
+[6.720925] (-) TimerEvent: {}
+[6.821174] (-) TimerEvent: {}
+[6.921411] (-) TimerEvent: {}
+[7.021654] (-) TimerEvent: {}
+[7.121892] (-) TimerEvent: {}
+[7.222132] (-) TimerEvent: {}
+[7.322381] (-) TimerEvent: {}
+[7.422623] (-) TimerEvent: {}
+[7.522872] (-) TimerEvent: {}
+[7.623117] (-) TimerEvent: {}
+[7.723368] (-) TimerEvent: {}
+[7.823620] (-) TimerEvent: {}
+[7.923868] (-) TimerEvent: {}
+[8.024123] (-) TimerEvent: {}
+[8.124375] (-) TimerEvent: {}
+[8.224626] (-) TimerEvent: {}
+[8.324877] (-) TimerEvent: {}
+[8.425121] (-) TimerEvent: {}
+[8.525353] (-) TimerEvent: {}
+[8.625638] (-) TimerEvent: {}
+[8.725904] (-) TimerEvent: {}
+[8.826155] (-) TimerEvent: {}
+[8.926396] (-) TimerEvent: {}
+[9.026691] (-) TimerEvent: {}
+[9.126971] (-) TimerEvent: {}
+[9.227272] (-) TimerEvent: {}
+[9.327575] (-) TimerEvent: {}
+[9.427824] (-) TimerEvent: {}
+[9.528081] (-) TimerEvent: {}
+[9.628341] (-) TimerEvent: {}
+[9.728608] (-) TimerEvent: {}
+[9.828935] (-) TimerEvent: {}
+[9.929197] (-) TimerEvent: {}
+[10.029456] (-) TimerEvent: {}
+[10.129709] (-) TimerEvent: {}
+[10.229964] (-) TimerEvent: {}
+[10.330219] (-) TimerEvent: {}
+[10.430473] (-) TimerEvent: {}
+[10.530729] (-) TimerEvent: {}
+[10.630996] (-) TimerEvent: {}
+[10.731280] (-) TimerEvent: {}
+[10.831540] (-) TimerEvent: {}
+[10.931800] (-) TimerEvent: {}
+[11.032060] (-) TimerEvent: {}
+[11.132322] (-) TimerEvent: {}
+[11.232575] (-) TimerEvent: {}
+[11.332868] (-) TimerEvent: {}
+[11.433121] (-) TimerEvent: {}
+[11.533379] (-) TimerEvent: {}
+[11.633637] (-) TimerEvent: {}
+[11.733901] (-) TimerEvent: {}
+[11.834162] (-) TimerEvent: {}
+[11.934425] (-) TimerEvent: {}
+[12.034683] (-) TimerEvent: {}
+[12.134943] (-) TimerEvent: {}
+[12.235208] (-) TimerEvent: {}
+[12.335507] (-) TimerEvent: {}
+[12.435764] (-) TimerEvent: {}
+[12.536021] (-) TimerEvent: {}
+[12.636268] (-) TimerEvent: {}
+[12.736529] (-) TimerEvent: {}
+[12.836801] (-) TimerEvent: {}
+[12.937071] (-) TimerEvent: {}
+[13.037341] (-) TimerEvent: {}
+[13.137615] (-) TimerEvent: {}
+[13.237888] (-) TimerEvent: {}
+[13.338090] (-) TimerEvent: {}
+[13.438350] (-) TimerEvent: {}
+[13.538609] (-) TimerEvent: {}
+[13.638866] (-) TimerEvent: {}
+[13.739123] (-) TimerEvent: {}
+[13.839380] (-) TimerEvent: {}
+[13.939622] (-) TimerEvent: {}
+[14.039860] (-) TimerEvent: {}
+[14.140155] (-) TimerEvent: {}
+[14.240416] (-) TimerEvent: {}
+[14.340686] (-) TimerEvent: {}
+[14.440947] (-) TimerEvent: {}
+[14.541285] (-) TimerEvent: {}
+[14.641544] (-) TimerEvent: {}
+[14.741789] (-) TimerEvent: {}
+[14.842076] (-) TimerEvent: {}
+[14.942335] (-) TimerEvent: {}
+[15.042591] (-) TimerEvent: {}
+[15.142845] (-) TimerEvent: {}
+[15.243101] (-) TimerEvent: {}
+[15.343347] (-) TimerEvent: {}
+[15.443591] (-) TimerEvent: {}
+[15.543873] (-) TimerEvent: {}
+[15.644117] (-) TimerEvent: {}
+[15.744356] (-) TimerEvent: {}
+[15.844593] (-) TimerEvent: {}
+[15.944860] (-) TimerEvent: {}
+[16.045104] (-) TimerEvent: {}
+[16.145359] (-) TimerEvent: {}
+[16.245618] (-) TimerEvent: {}
+[16.345874] (-) TimerEvent: {}
+[16.446130] (-) TimerEvent: {}
+[16.546385] (-) TimerEvent: {}
+[16.646642] (-) TimerEvent: {}
+[16.746899] (-) TimerEvent: {}
+[16.847167] (-) TimerEvent: {}
+[16.947436] (-) TimerEvent: {}
+[17.047709] (-) TimerEvent: {}
+[17.147964] (-) TimerEvent: {}
+[17.248217] (-) TimerEvent: {}
+[17.348469] (-) TimerEvent: {}
+[17.448710] (-) TimerEvent: {}
+[17.549039] (-) TimerEvent: {}
+[17.649292] (-) TimerEvent: {}
+[17.749524] (-) TimerEvent: {}
+[17.849792] (-) TimerEvent: {}
+[17.950074] (-) TimerEvent: {}
+[18.050333] (-) TimerEvent: {}
+[18.150592] (-) TimerEvent: {}
+[18.250861] (-) TimerEvent: {}
+[18.351134] (-) TimerEvent: {}
+[18.451390] (-) TimerEvent: {}
+[18.551630] (-) TimerEvent: {}
+[18.651876] (-) TimerEvent: {}
+[18.752128] (-) TimerEvent: {}
+[18.852381] (-) TimerEvent: {}
+[18.952659] (-) TimerEvent: {}
+[19.052939] (-) TimerEvent: {}
+[19.153224] (-) TimerEvent: {}
+[19.253512] (-) TimerEvent: {}
+[19.353833] (-) TimerEvent: {}
+[19.454123] (-) TimerEvent: {}
+[19.554410] (-) TimerEvent: {}
+[19.654686] (-) TimerEvent: {}
+[19.754970] (-) TimerEvent: {}
+[19.855240] (-) TimerEvent: {}
+[19.955532] (-) TimerEvent: {}
+[20.055824] (-) TimerEvent: {}
+[20.156102] (-) TimerEvent: {}
+[20.256377] (-) TimerEvent: {}
+[20.356651] (-) TimerEvent: {}
+[20.456924] (-) TimerEvent: {}
+[20.557199] (-) TimerEvent: {}
+[20.657477] (-) TimerEvent: {}
+[20.757755] (-) TimerEvent: {}
+[20.858028] (-) TimerEvent: {}
+[20.958307] (-) TimerEvent: {}
+[21.058576] (-) TimerEvent: {}
+[21.158856] (-) TimerEvent: {}
+[21.259132] (-) TimerEvent: {}
+[21.359409] (-) TimerEvent: {}
+[21.459696] (-) TimerEvent: {}
+[21.560014] (-) TimerEvent: {}
+[21.660312] (-) TimerEvent: {}
+[21.760593] (-) TimerEvent: {}
+[21.860864] (-) TimerEvent: {}
+[21.961114] (-) TimerEvent: {}
+[22.061362] (-) TimerEvent: {}
+[22.161611] (-) TimerEvent: {}
+[22.261863] (-) TimerEvent: {}
+[22.362113] (-) TimerEvent: {}
+[22.462366] (-) TimerEvent: {}
+[22.562618] (-) TimerEvent: {}
+[22.662869] (-) TimerEvent: {}
+[22.763118] (-) TimerEvent: {}
+[22.863368] (-) TimerEvent: {}
+[22.963573] (-) TimerEvent: {}
+[23.063812] (-) TimerEvent: {}
+[23.164064] (-) TimerEvent: {}
+[23.264316] (-) TimerEvent: {}
+[23.364568] (-) TimerEvent: {}
+[23.464820] (-) TimerEvent: {}
+[23.565072] (-) TimerEvent: {}
+[23.665337] (-) TimerEvent: {}
+[23.765594] (-) TimerEvent: {}
+[23.865859] (-) TimerEvent: {}
+[23.966112] (-) TimerEvent: {}
+[24.066341] (-) TimerEvent: {}
+[24.166599] (-) TimerEvent: {}
+[24.266836] (-) TimerEvent: {}
+[24.367092] (-) TimerEvent: {}
+[24.467341] (-) TimerEvent: {}
+[24.567572] (-) TimerEvent: {}
+[24.667814] (-) TimerEvent: {}
+[24.768064] (-) TimerEvent: {}
+[24.868312] (-) TimerEvent: {}
+[24.968563] (-) TimerEvent: {}
+[25.068806] (-) TimerEvent: {}
+[25.169136] (-) TimerEvent: {}
+[25.269380] (-) TimerEvent: {}
+[25.369615] (-) TimerEvent: {}
+[25.469884] (-) TimerEvent: {}
+[25.570162] (-) TimerEvent: {}
+[25.670442] (-) TimerEvent: {}
+[25.770722] (-) TimerEvent: {}
+[25.870995] (-) TimerEvent: {}
+[25.971265] (-) TimerEvent: {}
+[26.071564] (-) TimerEvent: {}
+[26.171857] (-) TimerEvent: {}
+[26.272151] (-) TimerEvent: {}
+[26.372426] (-) TimerEvent: {}
+[26.472718] (-) TimerEvent: {}
+[26.573182] (-) TimerEvent: {}
+[26.673552] (-) TimerEvent: {}
+[26.773853] (-) TimerEvent: {}
+[26.874111] (-) TimerEvent: {}
+[26.974351] (-) TimerEvent: {}
+[27.074617] (-) TimerEvent: {}
+[27.174876] (-) TimerEvent: {}
+[27.275137] (-) TimerEvent: {}
+[27.375412] (-) TimerEvent: {}
+[27.475719] (-) TimerEvent: {}
+[27.575996] (-) TimerEvent: {}
+[27.676253] (-) TimerEvent: {}
+[27.737247] (catch_and_throw) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable joint_state_node_trained\x1b[0m\n'}
+[27.776360] (-) TimerEvent: {}
+[27.876731] (-) TimerEvent: {}
+[27.977076] (-) TimerEvent: {}
+[28.077370] (-) TimerEvent: {}
+[28.177652] (-) TimerEvent: {}
+[28.277874] (-) TimerEvent: {}
+[28.378131] (-) TimerEvent: {}
+[28.478444] (-) TimerEvent: {}
+[28.578699] (-) TimerEvent: {}
+[28.678964] (-) TimerEvent: {}
+[28.779229] (-) TimerEvent: {}
+[28.879498] (-) TimerEvent: {}
+[28.897623] (catch_and_throw) StdoutLine: {'line': b'[100%] Built target joint_state_node_trained\n'}
+[28.907832] (catch_and_throw) CommandEnded: {'returncode': 0}
+[28.908449] (catch_and_throw) JobProgress: {'identifier': 'catch_and_throw', 'progress': 'install'}
+[28.916777] (catch_and_throw) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/user/kuka_rl_ros2/src/build/catch_and_throw'], 'cwd': '/home/user/kuka_rl_ros2/src/build/catch_and_throw', 'env': OrderedDict([('GZ_SIM_RESOURCE_PATH', '/home/user/kuka_rl_ros2/install/lbr_description/share'), ('HOSTNAME', 'prismalab'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib:/home/user/kuka_rl_ros2/install/lbr_ros2_control/lib:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp/lib:/home/user/kuka_rl_ros2/install/lbr_fri_ros2/lib:/home/user/kuka_rl_ros2/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/kuka_rl_ros2'), ('ROS_PYTHON_VERSION', '3'), ('COLCON_PREFIX_PATH', '/home/user/kuka_rl_ros2/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/pkgconfig:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/pkgconfig'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '20'), ('AMENT_PREFIX_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/catch_and_throw:/opt/ros/humble'), ('PWD', '/home/user/kuka_rl_ros2/src/build/catch_and_throw'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/install/lbr_demos_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_bringup/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/install/lbr_moveit/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_fri_idl/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/opt/ros/humble')]), 'shell': False}
+[28.923371] (catch_and_throw) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[28.923698] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/lib/catch_and_throw/joint_state_node\n'}
+[28.924117] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/install/catch_and_throw/lib/catch_and_throw/joint_state_node_trained\n'}
+[28.933865] (catch_and_throw) StdoutLine: {'line': b'-- Set runtime path of "/home/user/kuka_rl_ros2/src/install/catch_and_throw/lib/catch_and_throw/joint_state_node_trained" to ""\n'}
+[28.934305] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/package_run_dependencies/catch_and_throw\n'}
+[28.934496] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/parent_prefix_path/catch_and_throw\n'}
+[28.934565] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/ament_prefix_path.sh\n'}
+[28.934658] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/ament_prefix_path.dsv\n'}
+[28.934716] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/path.sh\n'}
+[28.934772] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/environment/path.dsv\n'}
+[28.934847] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.bash\n'}
+[28.934907] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.sh\n'}
+[28.934995] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.zsh\n'}
+[28.935050] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/local_setup.dsv\n'}
+[28.935103] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/package.dsv\n'}
+[28.935156] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/ament_index/resource_index/packages/catch_and_throw\n'}
+[28.935209] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/cmake/catch_and_throwConfig.cmake\n'}
+[28.935261] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/cmake/catch_and_throwConfig-version.cmake\n'}
+[28.935314] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/install/catch_and_throw/share/catch_and_throw/package.xml\n'}
+[28.936722] (catch_and_throw) CommandEnded: {'returncode': 0}
+[28.953092] (catch_and_throw) JobEnded: {'identifier': 'catch_and_throw', 'rc': 0}
+[28.953837] (-) EventReactorShutdown: {}

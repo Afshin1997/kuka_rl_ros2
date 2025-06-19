@@ -1,0 +1,49 @@
+[0.658s] Invoking command in '/home/user/kuka_rl_ros2/src/lbr-stack/lbr_fri_ros2_stack/lbr_demos/lbr_demos_py': AMENT_PREFIX_PATH=/home/user/kuka_rl_ros2/src/install/lbr_bringup:/home/user/kuka_rl_ros2/src/install/lbr_ros2_control:/home/user/kuka_rl_ros2/src/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/lbr_description:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/user/kuka_rl_ros2/src/install/lbr_bringup:/home/user/kuka_rl_ros2/src/install/lbr_ros2_control:/home/user/kuka_rl_ros2/src/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/lbr_description:/home/user/kuka_rl_ros2/src/install/fri_client_sdk:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/user/kuka_rl_ros2/src/install/lbr_ros2_control/lib:/home/user/kuka_rl_ros2/src/install/lbr_fri_ros2/lib:/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/pkgconfig:${PKG_CONFIG_PATH} PYTHONPATH=/home/user/kuka_rl_ros2/src/build/lbr_demos_py/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/src/install/lbr_bringup/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../../build/lbr_demos_py build --build-base /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build install --record /home/user/kuka_rl_ros2/src/build/lbr_demos_py/install.log --single-version-externally-managed install_data
+[0.869s] running egg_info
+[0.869s] creating ../../../../build/lbr_demos_py/lbr_demos_py.egg-info
+[0.869s] writing ../../../../build/lbr_demos_py/lbr_demos_py.egg-info/PKG-INFO
+[0.870s] writing dependency_links to ../../../../build/lbr_demos_py/lbr_demos_py.egg-info/dependency_links.txt
+[0.870s] writing entry points to ../../../../build/lbr_demos_py/lbr_demos_py.egg-info/entry_points.txt
+[0.870s] writing requirements to ../../../../build/lbr_demos_py/lbr_demos_py.egg-info/requires.txt
+[0.870s] writing top-level names to ../../../../build/lbr_demos_py/lbr_demos_py.egg-info/top_level.txt
+[0.870s] writing manifest file '../../../../build/lbr_demos_py/lbr_demos_py.egg-info/SOURCES.txt'
+[0.872s] reading manifest file '../../../../build/lbr_demos_py/lbr_demos_py.egg-info/SOURCES.txt'
+[0.872s] writing manifest file '../../../../build/lbr_demos_py/lbr_demos_py.egg-info/SOURCES.txt'
+[0.872s] running build
+[0.873s] running build_py
+[0.873s] creating /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build
+[0.873s] creating /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib
+[0.873s] creating /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py
+[0.873s] copying lbr_demos_py/joint_sine_overlay.py -> /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py
+[0.873s] copying lbr_demos_py/torque_sine_overlay.py -> /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py
+[0.873s] copying lbr_demos_py/wrench_sine_overlay.py -> /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py
+[0.873s] copying lbr_demos_py/__init__.py -> /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py
+[0.874s] copying lbr_demos_py/joint_trajectory_client.py -> /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py
+[0.874s] running install
+[0.874s] running install_lib
+[0.875s] creating /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py
+[0.875s] copying /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py/joint_sine_overlay.py -> /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py
+[0.875s] copying /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py/torque_sine_overlay.py -> /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py
+[0.875s] copying /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py/wrench_sine_overlay.py -> /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py
+[0.875s] copying /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py/__init__.py -> /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py
+[0.875s] copying /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build/lib/lbr_demos_py/joint_trajectory_client.py -> /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py
+[0.876s] byte-compiling /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py/joint_sine_overlay.py to joint_sine_overlay.cpython-310.pyc
+[0.876s] byte-compiling /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py/torque_sine_overlay.py to torque_sine_overlay.cpython-310.pyc
+[0.877s] byte-compiling /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py/wrench_sine_overlay.py to wrench_sine_overlay.cpython-310.pyc
+[0.877s] byte-compiling /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py/__init__.py to __init__.cpython-310.pyc
+[0.878s] byte-compiling /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py/joint_trajectory_client.py to joint_trajectory_client.cpython-310.pyc
+[0.878s] running install_data
+[0.878s] creating /home/user/kuka_rl_ros2/src/install/lbr_demos_py/share/ament_index
+[0.878s] creating /home/user/kuka_rl_ros2/src/install/lbr_demos_py/share/ament_index/resource_index
+[0.878s] creating /home/user/kuka_rl_ros2/src/install/lbr_demos_py/share/ament_index/resource_index/packages
+[0.879s] copying resource/lbr_demos_py -> /home/user/kuka_rl_ros2/src/install/lbr_demos_py/share/ament_index/resource_index/packages
+[0.879s] copying package.xml -> /home/user/kuka_rl_ros2/src/install/lbr_demos_py/share/lbr_demos_py
+[0.879s] running install_egg_info
+[0.880s] Copying ../../../../build/lbr_demos_py/lbr_demos_py.egg-info to /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages/lbr_demos_py-2.2.1-py3.10.egg-info
+[0.881s] running install_scripts
+[0.900s] Installing joint_sine_overlay script to /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/lbr_demos_py
+[0.900s] Installing joint_trajectory_client script to /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/lbr_demos_py
+[0.900s] Installing torque_sine_overlay script to /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/lbr_demos_py
+[0.900s] Installing wrench_sine_overlay script to /home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/lbr_demos_py
+[0.900s] writing list of installed files to '/home/user/kuka_rl_ros2/src/build/lbr_demos_py/install.log'
+[0.928s] Invoked command in '/home/user/kuka_rl_ros2/src/lbr-stack/lbr_fri_ros2_stack/lbr_demos/lbr_demos_py' returned '0': AMENT_PREFIX_PATH=/home/user/kuka_rl_ros2/src/install/lbr_bringup:/home/user/kuka_rl_ros2/src/install/lbr_ros2_control:/home/user/kuka_rl_ros2/src/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/lbr_description:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/user/kuka_rl_ros2/src/install/lbr_bringup:/home/user/kuka_rl_ros2/src/install/lbr_ros2_control:/home/user/kuka_rl_ros2/src/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/src/install/lbr_fri_idl:/home/user/kuka_rl_ros2/src/install/lbr_description:/home/user/kuka_rl_ros2/src/install/fri_client_sdk:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/user/kuka_rl_ros2/src/install/lbr_ros2_control/lib:/home/user/kuka_rl_ros2/src/install/lbr_fri_ros2/lib:/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/src/install/fri_client_sdk/lib/pkgconfig:${PKG_CONFIG_PATH} PYTHONPATH=/home/user/kuka_rl_ros2/src/build/lbr_demos_py/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/user/kuka_rl_ros2/src/install/lbr_demos_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/src/install/lbr_bringup/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/src/install/lbr_fri_idl/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../../build/lbr_demos_py build --build-base /home/user/kuka_rl_ros2/src/build/lbr_demos_py/build install --record /home/user/kuka_rl_ros2/src/build/lbr_demos_py/install.log --single-version-externally-managed install_data

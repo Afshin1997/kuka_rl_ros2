@@ -5,6 +5,8 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
 from rclpy.duration import Duration
 from sensor_msgs.msg import JointState
+from lbr_fri_idl.msg import LBRJointPositionCommand, LBRState
+
 from geometry_msgs.msg import Pose, Twist
 from std_msgs.msg import Header
 import torch
@@ -13,7 +15,7 @@ import numpy as np
 import pandas as pd
 import os
 from threading import Lock
-from tf_transformations import quaternion_matrix  # For compute_offset_point
+from tf_transformations import quaternion_matrix
 
 def get_activation(act_name):
     if act_name == "elu":
@@ -39,8 +41,8 @@ class ActorCriticAfshin(nn.Module):
         num_actor_obs=67,       
         num_critic_obs=116,    
         num_actions=7,
-        actor_hidden_dims=[256, 128, 128, 32],  # Exactly these sizes
-        critic_hidden_dims=[256, 128, 128, 64], # Exactly these sizes
+        actor_hidden_dims=[256, 128, 128, 32],
+        critic_hidden_dims=[256, 128, 128, 64],
         num_categories=7,
         embedding_dim=5
     ):
@@ -86,7 +88,6 @@ class ActorCriticAfshin(nn.Module):
 
         print(f"Actor MLP: {self.actor}")
         print(f"Critic MLP: {self.critic}")
-        
 
     def _process_observations(self, observations: torch.Tensor):
         """
@@ -102,8 +103,6 @@ class ActorCriticAfshin(nn.Module):
         combined = torch.cat([continuous_obs, embedded], dim=-1)  # [batch, adjusted_dim]
         print("combined", combined)
         return combined
-
-
 
     def act_inference(self, observations):
         combined = self._process_observations(observations)
@@ -137,16 +136,8 @@ class JointStateNode(Node):
         super().__init__('joint_state_node')
 
         self.declare_parameter('model_path', 
-                              '/home/user/ros_ws/src/catch_and_throw/input_files/idealpd/model_idealpd.pt')
+                              '/home/user/kuka_rl_ros2/src/catch_and_throw/input_files/idealpd/model_idealpd.pt')
         
-        # ROS2 QoS Profile - important for real-time systems
-        qos_profile = QoSProfile(
-            depth=10,
-            reliability=ReliabilityPolicy.BEST_EFFORT,  # Changed from BEST_EFFORT
-            durability=DurabilityPolicy.VOLATILE,
-            deadline=Duration(seconds=0, nanoseconds=1000000)  # 1ms
-        )
-
         # Parameters
         self.dt = 1.0 / 200.0
         self.tennis_ball_pos_scale = 0.25
@@ -199,6 +190,7 @@ class JointStateNode(Node):
         self.ee_angular_vel = None
         self.joint_positions_obs = None
         self.joint_velocities_obs = None
+        self.joint_efforts_obs = None
 
         self.action_logits = torch.zeros(7, dtype=torch.float32).unsqueeze(0)
         self.pure_action = torch.zeros(7, dtype=torch.float32).unsqueeze(0)
@@ -207,6 +199,7 @@ class JointStateNode(Node):
         self.joint_targets = []
         self.joint_poses = []
         self.joint_velocities = []
+        self.joint_efforts = []
         self.ee_poses = []
         self.ee_orientations = []
         self.ee_volocities = []
@@ -215,30 +208,31 @@ class JointStateNode(Node):
 
         # Publishers
         self.joint_state_pub = self.create_publisher(
-            JointState,
-            '/joint_reference',
-            qos_profile=qos_profile
+            LBRJointPositionCommand,
+            '/lbr/command/joint_position',
+            10
         )
+
         # Subscribers
         self.joint_states_sub = self.create_subscription(
             JointState,
-            '/joint_states',
+            '/lbr/joint_states',
             self.joint_states_callback,
-            qos_profile=qos_profile
+            10
         )
 
         self.ee_pose_sub = self.create_subscription(
             Pose,
-            '/ee_pose',
+            '/lbr/state/pose',
             self.ee_pose_callback,
-            qos_profile=qos_profile
+            10
         )
 
         self.ee_vel_sub = self.create_subscription(
             Twist,
-            '/ee_vel',
+            '/lbr/state/twist',
             self.ee_vel_callback,
-            qos_profile=qos_profile
+            10
         )
 
         self.timer = self.create_timer(self.dt, self.compute_action_and_publish)
@@ -256,7 +250,7 @@ class JointStateNode(Node):
         obs_data = pd.read_csv(input_file_path)
         self.tennisball_pos = obs_data[['tennisball_pos_0', 'tennisball_pos_1', 'tennisball_pos_2']].values
         self.tennisball_lin_vel = obs_data[['tennisball_lin_vel_0', 'tennisball_lin_vel_1', 'tennisball_lin_vel_2']].values
-        self.obs_task = obs_data[['obs_task_0', 'obs_task_1', 'obs_task_2', 'obs_task_3', 'obs_task_4']].values
+        self.obs_task = obs_data[['obs_task_0', 'obs_task_1', 'obs_task_2', 'obs_task_3', 'obs_task_4', 'obs_task_5', 'obs_task_6']].values
         self.to_final_target = obs_data[['to_final_target_0', 'to_final_target_1', 'to_final_target_2']].values
 
     def load_actor_and_normalization(self):
@@ -279,9 +273,10 @@ class JointStateNode(Node):
             return None, None
 
         try:
-            checkpoint = torch.load(model_path, map_location=torch.device('cpu'), weights_only=False)
+            checkpoint = torch.load(model_path, map_location=torch.device('cpu'), weights_only=True)
             actor_state_dict = {k.replace('actor.', ''): v for k, v in checkpoint['model_state_dict'].items() if k.startswith('actor.')}
-            actor.load_state_dict(actor_state_dict, strict=True)
+
+            actor.load_state_dict(actor_state_dict, strict=False)
             actor.eval()
             self.get_logger().info("Actor model loaded successfully.")
         except Exception as e:
@@ -310,10 +305,25 @@ class JointStateNode(Node):
 
     def joint_states_callback(self, msg):
         with self.lock:
-            self.joint_positions_obs = np.array(msg.position, dtype=np.float32)
-            self.joint_velocities_obs = np.array(msg.velocity, dtype=np.float32)
+            # Define the desired joint order (A1 to A7)
+            desired_order = ['lbr_A1', 'lbr_A2', 'lbr_A3', 'lbr_A4', 'lbr_A5', 'lbr_A6', 'lbr_A7']
+            
+            # Get indices to reorder the data
+            indices = [msg.name.index(name) for name in desired_order]
+            
+            # Reorder positions, velocities, and efforts
+            ordered_positions = [msg.position[i] for i in indices]
+            ordered_velocities = [msg.velocity[i] for i in indices]
+            ordered_efforts = [msg.effort[i] for i in indices]
+            
+            # Assign ordered data to numpy arrays
+            self.joint_positions_obs = np.array(ordered_positions, dtype=np.float32)
+            self.joint_velocities_obs = np.array(ordered_velocities, dtype=np.float32)
+            self.ordered_efforts_obs = np.array(ordered_efforts, dtype=np.float32)
+            
+            # Initialize targets with ordered positions if needed
             if self.robot_dof_targets is None:
-                self.robot_dof_targets = torch.tensor(msg.position, dtype=torch.float32).unsqueeze(0)
+                self.robot_dof_targets = torch.tensor(ordered_positions, dtype=torch.float32).unsqueeze(0)
 
     def ee_pose_callback(self, msg):
         with self.lock:
@@ -393,7 +403,7 @@ class JointStateNode(Node):
                     offset_local=np.array([0, 0, 0.02])  # 2 cm along z-axis
                 )
                 # Use the offset point position instead of the end effector's position
-                ee_pos_for_obs = new_point_pos
+                ee_pos_for_obs = self.ee_pose
 
             else:
                 # Handle cases where pose or orientation is not yet available
@@ -431,7 +441,6 @@ class JointStateNode(Node):
                     print('without normalization', observations_tensor)
                     print('with normalization', normalized_obs)
 
-
                 # Compute new targets
                 joint_positions_obs_tensor = torch.tensor(self.joint_positions_obs, dtype=torch.float32)
                 scaled_actions = action_logits.squeeze(0) * 0.12
@@ -446,18 +455,14 @@ class JointStateNode(Node):
             self.joint_targets.append(targets.numpy().flatten())
             self.joint_poses.append(self.joint_positions_obs)
             self.joint_velocities.append(self.joint_velocities_obs)
+            self.joint_efforts.append(self.ordered_efforts_obs)
             self.ee_poses.append(self.ee_pose)
             self.ee_orientations.append(self.ee_orientation)
             self.ee_volocities.append(self.ee_vel)
 
             # Publish
-            joint_state_msg = JointState()
-            joint_state_msg.header = Header()
-            joint_state_msg.header.stamp = self.get_clock().now().to_msg()
-            # Assuming joint names correspond to the robot
-            # If you know the joint names of your robot, add them here:
-            joint_state_msg.name = [f"joint_{i}" for i in range(7)]
-            joint_state_msg.position = self.robot_dof_targets.squeeze(0).tolist()
+            joint_state_msg = LBRJointPositionCommand()
+            joint_state_msg.joint_position = self.robot_dof_targets.squeeze(0).tolist()
 
             self.joint_state_pub.publish(joint_state_msg)
 
@@ -500,6 +505,8 @@ class JointStateNode(Node):
                          "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6")
         self.save_output(self.joint_velocities, os.path.join(output_dir, "tm_received_joint_vel_np.csv"),
                          "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6")
+        self.save_output(self.joint_efforts, os.path.join(output_dir, "tm_received_joint_effort_np.csv"),
+                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6")
         self.save_output(self.ee_poses, os.path.join(output_dir, "tm_received_ee_pos_np.csv"),
                          "pos_X,pos_Y,pos_Z")
         self.save_output(self.ee_orientations, os.path.join(output_dir, "tm_received_ee_orientation_np.csv"),
@@ -513,7 +520,8 @@ class JointStateNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    
+    node = None  # Ensure it's defined
+
     try:
         node = JointStateNode()
         rclpy.spin(node)
@@ -522,8 +530,10 @@ def main(args=None):
     except Exception as e:
         print(f'Error in JointStateNode: {e}')
     finally:
-        node.destroy_node()
+        if node is not None:
+            node.destroy_node()
         rclpy.shutdown()
+
     
 if __name__ == '__main__':
     main()

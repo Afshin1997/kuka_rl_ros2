@@ -1,0 +1,10 @@
+optitrack_listener:
+  ros__parameters:
+    fixed_frame: "map"
+    local_interface: "172.31.1.145"
+    rigid_object_list: "body_1"
+    trackables:
+      body_1:
+        id: 1
+        name: ball
+    publish_tf: true
