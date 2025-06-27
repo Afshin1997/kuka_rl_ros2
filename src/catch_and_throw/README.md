@@ -78,7 +78,9 @@ then, to compare the recorded joint positions w.r.t the simulation environment, 
 
 ```sh
 python3 scripts/tools/plot.py \
-  --window [input_files/idealpd/ft_idealpd.csv:set_target_:200::input_files/idealpd/ft_idealpd.csv:joint_pos_:200::output_files/ft/idealpd_14/ft_received_joint_pos_np.csv:joint_:200]
+  --window [input_files/idealpd/ft_idealpd.csv:set_target_:100::input_files/idealpd/ft_idealpd.csv:joint_pos_:100::output_files/ft/idealpd/ft_received_joint_pos_np.csv:joint_:100::output_files/ft/idealpd/ft_filtered_commands_np.csv:joint_:100]
+
+  
 ```
 
 
@@ -86,7 +88,7 @@ python3 scripts/tools/plot.py \
 
 ```sh
 python3 scripts/tools/plot.py \
-  --window [input_files/idealpd/ft_idealpd.csv:joint_vel_:200::output_files/ft/idealpd_14/ft_received_joint_vel_np.csv:joint_:200]
+  --window [input_files/idealpd/ft_idealpd.csv:joint_vel_:100::output_files/ft/idealpd_14/ft_received_joint_vel_np.csv:joint_:200]
 ```
 
 - **Joint Efforts**
@@ -195,43 +197,52 @@ then, to compare the recorded joint positions w.r.t the simulation environment, 
 
 ```sh
 python3 scripts/tools/plot.py \
-  --window [input_files/idealpd/ft_idealpd.csv:set_target_:200::input_files/idealpd/ft_idealpd.csv:joint_pos_:200::output_files/tm/idealpd1/tm_received_joint_target_np.csv:joint_:200::output_files/tm/idealpd1/tm_received_joint_pos_np.csv:joint_:200]
+  --window [output_files/tm/idealpd/tm_received_joint_target_np.csv:joint_:200::output_files/tm/idealpd/tm_received_joint_pos_np.csv:joint_:200]
 ```
+
+python3 scripts/tools/plot.py \
+  --window [input_files/idealpd/ft_idealpd_noise.csv:tennisball_pos_:200]
+
+python3 scripts/tools/plot.py \
+--window [output_files/tm/idealpd/tm_ball_positions_world_np.csv:ball_:200]
+
+python3 scripts/tools/plot.py \
+--window [output_files/tm/idealpd/tm_ball_velocities_ema_world_np.csv:ball_:200]
 
 
 - **Joint Velocity**
 
 ```sh
 python3 scripts/tools/plot.py \
-  --window [input_files/idealpd/ft_idealpd.csv:joint_vel_:200::output_files/tm/idealpd1/tm_received_joint_vel_np.csv:joint_:200]
+  --window [input_files/idealpd/ft_idealpd.csv:joint_vel_:100::output_files/tm/idealpd/tm_received_joint_vel_np.csv:joint_:200]
 ```
 
 - **Joint Efforts**
 
 ```sh
 python3 scripts/tools/plot.py \
-  --window [input_files/idealpd/ft_idealpd.csv:torque:200::output_files/tm/idealpd1/tm_received_joint_effort_np.csv:joint_:200]
+  --window [input_files/idealpd/ft_idealpd.csv:torque:100::output_files/tm/idealpd/tm_received_joint_effort_np.csv:joint_:200]
 ```
 
 - ****End effector Position****
 
 ```sh
 python3 scripts/tools/plot.py \
-  --window [input_files/idealpd/ft_idealpd.csv:end_effector_pos_:200::output_files/tm/idealpd1/tm_received_ee_pos_np.csv:pos_:200]
+  --window [input_files/idealpd/ft_idealpd.csv:end_effector_pos_:100::output_files/tm/idealpd/tm_received_ee_pos_np.csv:pos_:200]
 ```
 
 - ****End effector Orientation****
 
 ```sh
 python3 scripts/tools/plot.py \
-  --window [input_files/idealpd/ft_idealpd.csv:end_effector_rot_:200::output_files/tm/idealpd/tm_received_ee_orientation_np.csv:or_:200]
+  --window [input_files/idealpd/ft_idealpd.csv:end_effector_rot_:100::output_files/tm/idealpd/tm_received_ee_orientation_np.csv:or_:200]
 ```
 
 - ****End effector Linear Velocity****
 
 ```sh
 python3 scripts/tools/plot.py \
-  --window [input_files/idealpd/ft_idealpd.csv:end_effector_lin_vel_:200::output_files/tm/idealpd1/tm_received_ee_vel_np.csv:lin_vel_:200]
+  --window [input_files/idealpd/ft_idealpd.csv:end_effector_lin_vel_:100::output_files/tm/idealpd/tm_received_ee_vel_np.csv:lin_vel_:200]
 ```
 
 

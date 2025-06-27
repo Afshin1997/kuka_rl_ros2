@@ -10,4 +10,10 @@ optitrack_listener:
     publish_tf: True
     initial_ball_position: [0.52, -0.441, -2.646]
 
+    # Exponential Moving Average parameter for ball position
+    # Range: 0.0 to 1.0
+    # Lower values (e.g., 0.1) = more smoothing, slower response
+    # Higher values (e.g., 0.8) = less smoothing, faster response
+    ball_ema_alpha: 1.0
+
 

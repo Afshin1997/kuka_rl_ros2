@@ -48,10 +48,10 @@ set_target_properties(joint_state_node PROPERTIES
     BUILD_WITH_INSTALL_RPATH TRUE
 )
 
-# Add and configure joint_state_node_trained
-add_executable(joint_state_node_trained src/joint_state_node_trained.cpp)
+# Add and configure joint_state_node_trained_bouncing
+add_executable(joint_state_node_trained_bouncing src/joint_state_node_trained_bouncing.cpp)
 
-ament_target_dependencies(joint_state_node_trained
+ament_target_dependencies(joint_state_node_trained_bouncing
     rclcpp
     sensor_msgs
     std_msgs
@@ -59,21 +59,21 @@ ament_target_dependencies(joint_state_node_trained
     lbr_fri_idl
 )
 
-# Link PyTorch libraries to joint_state_node_trained
-target_link_libraries(joint_state_node_trained
+# Link PyTorch libraries to joint_state_node_trained_bouncing
+target_link_libraries(joint_state_node_trained_bouncing
     ${TORCH_LIBRARIES}
     Eigen3::Eigen
 )
 
-# Set RPATH for joint_state_node_trained
-set_target_properties(joint_state_node_trained PROPERTIES
+# Set RPATH for joint_state_node_trained_bouncing
+set_target_properties(joint_state_node_trained_bouncing PROPERTIES
     INSTALL_RPATH "/home/user/kuka_rl_ros2/src/catch_and_throw/libs/libtorch/lib"
     BUILD_WITH_INSTALL_RPATH TRUE
 )
 
 # Install targets
 install(TARGETS joint_state_node DESTINATION lib/${PROJECT_NAME})
-install(TARGETS joint_state_node_trained DESTINATION lib/${PROJECT_NAME})
+install(TARGETS joint_state_node_trained_bouncing DESTINATION lib/${PROJECT_NAME})
 
 # Install launch files
 install(DIRECTORY

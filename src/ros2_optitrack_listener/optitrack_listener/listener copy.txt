@@ -35,19 +35,10 @@ class OptitrackListener( Node ):
         self.declare_parameter('initial_ball_position',  [0.0, 0.0, 0.0])
         self.ball_marker_old = self.get_parameter('initial_ball_position').get_parameter_value().double_array_value
 
-        # EMA parameters
-        self.declare_parameter('ball_ema_alpha', 0.1)
-        self.ema_alpha = self.get_parameter('ball_ema_alpha').get_parameter_value().double_value
-        
-        # Initialize EMA position with the initial ball position
-        self.ball_ema_position = np.array(self.ball_marker_old)
-        self.ema_initialized = False
-        
-        self.get_logger().info(f"Ball EMA alpha value: {self.ema_alpha}")
-
         self.ball_marker_publisher = self.create_publisher(PoseStamped, "optitrack/ball_marker", 1)
 
         self.ball_pose_stamped = PoseStamped()
+
 
         # self.declare_parameter('frame_transformation',  [0.0, 0.0, 0.0])
         # self.frame_transformation = self.get_parameter('frame_transformation').get_parameter_value().double_array_value
@@ -69,26 +60,10 @@ class OptitrackListener( Node ):
             self.trackable_publishers.append ( self.create_publisher(PoseStamped, "optitrack/" + name_param, 1))
             index = index+1
 
+
         self.tf_broadcaster = TransformBroadcaster(self)
         self.thread = Thread(target = self.get_optitrack_data, args = ())
         self.thread.start()
-
-    def update_ema_position(self, new_position):
-        """
-        Update the exponential moving average of the ball position
-        EMA formula: EMA_new = alpha * new_value + (1 - alpha) * EMA_old
-        """
-        new_pos_array = np.array(new_position)
-        
-        if not self.ema_initialized:
-            # Initialize EMA with the first measurement
-            self.ball_ema_position = new_pos_array.copy()
-            self.ema_initialized = True
-        else:
-            # Update EMA
-            self.ball_ema_position = self.ema_alpha * new_pos_array + (1 - self.ema_alpha) * self.ball_ema_position
-        
-        return self.ball_ema_position
 
     def pose_to_tf(self, pose_msg, parent_frame, target_frame):
         # Create a TransformStamped message
@@ -101,6 +76,7 @@ class OptitrackListener( Node ):
 
         # Extract position and orientation from PoseStamped message
         position = pose_msg.pose.position
+
         orientation = pose_msg.pose.orientation
         
         # Set translation and rotation in the TF message
@@ -166,6 +142,7 @@ class OptitrackListener( Node ):
                 #     ps.pose.position = Point(x=pos_opt[0], y=pos_opt[1], z=pos_opt[2])  
                 #     ps.pose.orientation = Quaternion(x=rot_opt[0], y=rot_opt[1], z=rot_opt[2], w=rot_opt[3])  
 
+
                 #     if body_id in self.id_publisher_dict:
                 #         self.trackable_publishers[ self.id_publisher_dict[body_id] ].publish( ps )
                 #         if( self.publish_tf):
@@ -179,23 +156,19 @@ class OptitrackListener( Node ):
                 self.ball_pose_stamped.header.frame_id = self.frame
                 
                 #Find the ball marker (closest to the old position, initialized with a known configuration)
-                ball_marker = self.find_closest_array_numpy(packet.other_markers, self.ball_marker_old)
+                ball_marker=self.find_closest_array_numpy(packet.other_markers, self.ball_marker_old)
                 
                 if ball_marker is not None: #Position is updated only if at least a marker is found, otherwise the old position is kept
-                    # Update EMA position with the new measurement
-                    ema_position = self.update_ema_position(ball_marker)
-                    
-                    # Update the old position for closest marker search (use raw measurement)
+                    #update the old position
                     self.ball_marker_old = ball_marker
-                    
-                    # Fill the message with EMA-smoothed position
-                    self.ball_pose_stamped.pose.position = Point(x=ema_position[0], y=ema_position[1], z=ema_position[2])
+                    #Fill the message (just position, orientation is not used)
+                    self.ball_pose_stamped.pose.position = Point(x=ball_marker[0], y=ball_marker[1], z=ball_marker[2])
                     self.ball_pose_stamped.pose.orientation = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
                 
-                # Publish the ball marker (with EMA-smoothed position)
+                #Publish the ball marker
                 self.ball_marker_publisher.publish(self.ball_pose_stamped)
                     
-                # Add here tf if needed ...
+                #Add here tf if needed ...
 
 def main(args=None):
     rclpy.init(args=args)

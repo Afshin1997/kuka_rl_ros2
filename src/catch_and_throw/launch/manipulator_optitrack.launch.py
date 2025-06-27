@@ -70,7 +70,7 @@ def generate_launch_description():
 
     optitrack_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            '/home/user/kuka_rl_ros2/src/optitrack_listener/launch/optitrack_listener.launch.py'
+            '/home/user/kuka_rl_ros2/src/ros2_optitrack_listener/launch/optitrack_listener.launch.py'
         )
     )
     
