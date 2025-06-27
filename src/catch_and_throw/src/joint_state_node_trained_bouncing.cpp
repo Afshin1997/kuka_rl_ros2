@@ -337,18 +337,18 @@ public:
 
         //FAKE TRAJECTORY READ FROM CSV: COMMENT TO HAVE REAL TRAJECTORY
         // Check time index
-        if (t_ >= tennisball_pos_csv.size()) {
-            RCLCPP_WARN(this->get_logger(), "Time index exceeded data length. Shutting down node.");
-            rclcpp::shutdown();
-            return;
-        }
-        torch::Tensor tennisball_pos_obs = torch::tensor(tennisball_pos_csv[t_])* tennis_ball_pos_scale_;
-        torch::Tensor tennisball_lin_vel_obs = torch::tensor(tennisball_lin_vel_csv[t_]) * lin_vel_scale_; 
+        // if (t_ >= tennisball_pos_csv.size()) {
+        //     RCLCPP_WARN(this->get_logger(), "Time index exceeded data length. Shutting down node.");
+        //     rclcpp::shutdown();
+        //     return;
+        // }
+        // torch::Tensor tennisball_pos_obs = torch::tensor(tennisball_pos_csv[t_])* tennis_ball_pos_scale_;
+        // torch::Tensor tennisball_lin_vel_obs = torch::tensor(tennisball_lin_vel_csv[t_]) * lin_vel_scale_; 
 
-        RCLCPP_INFO(this->get_logger(), "Tenisball Position x: %.3f, y: %.3f, z: %.3f", tennisball_pos_obs[0].item<double>(), 
-            tennisball_pos_obs[1].item<double>(), tennisball_pos_obs[2].item<double>());
-        RCLCPP_INFO(this->get_logger(), "Tenisball Velocity x: %.3f, y: %.3f, z: %.3f", tennisball_lin_vel_obs[0].item<double>(), 
-            tennisball_lin_vel_obs[1].item<double>(), tennisball_lin_vel_obs[2].item<double>());
+        // RCLCPP_INFO(this->get_logger(), "Tenisball Position x: %.3f, y: %.3f, z: %.3f", tennisball_pos_obs[0].item<double>(), 
+        //     tennisball_pos_obs[1].item<double>(), tennisball_pos_obs[2].item<double>());
+        // RCLCPP_INFO(this->get_logger(), "Tenisball Velocity x: %.3f, y: %.3f, z: %.3f", tennisball_lin_vel_obs[0].item<double>(), 
+        //     tennisball_lin_vel_obs[1].item<double>(), tennisball_lin_vel_obs[2].item<double>());
 
 
         torch::Tensor ee_lin_vel_scaled = ee_vel_ * lin_vel_scale_;
@@ -364,9 +364,8 @@ public:
         action_history_[-1] = current_action;
 
         // Prepare observation tensor based on the reduced observation space
-        // From Python: obs_actor with 48 elements
+        // From Python: obs_actor with 41 elements
         torch::Tensor observations = torch::cat({
-            current_action.flatten(),                    // 7  - self.pure_actions
             action_history_.flatten(),                   // 14 - self.action_history_actor.flatten(start_dim=1) (2x7)
             dof_pos_scaled_obs.flatten(),               // 7  - self.dof_pos_scaled
             dof_vel_scaled_obs.flatten(),               // 7  - self.joint_vel * self.cfg.dof_velocity_scale
@@ -376,8 +375,8 @@ public:
             ee_orientation_.flatten()                   // 4  - self.end_effector_rot
         });
 
-        // Sanity check observation size (should be 48 for the reduced observation space)
-        assert(observations.size(0) == 48);
+        // Sanity check observation size (should be 41 for the reduced observation space)
+        assert(observations.size(0) == 41);
 
         // Get action from policy
         torch::Tensor raw_action = policy_->get_action(observations);
@@ -650,7 +649,7 @@ private:
                 q_cmd[3], q_cmd[4], q_cmd[5], 
                 q_cmd[6]
             });
-            // joint_ref_pub_->publish(msg);
+            joint_ref_pub_->publish(msg);
         }
     }
 
