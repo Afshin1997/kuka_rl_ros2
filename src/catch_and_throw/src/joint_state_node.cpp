@@ -24,51 +24,69 @@ public:
         using QoS = rclcpp::QoS;
         auto qos = QoS(rclcpp::KeepLast(1)).reliable();
 
+        // joint_state_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
+        //     "/lbr/joint_states", qos, std::bind(&JointStateNode::joint_states_callback, this, _1));
+
+        // ee_pose_sub_ = this->create_subscription<geometry_msgs::msg::Pose>(
+        //     "/lbr/state/pose", qos, std::bind(&JointStateNode::ee_pose_callback, this, _1));
+
+        // ee_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
+        //     "/lbr/state/twist", qos, std::bind(&JointStateNode::ee_vel_callback, this, _1));
+
+        // // OptiTrack ball position subscription
+        // ball_pose_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
+        //     "/optitrack/ball_marker", qos, std::bind(&JointStateNode::ball_pose_callback, this, _1));
+
         joint_state_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
-            "/lbr/joint_states", qos, std::bind(&JointStateNode::joint_states_callback, this, _1));
+            "/lbr/joint_states", 1, std::bind(&JointStateNode::joint_states_callback, this, _1));
 
         ee_pose_sub_ = this->create_subscription<geometry_msgs::msg::Pose>(
-            "/lbr/state/pose", qos, std::bind(&JointStateNode::ee_pose_callback, this, _1));
+            "/lbr/state/pose", 1, std::bind(&JointStateNode::ee_pose_callback, this, _1));
 
         ee_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
-            "/lbr/state/twist", qos, std::bind(&JointStateNode::ee_vel_callback, this, _1));
+            "/lbr/state/twist", 1, std::bind(&JointStateNode::ee_vel_callback, this, _1));
 
         // OptiTrack ball position subscription
         ball_pose_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
-            "/optitrack/ball_marker", qos, std::bind(&JointStateNode::ball_pose_callback, this, _1));
+            "/optitrack/ball_marker", 1, std::bind(&JointStateNode::ball_pose_callback, this, _1));
+
 
         joint_ref_pub_ = this->create_publisher<lbr_fri_idl::msg::LBRJointPositionCommand>(
-            "/lbr/command/joint_position", 10);
+            "/lbr/command/joint_position", 1);
             
         RCLCPP_INFO(this->get_logger(), "Node initialized with OptiTrack ball tracking (no filtering)");
     }
 
-    void publish_joint_commands(const std::vector<std::vector<double>> &target_positions, int rate_hz = 100) {
+    void publish_joint_commands(const std::vector<std::vector<double>> &target_positions, int rate_hz = 200) {
         recording_ = true;
         rclcpp::Rate rate(rate_hz);
         
         RCLCPP_INFO(this->get_logger(), "Starting to publish raw joint commands...");
         
-        for (const auto &joint_pos : target_positions) {
-            // Store the original commands for analysis
-            published_commands_.push_back(joint_pos);
+        for (size_t idx = 0; idx < target_positions.size(); ++idx) {
+            const auto &joint_pos = target_positions[idx];
             
-            // Create and publish message directly with raw data
-            auto msg = lbr_fri_idl::msg::LBRJointPositionCommand();
-            std::copy(joint_pos.begin(), joint_pos.end(), msg.joint_position.begin());
-            joint_ref_pub_->publish(msg);
-            
-            // Log current ball position periodically
-            if (published_commands_.size() % 100 == 0) {  // Log every 100 iterations
-                std::lock_guard<std::mutex> lock(ball_mutex_);
-                RCLCPP_INFO(this->get_logger(), "Ball position: x=%.3f, y=%.3f, z=%.3f", 
-                           current_ball_pos_.x, current_ball_pos_.y, current_ball_pos_.z);
+            // Check if this is the last row - stop recording before processing it
+            if (idx == target_positions.size() - 1) {
+                recording_ = false;
+                RCLCPP_INFO(this->get_logger(), "Reached final row - stopping recording");
+            }
+
+            // Send each command twice
+            for (int i = 0; i < 2; ++i) {
+                auto msg = lbr_fri_idl::msg::LBRJointPositionCommand();
+                std::copy(joint_pos.begin(), joint_pos.end(), msg.joint_position.begin());
+                joint_ref_pub_->publish(msg);
+                rate.sleep();
             }
             
-            rate.sleep();
+            // Store the original commands for analysis
+            published_commands_.push_back(joint_pos);
         }
 
+        // Ensure recording is stopped
         recording_ = false;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Allow final callbacks to complete
         RCLCPP_INFO(this->get_logger(), "Finished publishing all raw targets");
     }
 
@@ -109,12 +127,6 @@ public:
     geometry_msgs::msg::Point get_current_ball_position() {
         std::lock_guard<std::mutex> lock(ball_mutex_);
         return current_ball_pos_;
-    }
-    
-    // Get current ball orientation (thread-safe)
-    geometry_msgs::msg::Quaternion get_current_ball_orientation() {
-        std::lock_guard<std::mutex> lock(ball_mutex_);
-        return current_ball_orient_;
     }
 
 private:
@@ -212,7 +224,7 @@ int main(int argc, char *argv[]) {
     auto node = std::make_shared<JointStateNode>();
 
     // Example: Load a hardcoded file
-    std::string input_csv = "/home/user/kuka_rl_ros2/src/catch_and_throw/input_files/idealpd/ft_idealpd.csv"; // Replace with real path
+    std::string input_csv = "/home/user/kuka_rl_ros2/src/catch_and_throw/input_files/idealpd/ft_idealpd_1.csv"; // Replace with real path
     std::ifstream file(input_csv);
     if (!file.is_open()) {
         RCLCPP_ERROR(node->get_logger(), "Failed to open file: %s", input_csv.c_str());
@@ -228,7 +240,7 @@ int main(int argc, char *argv[]) {
         std::string cell;
         int col = 0;
         while (std::getline(ss, cell, ',')) {
-            if (col >= 14 && col < 21) {
+            if (col >= 21 && col < 28) {
                 try {
                     // Trim whitespace
                     cell.erase(std::remove_if(cell.begin(), cell.end(), ::isspace), cell.end());
@@ -250,7 +262,7 @@ int main(int argc, char *argv[]) {
 
     std::thread pub_thread([&]() {
         // Wait a moment to ensure OptiTrack subscription is active
-        std::this_thread::sleep_for(1s);
+        // std::this_thread::sleep_for(1s);
         
         // Get initial ball position
         auto initial_ball_pos = node->get_current_ball_position();
