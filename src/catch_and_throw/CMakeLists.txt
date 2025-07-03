@@ -111,6 +111,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(lbr_fri_idl REQUIRED)
 find_package(Torch REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 # Set CMAKE flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
@@ -120,28 +121,28 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_INSTALL_RPATH "/home/user/kuka_rl_ros2/src/catch_and_throw/libs/libtorch/lib")
 
 # Add and configure joint_state_node
-add_executable(joint_state_node src/joint_state_node.cpp)
-ament_target_dependencies(joint_state_node
-    rclcpp
-    sensor_msgs
-    std_msgs
-    geometry_msgs
-    lbr_fri_idl
-)
+# add_executable(joint_state_node src/joint_state_node.cpp)
+# ament_target_dependencies(joint_state_node
+#     rclcpp
+#     sensor_msgs
+#     std_msgs
+#     geometry_msgs
+#     lbr_fri_idl
+# )
 
 # Link PyTorch libraries to joint_state_node
-target_link_libraries(joint_state_node
-    ${TORCH_LIBRARIES}
-)
+# target_link_libraries(joint_state_node
+#     ${TORCH_LIBRARIES}
+# )
 
 # Set RPATH for joint_state_node
-set_target_properties(joint_state_node PROPERTIES
-    INSTALL_RPATH "/home/user/kuka_rl_ros2/src/catch_and_throw/libs/libtorch/lib"
-    BUILD_WITH_INSTALL_RPATH TRUE
-)
+# set_target_properties(joint_state_node PROPERTIES
+#     INSTALL_RPATH "/home/user/kuka_rl_ros2/src/catch_and_throw/libs/libtorch/lib"
+#     BUILD_WITH_INSTALL_RPATH TRUE
+# )
 
 # Add and configure joint_state_node_trained_bouncing
-add_executable(joint_state_node_trained_bouncing src/joint_state_node_trained_bouncing.cpp)
+add_executable(joint_state_node_trained_bouncing src/joint_state_node_trained_bouncing.cpp src/experiment_manager.cpp)
 ament_target_dependencies(joint_state_node_trained_bouncing
     rclcpp
     sensor_msgs
@@ -150,11 +151,17 @@ ament_target_dependencies(joint_state_node_trained_bouncing
     lbr_fri_idl
 )
 
+# Target include directories
+target_include_directories(joint_state_node_trained_bouncing PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 # Link PyTorch libraries to joint_state_node_trained_bouncing
 target_link_libraries(joint_state_node_trained_bouncing
     ${TORCH_LIBRARIES}
     Eigen3::Eigen
 )
+target_link_libraries(joint_state_node_trained_bouncing nlohmann_json::nlohmann_json)
 
 # Set RPATH for joint_state_node_trained_bouncing
 set_target_properties(joint_state_node_trained_bouncing PROPERTIES
@@ -163,7 +170,7 @@ set_target_properties(joint_state_node_trained_bouncing PROPERTIES
 )
 
 # Install targets
-install(TARGETS joint_state_node DESTINATION lib/${PROJECT_NAME})
+# install(TARGETS joint_state_node DESTINATION lib/${PROJECT_NAME})
 install(TARGETS joint_state_node_trained_bouncing DESTINATION lib/${PROJECT_NAME})
 
 # Install launch files
@@ -176,6 +183,10 @@ install(DIRECTORY
 install(DIRECTORY
     config
     DESTINATION share/${PROJECT_NAME}/
+)
+
+install(DIRECTORY include/
+  DESTINATION include/
 )
 
 # Tests

@@ -11,7 +11,7 @@ RUN apt-get update && apt-get upgrade -y && \
     python3-scipy
 
 # Install Python packages with pip
-RUN pip3 install pandas torch scipy
+RUN pip3 install pandas scipy optirx joblib scikit-learn seaborn "numpy<2" #torch 
 
 # Add non-root user
 ENV HOME /home/user

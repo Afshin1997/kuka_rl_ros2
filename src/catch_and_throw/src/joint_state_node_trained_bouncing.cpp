@@ -6,9 +6,7 @@
 #include <lbr_fri_idl/msg/lbr_joint_position_command.hpp>
 #include <torch/torch.h>
 #include <torch/script.h>
-
 #include <Eigen/Geometry>
-
 #include <fstream>
 #include <vector>
 #include <string>
@@ -21,10 +19,11 @@
 #include <cmath>
 #include <numeric>
 #include <deque>
-#include "json.hpp" // nlohmann/json library - install with: apt-get install nlohmann-json3-dev
+#include <nlohmann/json.hpp> // nlohmann/json library - install with: apt-get install nlohmann-json3-dev
+#include <unistd.h>
+#include "catch_and_throw/experiment_manager.hpp"
 
 using json = nlohmann::json;
-
 using std::placeholders::_1;
 using namespace std::chrono_literals;
 namespace fs = std::filesystem;
@@ -47,6 +46,39 @@ private:
     
     std::vector<JointModel> joint_models;
     bool is_loaded;
+    
+    void printModelInfo() const {
+        if (!is_loaded) {
+            std::cout << "Model not loaded!" << std::endl;
+            return;
+        }
+        
+        std::cout << "=== Polynomial Joint Predictor Model Info ===" << std::endl;
+        for (int i = 0; i < 7; i++) {
+            const auto& model = joint_models[i];
+            std::cout << "Joint " << i << ":" << std::endl;
+            std::cout << "  Degree: " << model.degree << std::endl;
+            std::cout << "  Features: " << model.n_features << std::endl;
+            std::cout << "  Polynomial terms: " << model.powers.size() << std::endl;
+            std::cout << "  Intercept: " << model.intercept << std::endl;
+        }
+        std::cout << "=============================================" << std::endl;
+    }
+    
+    std::vector<double> scaleInputs(const std::array<double, 7>& inputs, int joint_idx) const {
+        if (!is_loaded || joint_idx < 0 || joint_idx >= 7) {
+            throw std::runtime_error("Invalid joint index or model not loaded");
+        }
+        
+        const auto& model = joint_models[joint_idx];
+        std::vector<double> scaled(7);
+        
+        for (int i = 0; i < 7; i++) {
+            scaled[i] = (inputs[i] - model.scaler_means[i]) / model.scaler_scales[i];
+        }
+        
+        return scaled;
+    }
     
 public:
     PolynomialJointPredictor() : is_loaded(false) {}
@@ -110,8 +142,8 @@ public:
             }
             
             is_loaded = true;
-            std::cout << "✓ Model loaded successfully from " << json_file << std::endl;
-            printModelInfo();
+            // std::cout << "✓ Model loaded successfully from " << json_file << std::endl;
+            // printModelInfo();
             return true;
             
         } catch (const std::exception& e) {
@@ -156,7 +188,9 @@ public:
         const auto& model = joint_models[joint_idx];
         
         // Step 1: Scale inputs
-        auto scaled_inputs = scaleInputs(set_targets, joint_idx);
+        auto scaled_inputs_vec = scaleInputs(set_targets, joint_idx);
+        std::array<double, 7> scaled_inputs;
+        std::copy(scaled_inputs_vec.begin(), scaled_inputs_vec.end(), scaled_inputs.begin());
         
         // Step 2: Start with intercept
         double result = model.intercept;
@@ -188,10 +222,6 @@ public:
     }
     
 };
-
-
-
-auto joint_positions = predictor.predict(set_targets);
 
 class CSVReader {
 public:
@@ -261,6 +291,11 @@ private:
 };
 
 class JointStateNode : public rclcpp::Node {
+private:
+    std::unique_ptr<ExperimentManager> experiment_manager_;
+    PolynomialJointPredictor predictor;
+    std::array<double, 7> set_targets;
+
 public:
     JointStateNode()
     : Node("joint_state_node"), t_(0), recording_(false), recording_active_(false) {
@@ -274,19 +309,19 @@ public:
         this->declare_parameter<std::string>("output_dir", 
             "/home/user/kuka_rl_ros2/src/catch_and_throw/output_files/tm/idealpd");
         this->declare_parameter<std::string>("PolynomialModelPath", 
-            "/home/user/kuka_rl_ros2/src/catch_and_throw/input_files/idealpd/polynomial_models.json");
+            "/home/user/kuka_rl_ros2/src/catch_and_throw/input_files/idealpd/polynomial_regressor/polynomial_models.json");
         this->declare_parameter<double>("max_ball_x_position", 3.0);  // Maximum X position for command publishing
         this->declare_parameter<double>("min_ball_z_position", -1.0);  // Minimum Z position for command publishing
         this->declare_parameter<double>("ball_vel_ema_alpha", 1.0);  // EMA smoothing factor for ball velocity
         this->declare_parameter<int>("joint_vel_window_size", 5);  // SMA smoothing window for joint velocites
-        this->declare_parameter<bool>("fake_joint_state", 5);  // Fake joint state for testing
-        this->declare_parameter<bool>("fake_ball_state", 5);  // Fake ball state for testing
-
-    
+        this->declare_parameter<bool>("fake_joint_state", true);  // Fake joint state for testing
+        this->declare_parameter<bool>("fake_ball_state", true);  // Fake ball state for testing
+        this->declare_parameter<bool>("use_polynomial_regressor", true);  // Use polynomial regressor for joint position prediction
+        this->declare_parameter<bool>("commanded_joint_poses_simulation", false);  // Simulate commanded joint poses
+        this->declare_parameter<bool>("achievable_joint_poses_simulation", true);  // Simulate achievable joint poses
+        this->declare_parameter<std::string>("source_file_path", "/path/to/your/actual/source/file.cpp");
 
         // Initialize and clean output directory
-        
-        output_dir_ = this->get_parameter("output_dir").as_string();
         std::string polynomial_model_path_ = this->get_parameter("PolynomialModelPath").as_string();
         max_ball_x_position_ = this->get_parameter("max_ball_x_position").as_double();
         min_ball_z_position_ = this->get_parameter("min_ball_z_position").as_double();
@@ -298,9 +333,13 @@ public:
 
         fake_joint_state_ = this->get_parameter("fake_joint_state").as_bool();
         fake_ball_state_ = this->get_parameter("fake_ball_state").as_bool();
+        use_polynomial_regressor_ = this->get_parameter("use_polynomial_regressor").as_bool();
+        c_q_sim_ = this->get_parameter("commanded_joint_poses_simulation").as_bool();
+        a_q_sim_ = this->get_parameter("achievable_joint_poses_simulation").as_bool();
 
-        setup_output_directory();
-
+        // Initialize ExperimentManager
+        experiment_manager_ = std::make_unique<ExperimentManager>(shared_from_this());
+        output_dir_ = experiment_manager_->initialize_experiment();
         // Hyperparameters matching Python script
         dt_ = dt_nn;
         tennis_ball_pos_scale_ = 0.25;
@@ -333,10 +372,12 @@ public:
         q_cmd.resize(7);
         initial_positions.resize(7);
 
-
-        // Initialize to PolynomialJointPredictor
+        // Initialize PolynomialJointPredictor
         predictor = PolynomialJointPredictor();
-        predictor.loadFromJSON(polynomial_model_path_)
+        if (!predictor.loadFromJSON(polynomial_model_path_)) {
+            RCLCPP_ERROR(this->get_logger(), "Failed to load polynomial model from: %s", polynomial_model_path_.c_str());
+            throw std::runtime_error("Failed to load polynomial model");
+        }
 
         // Subscribers
         joint_states_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
@@ -365,28 +406,6 @@ public:
             std::bind(&JointStateNode::compute_action_and_publish, this)
         );
 
-        // RCLCPP_INFO(this->get_logger(), "JointStateNode initialized - Output directory prepared");
-
-
-    }
-
-    // Setup output directory - remove old and create new
-    void setup_output_directory() {
-        try {
-            // Remove the entire idealpd directory if it exists
-            if (fs::exists(output_dir_)) {
-                fs::remove_all(output_dir_);
-                // RCLCPP_INFO(this->get_logger(), "Removed previous output directory: %s", output_dir_.c_str());
-            }
-            
-            // Create fresh directory
-            fs::create_directories(output_dir_);
-            // RCLCPP_INFO(this->get_logger(), "Created new output directory: %s", output_dir_.c_str());
-            
-        } catch (const fs::filesystem_error& e) {
-            RCLCPP_ERROR(this->get_logger(), "Filesystem error: %s", e.what());
-            throw;
-        }
     }
 
     // Transform position from OptiTrack frame to world frame
@@ -447,7 +466,7 @@ public:
         }
 
         else {
-            return (ball_x <= max_ball_x_position_); // Check if ball X position is within the threshold
+            return (ball_x <= max_ball_x_position_ && ball_z >= min_ball_z_position_); // Check if ball X and Z positions are within the threshold
         }
     }
 
@@ -492,12 +511,7 @@ public:
         
         // Extract data from CSV 
         for (const auto& row : data) {
-            // Ensure row has at least 68 columns to prevent out-of-bounds access
-            // if (row.size() < 68) {
-            //     std::cerr << "Skipping row with insufficient columns" << std::endl;
-            //     continue;
-            // }
-            
+
             // Tennis ball position (columns 42-44)
             std::vector<float> position_row = {
                 row[35], 
@@ -514,19 +528,31 @@ public:
             };
             tennisball_lin_vel_csv.push_back(velocity_row);
 
-                        // Tennis ball linear velocity (columns 45-47)
-            std::vector<double> joint_pos_row = {
-                row[21], 
-                row[22], 
-                row[23],
-                row[24],
-                row[25],
-                row[26],
-                row[27]
-            };
-            joint_recorded_pos_csv.push_back(joint_pos_row);
-            
-            
+            // Tennis ball linear velocity (columns 45-47)
+            if (fake_joint_state_ & c_q_sim_) {
+                std::vector<double> joint_pos_row = {
+                    row[14], 
+                    row[15], 
+                    row[16],
+                    row[17],
+                    row[18],
+                    row[19],
+                    row[20]
+                };
+                joint_recorded_pos_csv.push_back(joint_pos_row);
+            } else if (fake_joint_state_ & a_q_sim_) {
+                // Use recorded joint positions from the CSV
+                std::vector<double> joint_pos_row = {
+                    row[21], 
+                    row[22], 
+                    row[23],
+                    row[24],
+                    row[25],
+                    row[26],
+                    row[27],
+                };
+                joint_recorded_pos_csv.push_back(joint_pos_row);
+            }
         }
     }
 
@@ -549,29 +575,24 @@ public:
             (robot_dof_upper_limits_np_ - robot_dof_lower_limits_np_) - 1.0;
         auto dof_vel_scaled_obs = joint_vel_smoothed_ * dof_vel_scale_;
 
+        torch::Tensor tennisball_pos_obs;
+        torch::Tensor tennisball_lin_vel_obs;
 
         if (fake_ball_state_) {
             if (t_ >= tennisball_pos_csv.size()) {
-            RCLCPP_WARN(this->get_logger(), "Time index exceeded data length. Shutting down node.");
-            rclcpp::shutdown();
-            return;
-        }
-        torch::Tensor tennisball_pos_obs = torch::tensor(tennisball_pos_csv[t_])* tennis_ball_pos_scale_;
-        torch::Tensor tennisball_lin_vel_obs = torch::tensor(tennisball_lin_vel_csv[t_]) * lin_vel_scale_;
-        // RCLCPP_INFO(this->get_logger(), "Tenisball Position x: %.3f, y: %.3f, z: %.3f", tennisball_pos_obs[0].item<double>(), 
-        //     tennisball_pos_obs[1].item<double>(), tennisball_pos_obs[2].item<double>());
-        // RCLCPP_INFO(this->get_logger(), "Tenisball Velocity x: %.3f, y: %.3f, z: %.3f", tennisball_lin_vel_obs[0].item<double>(), 
-        //     tennisball_lin_vel_obs[1].item<double>(), tennisball_lin_vel_obs[2].item<double>());
-        }
-
-        else{
-            Scale observations (using world frame data with EMA filtered ball velocity)
-            torch::Tensor tennisball_pos_obs = tennisball_pos_world_ * tennis_ball_pos_scale_;
-            torch::Tensor tennisball_lin_vel_obs = tennisball_lin_vel_world_ema_ * lin_vel_scale_;  // Use EMA filtered velocity
+                RCLCPP_WARN(this->get_logger(), "Time index exceeded data length. Shutting down node.");
+                rclcpp::shutdown();
+                return;
+            }
+            tennisball_pos_obs = torch::tensor(tennisball_pos_csv[t_]) * tennis_ball_pos_scale_;
+            tennisball_lin_vel_obs = torch::tensor(tennisball_lin_vel_csv[t_]) * lin_vel_scale_;
+        } else {
+            // Scale observations (using world frame data with EMA filtered ball velocity)
+            tennisball_pos_obs = tennisball_pos_world_ * tennis_ball_pos_scale_;
+            tennisball_lin_vel_obs = tennisball_lin_vel_world_ema_ * lin_vel_scale_;  // Use EMA filtered velocity
         }
 
         torch::Tensor ee_lin_vel_scaled = ee_vel_ * lin_vel_scale_;
-
 
         // Get current action (use last action if this is the first iteration)
         torch::Tensor current_action = action_history_.numel() == 0 ? 
@@ -590,7 +611,6 @@ public:
         }
 
         // Prepare observation tensor based on the reduced observation space
-        // From Python: obs_actor with 41 elements
         torch::Tensor observations = torch::cat({
             action_history_.flatten(),                   // 14 - self.action_history_actor.flatten(start_dim=1) (2x7)
             dof_pos_scaled_obs.flatten(),               // 7  - self.dof_pos_scaled
@@ -610,10 +630,34 @@ public:
         // Store the action for next iteration
         current_action = raw_action.clone();
 
-        previous_joint_pos = robot_dof_targets_.clone();
+        // Compute neural network targets (current position + scaled action)
+        torch::Tensor nn_targets = joint_positions_obs_ + (raw_action * action_scale_);
 
-        // Compute new targets
-        torch::Tensor targets = joint_positions_obs_ + (raw_action * action_scale_);
+        torch::Tensor targets = torch::zeros(7);
+        if (use_polynomial_regressor_) {
+            // Use NN targets as input to polynomial predictor
+            std::array<double, 7> predictor_input = {
+                nn_targets[0].item<double>(),  // set_target_0
+                nn_targets[1].item<double>(),  // set_target_1
+                nn_targets[2].item<double>(),  // set_target_2
+                nn_targets[3].item<double>(),  // set_target_3
+                nn_targets[4].item<double>(),  // set_target_4
+                nn_targets[5].item<double>(),  // set_target_5
+                nn_targets[6].item<double>()   // set_target_6
+            };
+            
+            // Polynomial predictor completely replaces NN output
+            auto predictor_output = predictor.predict(predictor_input);
+            for (int i = 0; i < 7; i++) {
+                targets[i] = predictor_output[i];
+            }
+            
+        } else {
+            // Use neural network output directly
+            targets = nn_targets;
+        }
+        
+
         robot_dof_targets_ = torch::clamp(
             targets,
             0.975 * robot_dof_lower_limits_,
@@ -625,29 +669,23 @@ public:
         double ball_z = tennisball_pos_world_[2].item<double>();
         bool should_publish = is_ball_x_within_threshold();
 
-        // RCLCPP_INFO(this->get_logger(), "Started recording - Robot is active (ball X: %.3f <= %.3f), (ball Z: %.3f >= %.3f), (ball Y: %.3f)", 
-        //                ball_x, max_ball_x_position_, 
-        //                ball_z, min_ball_z_position_,
-        //                tennisball_pos_world_[1].item<double>()); 
-
         // Recording logic: start recording when robot starts moving, stop when it stops
         if (should_publish && !recording_active_) {
             recording_active_ = true;
-            RCLCPP_INFO(this->get_logger(), "Started recording - Robot is active (ball X: %.3f <= %.3f), (ball Z: %.3f >= %.3f), (ball Y: %.3f)", 
-                       ball_x, max_ball_x_position_, 
-                       ball_z, min_ball_z_position_,
-                       tennisball_pos_world_[1].item<double>()); 
+            // RCLCPP_INFO(this->get_logger(), "Started recording - Robot is active (ball X: %.3f <= %.3f), (ball Z: %.3f >= %.3f), (ball Y: %.3f)", 
+            //            ball_x, max_ball_x_position_, 
+            //            ball_z, min_ball_z_position_,
+            //            tennisball_pos_world_[1].item<double>()); 
         } else if (!should_publish && recording_active_) {
             recording_active_ = false;
-            RCLCPP_INFO(this->get_logger(), "Stopped recording - Robot stopped (ball X: %.3f > %.3f), (ball Z: %.3f < %.3f, (ball Y: %.3f))", 
-                       ball_x, max_ball_x_position_, 
-                       ball_z, min_ball_z_position_,
-                    tennisball_pos_world_[1].item<double>());
-        } 
+            // RCLCPP_INFO(this->get_logger(), "Stopped recording - Robot stopped (ball X: %.3f > %.3f), (ball Z: %.3f < %.3f, (ball Y: %.3f))", 
+            //            ball_x, max_ball_x_position_, 
+            //            ball_z, min_ball_z_position_,
+            //         tennisball_pos_world_[1].item<double>());
+       } 
 
         // Only record data when recording is active (robot is moving)
         if (recording_active_) {
-            // Save outputs for logging/debugging
             joint_targets_.push_back(tensor_to_vector(targets));
             joint_poses_.push_back(tensor_to_vector(joint_positions_obs_));
             joint_velocities_.push_back(tensor_to_vector(joint_velocities_obs_));
@@ -661,21 +699,15 @@ public:
             raw_actions_.push_back(tensor_to_vector(raw_action));
             ball_x_positions_.push_back({ball_x});
             command_published_.push_back({should_publish ? 1.0 : 0.0});
-        }
+        }        
 
         // Update target reference which will be then interpolated
         if (fake_joint_state_) {
             q_interp_ref = joint_recorded_pos_csv[t_];
-            // std::cout << "\n";
-            // std::cout << "q_reference (to be interpolated) at sample t: " << t_ << "\n";
-            // std::cout << q_interp_ref << "\n";
-        }
-
-        else {
+        } else {
             q_interp_ref = tensor_to_vector(robot_dof_targets_);
         }
                 
-
         //Update the flag for new reference to trigger interpolation in the other thread
         updated_ref = true;
         
@@ -715,76 +747,83 @@ public:
     }
 
     void save_output(const std::vector<std::vector<double>>& outputs, 
-                     const std::string& output_file_path, 
+                     const std::string& filename, 
                      const std::string& header = "") {
-        std::ofstream file(output_file_path);
-        if (!file.is_open()) {
-            RCLCPP_ERROR(this->get_logger(), "Failed to open file: %s", output_file_path.c_str());
-            return;
-        }
-
-        // Write header if provided
-        if (!header.empty()) {
-            file << header << "\n";
-        }
-
-        // Write data
-        for (const auto& row : outputs) {
-            for (size_t i = 0; i < row.size(); ++i) {
-                file << row[i];
-                if (i != row.size() - 1)
-                    file << ",";
-            }
-            file << "\n";
-        }
-
-        file.close();
+        experiment_manager_->save_csv(outputs, filename, header);
     }
 
     ~JointStateNode(){
         RCLCPP_INFO(this->get_logger(), "Destructor called - Saving recorded data...");
         if (!joint_targets_.empty()) {
-            // RCLCPP_INFO(this->get_logger(), "Saving recorded data (%zu samples)...", joint_targets_.size());
-            
-            // Save various outputs
-            save_output(joint_targets_, output_dir_ + "/tm_received_joint_target_np.csv", 
+            // Save various outputs using ExperimentManager
+            save_output(joint_targets_, "tm_received_joint_target_np.csv", 
                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6");
-            save_output(joint_poses_, output_dir_ + "/tm_received_joint_pos_np.csv", 
+            save_output(joint_poses_, "tm_received_joint_pos_np.csv", 
                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6");
-            save_output(joint_velocities_, output_dir_ + "/tm_received_joint_vel_np.csv", 
+            save_output(joint_velocities_, "tm_received_joint_vel_np.csv", 
                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6");
-            save_output(discrete_joint_velocities_smoothed_, output_dir_ + "/tm_discrete_joint_vel_smoothed_np.csv", 
+            save_output(discrete_joint_velocities_smoothed_, "tm_discrete_joint_vel_smoothed_np.csv", 
                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6");
-            save_output(ee_poses_, output_dir_ + "/tm_received_ee_pos_np.csv", 
+            save_output(ee_poses_, "tm_received_ee_pos_np.csv", 
                         "pos_X,pos_Y,pos_Z");
-            save_output(ee_orientations_, output_dir_ + "/tm_received_ee_orientation_np.csv", 
+            save_output(ee_orientations_, "tm_received_ee_orientation_np.csv", 
                         "or_w,or_x,or_y,or_z");
-            save_output(ee_velocities_, output_dir_ + "/tm_received_ee_vel_np.csv", 
+            save_output(ee_velocities_, "tm_received_ee_vel_np.csv", 
                         "lin_vel_X,lin_vel_Y,lin_vel_Z");
             
             // Save ball tracking data (world frame)
-            save_output(ball_positions_, output_dir_ + "/tm_ball_positions_world_np.csv", 
+            save_output(ball_positions_, "tm_ball_positions_world_np.csv", 
                         "ball_x,ball_y,ball_z");
-            save_output(ball_velocities_raw_, output_dir_ + "/tm_ball_velocities_raw_world_np.csv", 
+            save_output(ball_velocities_raw_, "tm_ball_velocities_raw_world_np.csv", 
                         "ball_vx,ball_vy,ball_vz");
-            save_output(ball_velocities_ema_, output_dir_ + "/tm_ball_velocities_ema_world_np.csv", 
+            save_output(ball_velocities_ema_, "tm_ball_velocities_ema_world_np.csv", 
                         "ball_vx_ema,ball_vy_ema,ball_vz_ema");
             
             // Save action data
-            save_output(raw_actions_, output_dir_ + "/tm_raw_actions_np.csv", 
+            save_output(raw_actions_, "tm_raw_actions_np.csv", 
                         "action_0,action_1,action_2,action_3,action_4,action_5,action_6");
             
             // Save distance and command status
-            save_output(ball_x_positions_, output_dir_ + "/tm_ball_x_positions_np.csv", 
+            save_output(ball_x_positions_, "tm_ball_x_positions_np.csv", 
                         "ball_x_position");
-            save_output(command_published_, output_dir_ + "/tm_command_published_np.csv", 
+            save_output(command_published_, "tm_command_published_np.csv", 
                         "command_published");
 
             RCLCPP_INFO(this->get_logger(), "Model outputs saved successfully.");
-        } 
-
+            
+            // Generate experiment summary with additional info
+            json experiment_summary;
+            experiment_summary["total_data_points"] = joint_targets_.size();
+            experiment_summary["recording_active_periods"] = "Variable based on ball position";
+            experiment_summary["max_ball_x_threshold"] = max_ball_x_position_;
+            experiment_summary["min_ball_z_threshold"] = min_ball_z_position_;
+            experiment_summary["files_generated"] = {
+                "tm_received_joint_target_np.csv",
+                "tm_received_joint_pos_np.csv", 
+                "tm_received_joint_vel_np.csv",
+                "tm_discrete_joint_vel_smoothed_np.csv",
+                "tm_received_ee_pos_np.csv",
+                "tm_received_ee_orientation_np.csv",
+                "tm_received_ee_vel_np.csv",
+                "tm_ball_positions_world_np.csv",
+                "tm_ball_velocities_raw_world_np.csv",
+                "tm_ball_velocities_ema_world_np.csv",
+                "tm_raw_actions_np.csv",
+                "tm_ball_x_positions_np.csv",
+                "tm_command_published_np.csv"
+            };
+            
+            experiment_manager_->generate_experiment_summary(experiment_summary);
+        } else {
+            RCLCPP_WARN(this->get_logger(), "No data to save - joint_targets_ is empty");
+            
+            // Still generate summary even with no data
+            json experiment_summary;
+            experiment_summary["total_data_points"] = 0;
+            experiment_summary["status"] = "No data recorded";
+            experiment_manager_->generate_experiment_summary(experiment_summary);
+        }
     }
-
 
 private:
     // Joint state callback
@@ -822,11 +861,6 @@ private:
             robot_dof_targets_ = torch::tensor(positions);
         }
 
-        // Initialize previous_joint_pos if not set
-        if (previous_joint_pos.numel() == 0) {
-            previous_joint_pos = torch::tensor(positions);
-        }
-
     }
 
     // Pose callback
@@ -853,7 +887,6 @@ private:
     }
 
     void robot_command_callback(){
-
         //If the pose is updated from neural network, update init and final joint, and perform linear interpolation
         if(updated_ref){
             q_interp_init = q_interp_final;
@@ -867,19 +900,11 @@ private:
             q_cmd[i] = q_interp_init[i] + double(n)/double(n_interp) * (q_interp_final[i] - q_interp_init[i]);
         }
 
-        // std::cout << "q_init: " << q_interp_init << "\n" << 
-        //         "q_final: " << q_interp_final << "\n" <<
-        //         "q_cmd: " << q_cmd << "\n" <<
-        //         "n: " << n << "\n" <<
-        //         "n_interp: " << n_interp << std::endl << std::endl;
-
         // Check ball X position and decide whether to publish commands
         double ball_x = get_ball_x_position();
         bool should_publish = is_ball_x_within_threshold();
 
         // Publish joint commands only if ball is within distance threshold
-        
-        
         if (should_publish) {
             //Command the robot with the interpolated command
             auto msg = lbr_fri_idl::msg::LBRJointPositionCommand();
@@ -888,7 +913,11 @@ private:
                 q_cmd[3], q_cmd[4], q_cmd[5], 
                 q_cmd[6]
             });
-            joint_ref_pub_->publish(msg);
+            RCLCPP_INFO(this->get_logger(), "Publishing joint command: [%.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f] (ball X: %.3f <= %.3f)", 
+                       q_cmd[0], q_cmd[1], q_cmd[2], 
+                       q_cmd[3], q_cmd[4], q_cmd[5], 
+                       q_cmd[6], ball_x, max_ball_x_position_);
+            // joint_ref_pub_->publish(msg);
         }
     }
 
@@ -909,9 +938,7 @@ private:
         torch::Tensor new_ball_pos_world = transform_to_world_frame(raw_ball_pos);
 
         // Calculate velocity if we have previous position and time
-        if (tennisball_pos_world_.numel() > 0 /*&& last_ball_time_.nanoseconds() > 0*/) {
-            //double dt = (current_time - last_ball_time_).seconds();
-            
+        if (tennisball_pos_world_.numel() > 0) {
             torch::Tensor raw_velocity_world = (new_ball_pos_world - tennisball_pos_world_) / dt_;
             
             // Store raw velocity
@@ -927,24 +954,14 @@ private:
                 tennisball_lin_vel_world_ema_ = ball_vel_ema_alpha_ * tennisball_lin_vel_world_ + 
                                                 (1.0 - ball_vel_ema_alpha_) * tennisball_lin_vel_world_ema_;
             }
-            
-            // Store time for next calculation
-            //last_ball_time_ = current_time;
-            
         } else {
             // Initialize velocity to zero for first measurement
             tennisball_lin_vel_world_ = torch::zeros(3);
             tennisball_lin_vel_world_ema_ = torch::zeros(3);
-            //last_ball_time_ = current_time;
         }
 
         // Update ball position in world frame
         tennisball_pos_world_ = new_ball_pos_world;
-
-        // RCLCPP_INFO(this->get_logger(), "(ball X: %.3f), (ball Y: %.3f), (ball Z: %.3f)", 
-        //                tennisball_pos_world_[0].item<double>(), 
-        //                tennisball_pos_world_[1].item<double>(),
-        //                tennisball_pos_world_[2].item<double>()); 
     }
 
     // Member variables
@@ -992,6 +1009,9 @@ private:
     int joint_vel_window_size_;  // Window size for joint velocity moving average
     bool fake_joint_state_;  // Flag to indicate if joint states are fake (from CSV)
     bool fake_ball_state_;  // Flag to indicate if ball tracking is fake (from CSV)
+    bool use_polynomial_regressor_;  // Flag to indicate if polynomial regressor is used
+    bool c_q_sim_;  // Flag for commanded joint poses simulation
+    bool a_q_sim_;  // Flag for achievable joint poses simulation
 
     // Ball tracking (world frame)
     torch::Tensor tennisball_pos_world_;
@@ -1018,7 +1038,6 @@ private:
     torch::Tensor ee_orientation_;
     torch::Tensor ee_vel_;
     torch::Tensor ee_angular_vel_;
-    torch::Tensor previous_joint_pos;  // To compute joint velocities
 
     std::deque<torch::Tensor> joint_vel_history_;
     torch::Tensor joint_vel_smoothed_;
@@ -1037,7 +1056,6 @@ private:
     std::vector<std::vector<double>> joint_targets_;
     std::vector<std::vector<double>> joint_poses_;
     std::vector<std::vector<double>> joint_velocities_;
-    // std::vector<std::vector<double>> discrete_joint_velocities_;
     std::vector<std::vector<double>> discrete_joint_velocities_smoothed_;  // Smoothed joint velocities
     std::vector<std::vector<double>> ee_poses_;
     std::vector<std::vector<double>> ee_orientations_;
