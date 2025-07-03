@@ -1,3 +1,0 @@
-lbr_demos::PosePlanningNode;lib/libpose_planning_component.so
-lbr_demos::PoseControlNode;lib/libpose_control_component.so
-lbr_demos::PoseStreamingNode;lib/libpose_streaming_component.so
