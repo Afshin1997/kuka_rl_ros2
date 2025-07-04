@@ -35,7 +35,7 @@ def generate_launch_description():
     joint_state_node = Node(
         package='catch_and_throw',
         executable='joint_state_node_trained_bouncing',
-        name='joint_state_node_trained_bouncing',
+        name='joint_state_node',
         parameters=[config_file],
         output='screen'
     )

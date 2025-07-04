@@ -6,7 +6,9 @@
 #include <lbr_fri_idl/msg/lbr_joint_position_command.hpp>
 #include <torch/torch.h>
 #include <torch/script.h>
+
 #include <Eigen/Geometry>
+
 #include <fstream>
 #include <vector>
 #include <string>
@@ -20,10 +22,9 @@
 #include <numeric>
 #include <deque>
 #include <nlohmann/json.hpp> // nlohmann/json library - install with: apt-get install nlohmann-json3-dev
-#include <unistd.h>
-#include "catch_and_throw/experiment_manager.hpp"
 
 using json = nlohmann::json;
+
 using std::placeholders::_1;
 using namespace std::chrono_literals;
 namespace fs = std::filesystem;
@@ -292,7 +293,6 @@ private:
 
 class JointStateNode : public rclcpp::Node {
 private:
-    std::unique_ptr<ExperimentManager> experiment_manager_;
     PolynomialJointPredictor predictor;
     std::array<double, 7> set_targets;
 
@@ -314,14 +314,14 @@ public:
         this->declare_parameter<double>("min_ball_z_position", -1.0);  // Minimum Z position for command publishing
         this->declare_parameter<double>("ball_vel_ema_alpha", 1.0);  // EMA smoothing factor for ball velocity
         this->declare_parameter<int>("joint_vel_window_size", 5);  // SMA smoothing window for joint velocites
-        this->declare_parameter<bool>("fake_joint_state", true);  // Fake joint state for testing
-        this->declare_parameter<bool>("fake_ball_state", true);  // Fake ball state for testing
+        this->declare_parameter<bool>("fake_joint_state", false);  // Fake joint state for testing
+        this->declare_parameter<bool>("fake_ball_state", false);  // Fake ball state for testing
         this->declare_parameter<bool>("use_polynomial_regressor", true);  // Use polynomial regressor for joint position prediction
         this->declare_parameter<bool>("commanded_joint_poses_simulation", false);  // Simulate commanded joint poses
-        this->declare_parameter<bool>("achievable_joint_poses_simulation", true);  // Simulate achievable joint poses
-        this->declare_parameter<std::string>("source_file_path", "/path/to/your/actual/source/file.cpp");
+        this->declare_parameter<bool>("achievable_joint_poses_simulation", false);  // Simulate achievable joint poses
 
         // Initialize and clean output directory
+        output_dir_ = this->get_parameter("output_dir").as_string();
         std::string polynomial_model_path_ = this->get_parameter("PolynomialModelPath").as_string();
         max_ball_x_position_ = this->get_parameter("max_ball_x_position").as_double();
         min_ball_z_position_ = this->get_parameter("min_ball_z_position").as_double();
@@ -337,9 +337,8 @@ public:
         c_q_sim_ = this->get_parameter("commanded_joint_poses_simulation").as_bool();
         a_q_sim_ = this->get_parameter("achievable_joint_poses_simulation").as_bool();
 
-        // Initialize ExperimentManager
-        experiment_manager_ = std::make_unique<ExperimentManager>(shared_from_this());
-        output_dir_ = experiment_manager_->initialize_experiment();
+        setup_output_directory();
+
         // Hyperparameters matching Python script
         dt_ = dt_nn;
         tennis_ball_pos_scale_ = 0.25;
@@ -406,6 +405,26 @@ public:
             std::bind(&JointStateNode::compute_action_and_publish, this)
         );
 
+        // RCLCPP_INFO(this->get_logger(), "JointStateNode initialized - Output directory prepared");
+    }
+
+    // Setup output directory - remove old and create new
+    void setup_output_directory() {
+        try {
+            // Remove the entire idealpd directory if it exists
+            if (fs::exists(output_dir_)) {
+                fs::remove_all(output_dir_);
+                // RCLCPP_INFO(this->get_logger(), "Removed previous output directory: %s", output_dir_.c_str());
+            }
+            
+            // Create fresh directory
+            fs::create_directories(output_dir_);
+            // RCLCPP_INFO(this->get_logger(), "Created new output directory: %s", output_dir_.c_str());
+            
+        } catch (const fs::filesystem_error& e) {
+            RCLCPP_ERROR(this->get_logger(), "Filesystem error: %s", e.what());
+            throw;
+        }
     }
 
     // Transform position from OptiTrack frame to world frame
@@ -466,7 +485,7 @@ public:
         }
 
         else {
-            return (ball_x <= max_ball_x_position_ && ball_z >= min_ball_z_position_); // Check if ball X and Z positions are within the threshold
+            return (ball_x <= max_ball_x_position_ && ball_z >= min_ball_z_position_); // Check if ball X position is within the threshold
         }
     }
 
@@ -511,7 +530,12 @@ public:
         
         // Extract data from CSV 
         for (const auto& row : data) {
-
+            // Ensure row has at least 68 columns to prevent out-of-bounds access
+            // if (row.size() < 68) {
+            //     std::cerr << "Skipping row with insufficient columns" << std::endl;
+            //     continue;
+            // }
+            
             // Tennis ball position (columns 42-44)
             std::vector<float> position_row = {
                 row[35], 
@@ -529,7 +553,7 @@ public:
             tennisball_lin_vel_csv.push_back(velocity_row);
 
             // Tennis ball linear velocity (columns 45-47)
-            if (fake_joint_state_ & c_q_sim_) {
+            if (fake_joint_state_ && c_q_sim_) {
                 std::vector<double> joint_pos_row = {
                     row[14], 
                     row[15], 
@@ -540,7 +564,7 @@ public:
                     row[20]
                 };
                 joint_recorded_pos_csv.push_back(joint_pos_row);
-            } else if (fake_joint_state_ & a_q_sim_) {
+            } else if (fake_joint_state_ && a_q_sim_) {
                 // Use recorded joint positions from the CSV
                 std::vector<double> joint_pos_row = {
                     row[21], 
@@ -611,6 +635,7 @@ public:
         }
 
         // Prepare observation tensor based on the reduced observation space
+        // From Python: obs_actor with 41 elements
         torch::Tensor observations = torch::cat({
             action_history_.flatten(),                   // 14 - self.action_history_actor.flatten(start_dim=1) (2x7)
             dof_pos_scaled_obs.flatten(),               // 7  - self.dof_pos_scaled
@@ -686,6 +711,7 @@ public:
 
         // Only record data when recording is active (robot is moving)
         if (recording_active_) {
+            // Save outputs for logging/debugging
             joint_targets_.push_back(tensor_to_vector(targets));
             joint_poses_.push_back(tensor_to_vector(joint_positions_obs_));
             joint_velocities_.push_back(tensor_to_vector(joint_velocities_obs_));
@@ -697,9 +723,8 @@ public:
             ball_velocities_raw_.push_back(tensor_to_vector(tennisball_lin_vel_world_));  // Raw velocities
             ball_velocities_ema_.push_back(tensor_to_vector(tennisball_lin_vel_world_ema_));  // EMA filtered velocities
             raw_actions_.push_back(tensor_to_vector(raw_action));
-            ball_x_positions_.push_back({ball_x});
             command_published_.push_back({should_publish ? 1.0 : 0.0});
-        }        
+        }
 
         // Update target reference which will be then interpolated
         if (fake_joint_state_) {
@@ -747,82 +772,69 @@ public:
     }
 
     void save_output(const std::vector<std::vector<double>>& outputs, 
-                     const std::string& filename, 
+                     const std::string& output_file_path, 
                      const std::string& header = "") {
-        experiment_manager_->save_csv(outputs, filename, header);
+        std::ofstream file(output_file_path);
+        if (!file.is_open()) {
+            RCLCPP_ERROR(this->get_logger(), "Failed to open file: %s", output_file_path.c_str());
+            return;
+        }
+
+        // Write header if provided
+        if (!header.empty()) {
+            file << header << "\n";
+        }
+
+        // Write data
+        for (const auto& row : outputs) {
+            for (size_t i = 0; i < row.size(); ++i) {
+                file << row[i];
+                if (i != row.size() - 1)
+                    file << ",";
+            }
+            file << "\n";
+        }
+
+        file.close();
     }
 
     ~JointStateNode(){
         RCLCPP_INFO(this->get_logger(), "Destructor called - Saving recorded data...");
         if (!joint_targets_.empty()) {
-            // Save various outputs using ExperimentManager
-            save_output(joint_targets_, "tm_received_joint_target_np.csv", 
+            // Save various outputs
+            save_output(joint_targets_, output_dir_ + "/tm_received_joint_target_np.csv", 
                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6");
-            save_output(joint_poses_, "tm_received_joint_pos_np.csv", 
+            save_output(joint_poses_, output_dir_ + "/tm_received_joint_pos_np.csv", 
                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6");
-            save_output(joint_velocities_, "tm_received_joint_vel_np.csv", 
+            save_output(joint_velocities_, output_dir_ + "/tm_received_joint_vel_np.csv", 
                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6");
-            save_output(discrete_joint_velocities_smoothed_, "tm_discrete_joint_vel_smoothed_np.csv", 
+            save_output(discrete_joint_velocities_smoothed_, output_dir_ + "/tm_discrete_joint_vel_smoothed_np.csv", 
                         "joint_0,joint_1,joint_2,joint_3,joint_4,joint_5,joint_6");
-            save_output(ee_poses_, "tm_received_ee_pos_np.csv", 
+            save_output(ee_poses_, output_dir_ + "/tm_received_ee_pos_np.csv", 
                         "pos_X,pos_Y,pos_Z");
-            save_output(ee_orientations_, "tm_received_ee_orientation_np.csv", 
+            save_output(ee_orientations_, output_dir_ + "/tm_received_ee_orientation_np.csv", 
                         "or_w,or_x,or_y,or_z");
-            save_output(ee_velocities_, "tm_received_ee_vel_np.csv", 
+            save_output(ee_velocities_, output_dir_ + "/tm_received_ee_vel_np.csv", 
                         "lin_vel_X,lin_vel_Y,lin_vel_Z");
             
             // Save ball tracking data (world frame)
-            save_output(ball_positions_, "tm_ball_positions_world_np.csv", 
+            save_output(ball_positions_, output_dir_ + "/tm_ball_positions_world_np.csv", 
                         "ball_x,ball_y,ball_z");
-            save_output(ball_velocities_raw_, "tm_ball_velocities_raw_world_np.csv", 
+            save_output(ball_velocities_raw_, output_dir_ + "/tm_ball_velocities_raw_world_np.csv", 
                         "ball_vx,ball_vy,ball_vz");
-            save_output(ball_velocities_ema_, "tm_ball_velocities_ema_world_np.csv", 
+            save_output(ball_velocities_ema_, output_dir_ + "/tm_ball_velocities_ema_world_np.csv", 
                         "ball_vx_ema,ball_vy_ema,ball_vz_ema");
             
             // Save action data
-            save_output(raw_actions_, "tm_raw_actions_np.csv", 
+            save_output(raw_actions_, output_dir_ + "/tm_raw_actions_np.csv", 
                         "action_0,action_1,action_2,action_3,action_4,action_5,action_6");
             
             // Save distance and command status
-            save_output(ball_x_positions_, "tm_ball_x_positions_np.csv", 
-                        "ball_x_position");
-            save_output(command_published_, "tm_command_published_np.csv", 
+            save_output(command_published_, output_dir_ + "/tm_command_published_np.csv", 
                         "command_published");
 
             RCLCPP_INFO(this->get_logger(), "Model outputs saved successfully.");
-            
-            // Generate experiment summary with additional info
-            json experiment_summary;
-            experiment_summary["total_data_points"] = joint_targets_.size();
-            experiment_summary["recording_active_periods"] = "Variable based on ball position";
-            experiment_summary["max_ball_x_threshold"] = max_ball_x_position_;
-            experiment_summary["min_ball_z_threshold"] = min_ball_z_position_;
-            experiment_summary["files_generated"] = {
-                "tm_received_joint_target_np.csv",
-                "tm_received_joint_pos_np.csv", 
-                "tm_received_joint_vel_np.csv",
-                "tm_discrete_joint_vel_smoothed_np.csv",
-                "tm_received_ee_pos_np.csv",
-                "tm_received_ee_orientation_np.csv",
-                "tm_received_ee_vel_np.csv",
-                "tm_ball_positions_world_np.csv",
-                "tm_ball_velocities_raw_world_np.csv",
-                "tm_ball_velocities_ema_world_np.csv",
-                "tm_raw_actions_np.csv",
-                "tm_ball_x_positions_np.csv",
-                "tm_command_published_np.csv"
-            };
-            
-            experiment_manager_->generate_experiment_summary(experiment_summary);
-        } else {
-            RCLCPP_WARN(this->get_logger(), "No data to save - joint_targets_ is empty");
-            
-            // Still generate summary even with no data
-            json experiment_summary;
-            experiment_summary["total_data_points"] = 0;
-            experiment_summary["status"] = "No data recorded";
-            experiment_manager_->generate_experiment_summary(experiment_summary);
-        }
+        } 
     }
 
 private:
@@ -936,7 +948,10 @@ private:
 
         // Transform to world frame
         torch::Tensor new_ball_pos_world = transform_to_world_frame(raw_ball_pos);
-
+        RCLCPP_INFO(this->get_logger(), "Started recording - Robot is active (ball X: %.3f), (ball Y: %.3f), (ball Z: %.3f)", 
+                       new_ball_pos_world[0].item<double>(), 
+                       new_ball_pos_world[1].item<double>(), 
+                       new_ball_pos_world[2].item<double>()); 
         // Calculate velocity if we have previous position and time
         if (tennisball_pos_world_.numel() > 0) {
             torch::Tensor raw_velocity_world = (new_ball_pos_world - tennisball_pos_world_) / dt_;
@@ -1064,7 +1079,6 @@ private:
     std::vector<std::vector<double>> ball_velocities_raw_;  // Raw ball velocities
     std::vector<std::vector<double>> ball_velocities_ema_;  // EMA filtered ball velocities
     std::vector<std::vector<double>> raw_actions_;
-    std::vector<std::vector<double>> ball_x_positions_;
     std::vector<std::vector<double>> command_published_;
 };
 

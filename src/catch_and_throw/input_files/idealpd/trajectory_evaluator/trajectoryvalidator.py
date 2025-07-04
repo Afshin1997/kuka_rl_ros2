@@ -385,7 +385,7 @@ if __name__ == "__main__":
     validator = TrajectoryValidator()
     
     # Load your CSV files
-    file_paths = ['pos_1.csv', 'pos_3.csv', 'pos_4.csv', 'pos_5.csv', 'pos_7.csv', 'pos_8.csv']
+    file_paths = ['pos_1.csv', 'pos_2.csv', 'pos_4.csv']
     trajectories = validator.load_trajectories(file_paths)
     
     # Analyze all trajectories
