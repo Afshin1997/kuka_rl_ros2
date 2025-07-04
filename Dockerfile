@@ -8,7 +8,8 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
     git \
     python3-pip \
-    python3-scipy
+    python3-scipy \
+    nlohmann-json3-dev
 
 # Install Python packages with pip
 RUN pip3 install pandas scipy optirx joblib scikit-learn seaborn "numpy<2" #torch 
