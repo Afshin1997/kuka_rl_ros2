@@ -112,6 +112,8 @@ find_package(lbr_fri_idl REQUIRED)
 find_package(Torch REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(orocos_kdl REQUIRED)
+find_package(kdl_parser REQUIRED)
 
 # Set CMAKE flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
@@ -142,13 +144,15 @@ set(CMAKE_INSTALL_RPATH "/home/user/kuka_rl_ros2/src/catch_and_throw/libs/libtor
 # )
 
 # Add and configure joint_state_node_trained_bouncing
-add_executable(joint_state_node_trained_bouncing src/joint_state_node_trained_bouncing.cpp src/experiment_manager.cpp)
+add_executable(joint_state_node_trained_bouncing src/joint_state_node_trained_bouncing.cpp src/experiment_manager.cpp src/manip_filter.cpp)
 ament_target_dependencies(joint_state_node_trained_bouncing
     rclcpp
     sensor_msgs
     std_msgs
     geometry_msgs
     lbr_fri_idl
+    kdl_parser
+    orocos_kdl
 )
 
 # Target include directories
