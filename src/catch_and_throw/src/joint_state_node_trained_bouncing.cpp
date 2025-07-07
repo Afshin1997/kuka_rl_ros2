@@ -937,8 +937,8 @@ private:
     void ball_pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg) {
         std::lock_guard<std::mutex> lock(mutex_);
         
-        auto current_time = this->now();
-        
+        rclcpp::Time current_time = this->now();
+
         // Get raw OptiTrack position
         torch::Tensor raw_ball_pos = torch::tensor({
             msg->pose.position.x, 
@@ -952,9 +952,11 @@ private:
                        new_ball_pos_world[0].item<double>(), 
                        new_ball_pos_world[1].item<double>(), 
                        new_ball_pos_world[2].item<double>()); 
+
         // Calculate velocity if we have previous position and time
-        if (tennisball_pos_world_.numel() > 0) {
-            torch::Tensor raw_velocity_world = (new_ball_pos_world - tennisball_pos_world_) / dt_;
+        if (first_ball_cb_) {
+            double dt_ball = (current_time - last_ball_time_).seconds();
+            torch::Tensor raw_velocity_world = (new_ball_pos_world - tennisball_pos_world_) / dt_ball;
             
             // Store raw velocity
             tennisball_lin_vel_world_ = raw_velocity_world;
@@ -970,9 +972,11 @@ private:
                                                 (1.0 - ball_vel_ema_alpha_) * tennisball_lin_vel_world_ema_;
             }
         } else {
-            // Initialize velocity to zero for first measurement
+            // Initialize velocity to zero for first measurement and last ball time
             tennisball_lin_vel_world_ = torch::zeros(3);
             tennisball_lin_vel_world_ema_ = torch::zeros(3);
+            last_ball_time_ = current_time;
+            first_ball_cb_ = true;
         }
 
         // Update ball position in world frame
@@ -1008,6 +1012,8 @@ private:
     int n = 0;
     float dt_nn = 0.01;
     float dt_robot = 0.005;
+    rclcpp::Time last_time_ball;
+    bool first_ball_cb_ = false;
     int n_interp = floor(dt_nn/dt_robot);
     std::vector<double> initial_positions;
     bool first_joint_cb = false;
