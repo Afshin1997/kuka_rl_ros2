@@ -1,0 +1,2 @@
+src/catch_and_throw/libs/libtorch/lib/libdnnl.a filter=lfs diff=lfs merge=lfs -text
+src/catch_and_throw/libs/libtorch/lib/libtorch_cpu.so filter=lfs diff=lfs merge=lfs -text

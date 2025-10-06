@@ -1,0 +1,28 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/user/kuka_rl_ros2/install/optitrack_listener_cpp/include/**",
+        "/home/user/kuka_rl_ros2/install/lbr_ros2_control/include/**",
+        "/home/user/kuka_rl_ros2/install/lbr_fri_ros2/include/**",
+        "/home/user/kuka_rl_ros2/install/lbr_fri_idl/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/user/kuka_rl_ros2/src/lbr-stack/lbr_fri_ros2_stack/lbr_fri_ros2/include/**",
+        "/home/user/kuka_rl_ros2/src/lbr-stack/lbr_fri_ros2_stack/lbr_ros2_control/include/**",
+        "/home/user/kuka_rl_ros2/src/optitrack_listener_cpp/include/**",
+        "/home/user/kuka_rl_ros2/src/catch_and_throw/libs/libtorch/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}

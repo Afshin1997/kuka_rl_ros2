@@ -1,0 +1,29 @@
+joint_state_node:
+  ros__parameters:
+    # Model and file paths
+    model_path: "/home/user/kuka_rl_ros2/src/catch_and_throw/input_files/idealpd/policy.pt"
+    base_output_dir: "/home/user/kuka_rl_ros2/src/catch_and_throw/output_files/tm"
+    PolynomialModelPath: "/home/user/kuka_rl_ros2/src/catch_and_throw/input_files/idealpd/polynomial_regressor/polynomial_models.json"
+    source_file_path: "/home/user/kuka_rl_ros2/src/catch_and_throw/src/joint_state_node_trained_bouncing.cpp"
+
+    # Ball tracking parameters
+    max_ball_x_position: 3.0      # Maximum X position for command publishing
+    min_ball_x_position: -0.9      # Minimum X position for command publishing
+    min_ball_z_position: 0.1     # Minimum Z position for command publishing
+    min_ball_y_position: -1.2     # Minimum Y position for command publishing
+    max_ball_y_position: 0.0     # Maximum Y position for command publishing
+    # ball_vel_ema_alpha: 0.2       # EMA smoothing factor for ball velocity (1.0 = no smoothing, 0.0 = max smoothing)
+    # ball_sg_window_size: 2      # Savitzky-Golay smoothing window size for ball position, the smallest value should be 2
+    ball_sg_window_size_x: 2      # Savitzky-Golay smoothing window size for ball position in x, the smallest value should be 2
+    ball_sg_window_size_y: 7      # Savitzky-Golay smoothing window size for ball position in y, the smallest value should be 2
+    ball_sg_window_size_z: 2      # Savitzky-Golay smoothing window size for ball position
+    joint_sg_window_size: 1     # Savitzky-Golay smoothing window size for joint targets
+    # Joint velocity filtering
+    joint_vel_window_size: 1      # SMA smoothing window size for joint velocities
+    
+    fake_joint_state: false  # Whether to use fake joint states for testing
+    fake_ball_state: false   # Whether to use fake ball states for testing
+    use_polynomial_regressor: false  # Whether to use polynomial regressor for joint position prediction
+    use_manipulator_filter: false # Use manipulator dynamic response filter
+    commanded_joint_poses_simulation: false  # Whether to simulate commanded joint poses
+    achievable_joint_poses_simulation: false  # Whether to simulate achievable joint poses

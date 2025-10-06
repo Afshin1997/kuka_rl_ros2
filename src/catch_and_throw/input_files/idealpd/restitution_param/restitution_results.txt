@@ -1,0 +1,27 @@
+Ball Drop Restitution Coefficient Analysis Results
+============================================================
+
+Analysis Date: 2025-07-18 09:13:36
+Folder: 
+
+Summary Statistics:
+------------------------------------------------------------
+Average restitution coefficient: 0.5609
+Standard deviation: 0.1295
+Minimum: 0.1893
+Maximum: 0.6655
+Range: 0.4763
+Number of files analyzed: 10
+
+Individual File Results:
+------------------------------------------------------------
+1.csv: 0.1893
+10.csv: 0.5791
+11.csv: 0.5695
+13.csv: 0.6476
+16.csv: 0.6655
+2.csv: 0.6014
+4.csv: 0.6066
+5.csv: 0.6069
+7.csv: 0.5235
+9.csv: 0.6191

@@ -1,0 +1,25 @@
+=== EXPERIMENT METADATA ===
+Timestamp: Mon Sep 29 12:23:18 2025
+
+=== KEY PARAMETERS ===
+use_polynomial_regressor: false
+ball_vel_ema_alpha: 2
+fake_ball_state: false
+fake_joint_state: false
+max_ball_x_position: 3
+min_ball_x_position: -2
+min_ball_z_position: 0.1
+joint_vel_window_size: 1
+commanded_joint_poses_simulation: false
+achievable_joint_poses_simulation: false
+
+=== HYPERPARAMETERS ===
+dt_nn: 0.01
+dt_robot: 0.005
+tennis_ball_pos_scale: 0.25
+lin_vel_scale: 0.15
+dof_vel_scale: 0.31
+action_scale: 0.1
+
+=== ROS NODE PARAMETERS ===
+joint_position_tau: 0.04

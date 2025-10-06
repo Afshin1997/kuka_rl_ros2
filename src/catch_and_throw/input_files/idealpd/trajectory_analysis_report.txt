@@ -1,0 +1,35 @@
+======================================================================
+TRAJECTORY ANALYSIS REPORT: SIMULATION VS REALITY
+======================================================================
+
+Simulation files analyzed: 100
+Real-world files analyzed: 89
+
+
+============================================================
+STATISTICAL COMPARISON OF INITIAL CONDITIONS
+============================================================
+
+init_pos_x:
+  Simulation: μ = 2.969 ± σ = 0.173
+  Reality:    μ = 2.981 ± σ = 0.015
+
+init_pos_y:
+  Simulation: μ = -0.490 ± σ = 0.137
+  Reality:    μ = -0.490 ± σ = 0.023
+
+init_pos_z:
+  Simulation: μ = 0.255 ± σ = 0.112
+  Reality:    μ = 0.293 ± σ = 0.115
+
+init_vel_x:
+  Simulation: μ = -3.286 ± σ = 0.317
+  Reality:    μ = -3.281 ± σ = 0.238
+
+init_vel_y:
+  Simulation: μ = -0.088 ± σ = 0.188
+  Reality:    μ = 0.014 ± σ = 0.152
+
+init_vel_z:
+  Simulation: μ = 5.145 ± σ = 0.308
+  Reality:    μ = 5.141 ± σ = 0.407

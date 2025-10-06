@@ -1,0 +1,359 @@
+[0.000000] (-) TimerEvent: {}
+[0.000154] (catch_and_throw) JobQueued: {'identifier': 'catch_and_throw', 'dependencies': OrderedDict()}
+[0.000196] (catch_and_throw) JobStarted: {'identifier': 'catch_and_throw'}
+[0.010248] (catch_and_throw) JobProgress: {'identifier': 'catch_and_throw', 'progress': 'cmake'}
+[0.010973] (catch_and_throw) JobProgress: {'identifier': 'catch_and_throw', 'progress': 'build'}
+[0.011763] (catch_and_throw) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/user/kuka_rl_ros2/src/catch_and_throw/build/catch_and_throw', '--', '-j8', '-l8'], 'cwd': '/home/user/kuka_rl_ros2/src/catch_and_throw/build/catch_and_throw', 'env': OrderedDict([('GZ_SIM_RESOURCE_PATH', '/home/user/kuka_rl_ros2/install/lbr_description/share'), ('HOSTNAME', 'prismalab'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/kuka_rl_ros2/install/lbr_ros2_control/lib:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp/lib:/home/user/kuka_rl_ros2/install/lbr_fri_ros2/lib:/home/user/kuka_rl_ros2/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/kuka_rl_ros2/src/catch_and_throw/launch'), ('ROS_PYTHON_VERSION', '3'), ('COLCON_PREFIX_PATH', '/home/user/kuka_rl_ros2/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/pkgconfig'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '20'), ('AMENT_PREFIX_PATH', '/home/user/kuka_rl_ros2/install/optitrack_listener:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/opt/ros/humble'), ('PWD', '/home/user/kuka_rl_ros2/src/catch_and_throw/build/catch_and_throw'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/kuka_rl_ros2/install/optitrack_listener/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_demos_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_bringup/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/install/lbr_moveit/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_fri_idl/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/optitrack_listener:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/opt/ros/humble')]), 'shell': False}
+[0.035669] (catch_and_throw) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.099243] (-) TimerEvent: {}
+[0.172408] (catch_and_throw) StdoutLine: {'line': b'-- Found rclcpp: 16.0.12 (/opt/ros/humble/share/rclcpp/cmake)\n'}
+[0.198953] (catch_and_throw) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[0.199307] (-) TimerEvent: {}
+[0.201540] (catch_and_throw) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.207015] (catch_and_throw) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[0.216204] (catch_and_throw) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.228093] (catch_and_throw) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.259032] (catch_and_throw) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[0.260727] (catch_and_throw) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[0.299426] (-) TimerEvent: {}
+[0.392214] (catch_and_throw) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[0.399529] (-) TimerEvent: {}
+[0.443870] (catch_and_throw) StdoutLine: {'line': b'-- Found sensor_msgs: 4.8.0 (/opt/ros/humble/share/sensor_msgs/cmake)\n'}
+[0.471180] (catch_and_throw) StdoutLine: {'line': b'-- Found lbr_fri_idl: 1.5.0 (/home/user/kuka_rl_ros2/install/lbr_fri_idl/share/lbr_fri_idl/cmake)\n'}
+[0.499627] (-) TimerEvent: {}
+[0.522204] (catch_and_throw) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.12 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[0.599743] (-) TimerEvent: {}
+[0.656157] (catch_and_throw) StdoutLine: {'line': b'-- Configuring done\n'}
+[0.679799] (catch_and_throw) StdoutLine: {'line': b'-- Generating done\n'}
+[0.685441] (catch_and_throw) StdoutLine: {'line': b'-- Build files have been written to: /home/user/kuka_rl_ros2/src/catch_and_throw/build/catch_and_throw\n'}
+[0.699844] (-) TimerEvent: {}
+[0.712505] (catch_and_throw) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target joint_state_node\x1b[0m\n'}
+[0.712794] (catch_and_throw) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target joint_state_node_trained\x1b[0m\n'}
+[0.795594] (catch_and_throw) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/joint_state_node_trained.dir/src/joint_state_node_trained.cpp.o\x1b[0m\n'}
+[0.795799] (catch_and_throw) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/joint_state_node.dir/src/joint_state_node.cpp.o\x1b[0m\n'}
+[0.799934] (-) TimerEvent: {}
+[0.900166] (-) TimerEvent: {}
+[1.000458] (-) TimerEvent: {}
+[1.101498] (-) TimerEvent: {}
+[1.201784] (-) TimerEvent: {}
+[1.302095] (-) TimerEvent: {}
+[1.402421] (-) TimerEvent: {}
+[1.502668] (-) TimerEvent: {}
+[1.602915] (-) TimerEvent: {}
+[1.703158] (-) TimerEvent: {}
+[1.803384] (-) TimerEvent: {}
+[1.903628] (-) TimerEvent: {}
+[2.003952] (-) TimerEvent: {}
+[2.104275] (-) TimerEvent: {}
+[2.204581] (-) TimerEvent: {}
+[2.304824] (-) TimerEvent: {}
+[2.405075] (-) TimerEvent: {}
+[2.505319] (-) TimerEvent: {}
+[2.605539] (-) TimerEvent: {}
+[2.705815] (-) TimerEvent: {}
+[2.806080] (-) TimerEvent: {}
+[2.906321] (-) TimerEvent: {}
+[3.006642] (-) TimerEvent: {}
+[3.106902] (-) TimerEvent: {}
+[3.208294] (-) TimerEvent: {}
+[3.308628] (-) TimerEvent: {}
+[3.408921] (-) TimerEvent: {}
+[3.509214] (-) TimerEvent: {}
+[3.609510] (-) TimerEvent: {}
+[3.709803] (-) TimerEvent: {}
+[3.810107] (-) TimerEvent: {}
+[3.910401] (-) TimerEvent: {}
+[4.010677] (-) TimerEvent: {}
+[4.110956] (-) TimerEvent: {}
+[4.211232] (-) TimerEvent: {}
+[4.311510] (-) TimerEvent: {}
+[4.411761] (-) TimerEvent: {}
+[4.512032] (-) TimerEvent: {}
+[4.612312] (-) TimerEvent: {}
+[4.712576] (-) TimerEvent: {}
+[4.812907] (-) TimerEvent: {}
+[4.913208] (-) TimerEvent: {}
+[5.013505] (-) TimerEvent: {}
+[5.113804] (-) TimerEvent: {}
+[5.214097] (-) TimerEvent: {}
+[5.314396] (-) TimerEvent: {}
+[5.414686] (-) TimerEvent: {}
+[5.514972] (-) TimerEvent: {}
+[5.615253] (-) TimerEvent: {}
+[5.715552] (-) TimerEvent: {}
+[5.815855] (-) TimerEvent: {}
+[5.916173] (-) TimerEvent: {}
+[6.016502] (-) TimerEvent: {}
+[6.116789] (-) TimerEvent: {}
+[6.217083] (-) TimerEvent: {}
+[6.317374] (-) TimerEvent: {}
+[6.417679] (-) TimerEvent: {}
+[6.517935] (-) TimerEvent: {}
+[6.618205] (-) TimerEvent: {}
+[6.718484] (-) TimerEvent: {}
+[6.818776] (-) TimerEvent: {}
+[6.919028] (-) TimerEvent: {}
+[7.019277] (-) TimerEvent: {}
+[7.119534] (-) TimerEvent: {}
+[7.219806] (-) TimerEvent: {}
+[7.320052] (-) TimerEvent: {}
+[7.420347] (-) TimerEvent: {}
+[7.520590] (-) TimerEvent: {}
+[7.620839] (-) TimerEvent: {}
+[7.721145] (-) TimerEvent: {}
+[7.821503] (-) TimerEvent: {}
+[7.921843] (-) TimerEvent: {}
+[8.022095] (-) TimerEvent: {}
+[8.122412] (-) TimerEvent: {}
+[8.222684] (-) TimerEvent: {}
+[8.322952] (-) TimerEvent: {}
+[8.423232] (-) TimerEvent: {}
+[8.523540] (-) TimerEvent: {}
+[8.623812] (-) TimerEvent: {}
+[8.724080] (-) TimerEvent: {}
+[8.824376] (-) TimerEvent: {}
+[8.924641] (-) TimerEvent: {}
+[9.024925] (-) TimerEvent: {}
+[9.125206] (-) TimerEvent: {}
+[9.225482] (-) TimerEvent: {}
+[9.325762] (-) TimerEvent: {}
+[9.426039] (-) TimerEvent: {}
+[9.526356] (-) TimerEvent: {}
+[9.626639] (-) TimerEvent: {}
+[9.726919] (-) TimerEvent: {}
+[9.827195] (-) TimerEvent: {}
+[9.927471] (-) TimerEvent: {}
+[10.027742] (-) TimerEvent: {}
+[10.128006] (-) TimerEvent: {}
+[10.228289] (-) TimerEvent: {}
+[10.328568] (-) TimerEvent: {}
+[10.428842] (-) TimerEvent: {}
+[10.529129] (-) TimerEvent: {}
+[10.629414] (-) TimerEvent: {}
+[10.729701] (-) TimerEvent: {}
+[10.829980] (-) TimerEvent: {}
+[10.930267] (-) TimerEvent: {}
+[11.030554] (-) TimerEvent: {}
+[11.130830] (-) TimerEvent: {}
+[11.231111] (-) TimerEvent: {}
+[11.331393] (-) TimerEvent: {}
+[11.431676] (-) TimerEvent: {}
+[11.532007] (-) TimerEvent: {}
+[11.632276] (-) TimerEvent: {}
+[11.732580] (-) TimerEvent: {}
+[11.832889] (-) TimerEvent: {}
+[11.933126] (-) TimerEvent: {}
+[12.033444] (-) TimerEvent: {}
+[12.133728] (-) TimerEvent: {}
+[12.233995] (-) TimerEvent: {}
+[12.334264] (-) TimerEvent: {}
+[12.434529] (-) TimerEvent: {}
+[12.534796] (-) TimerEvent: {}
+[12.635067] (-) TimerEvent: {}
+[12.735337] (-) TimerEvent: {}
+[12.835601] (-) TimerEvent: {}
+[12.935868] (-) TimerEvent: {}
+[13.036135] (-) TimerEvent: {}
+[13.136380] (-) TimerEvent: {}
+[13.236645] (-) TimerEvent: {}
+[13.336909] (-) TimerEvent: {}
+[13.437180] (-) TimerEvent: {}
+[13.538185] (-) TimerEvent: {}
+[13.638504] (-) TimerEvent: {}
+[13.738781] (-) TimerEvent: {}
+[13.839058] (-) TimerEvent: {}
+[13.939347] (-) TimerEvent: {}
+[14.039627] (-) TimerEvent: {}
+[14.139911] (-) TimerEvent: {}
+[14.240183] (-) TimerEvent: {}
+[14.340458] (-) TimerEvent: {}
+[14.440732] (-) TimerEvent: {}
+[14.541006] (-) TimerEvent: {}
+[14.641280] (-) TimerEvent: {}
+[14.741551] (-) TimerEvent: {}
+[14.841826] (-) TimerEvent: {}
+[14.942101] (-) TimerEvent: {}
+[15.042377] (-) TimerEvent: {}
+[15.142661] (-) TimerEvent: {}
+[15.242929] (-) TimerEvent: {}
+[15.343201] (-) TimerEvent: {}
+[15.443477] (-) TimerEvent: {}
+[15.543759] (-) TimerEvent: {}
+[15.644035] (-) TimerEvent: {}
+[15.744343] (-) TimerEvent: {}
+[15.844609] (-) TimerEvent: {}
+[15.944878] (-) TimerEvent: {}
+[16.045149] (-) TimerEvent: {}
+[16.145421] (-) TimerEvent: {}
+[16.245689] (-) TimerEvent: {}
+[16.345959] (-) TimerEvent: {}
+[16.446225] (-) TimerEvent: {}
+[16.546495] (-) TimerEvent: {}
+[16.646761] (-) TimerEvent: {}
+[16.747033] (-) TimerEvent: {}
+[16.847312] (-) TimerEvent: {}
+[16.947593] (-) TimerEvent: {}
+[17.047868] (-) TimerEvent: {}
+[17.148139] (-) TimerEvent: {}
+[17.248427] (-) TimerEvent: {}
+[17.348707] (-) TimerEvent: {}
+[17.448976] (-) TimerEvent: {}
+[17.549249] (-) TimerEvent: {}
+[17.649500] (-) TimerEvent: {}
+[17.749792] (-) TimerEvent: {}
+[17.850088] (-) TimerEvent: {}
+[17.950376] (-) TimerEvent: {}
+[18.050661] (-) TimerEvent: {}
+[18.150951] (-) TimerEvent: {}
+[18.251246] (-) TimerEvent: {}
+[18.351536] (-) TimerEvent: {}
+[18.451824] (-) TimerEvent: {}
+[18.552113] (-) TimerEvent: {}
+[18.652382] (-) TimerEvent: {}
+[18.752664] (-) TimerEvent: {}
+[18.852956] (-) TimerEvent: {}
+[18.953244] (-) TimerEvent: {}
+[19.053527] (-) TimerEvent: {}
+[19.153813] (-) TimerEvent: {}
+[19.254099] (-) TimerEvent: {}
+[19.354392] (-) TimerEvent: {}
+[19.454686] (-) TimerEvent: {}
+[19.554966] (-) TimerEvent: {}
+[19.655240] (-) TimerEvent: {}
+[19.755503] (-) TimerEvent: {}
+[19.855796] (-) TimerEvent: {}
+[19.956094] (-) TimerEvent: {}
+[20.056373] (-) TimerEvent: {}
+[20.156671] (-) TimerEvent: {}
+[20.256963] (-) TimerEvent: {}
+[20.357270] (-) TimerEvent: {}
+[20.457565] (-) TimerEvent: {}
+[20.557857] (-) TimerEvent: {}
+[20.658149] (-) TimerEvent: {}
+[20.758446] (-) TimerEvent: {}
+[20.858737] (-) TimerEvent: {}
+[20.959018] (-) TimerEvent: {}
+[21.059302] (-) TimerEvent: {}
+[21.159586] (-) TimerEvent: {}
+[21.259867] (-) TimerEvent: {}
+[21.360154] (-) TimerEvent: {}
+[21.460412] (-) TimerEvent: {}
+[21.560697] (-) TimerEvent: {}
+[21.660982] (-) TimerEvent: {}
+[21.761264] (-) TimerEvent: {}
+[21.861545] (-) TimerEvent: {}
+[21.961832] (-) TimerEvent: {}
+[22.062116] (-) TimerEvent: {}
+[22.162397] (-) TimerEvent: {}
+[22.262678] (-) TimerEvent: {}
+[22.362959] (-) TimerEvent: {}
+[22.463240] (-) TimerEvent: {}
+[22.563525] (-) TimerEvent: {}
+[22.663808] (-) TimerEvent: {}
+[22.764090] (-) TimerEvent: {}
+[22.864354] (-) TimerEvent: {}
+[22.964638] (-) TimerEvent: {}
+[23.064919] (-) TimerEvent: {}
+[23.165204] (-) TimerEvent: {}
+[23.265483] (-) TimerEvent: {}
+[23.365768] (-) TimerEvent: {}
+[23.466104] (-) TimerEvent: {}
+[23.566370] (-) TimerEvent: {}
+[23.666600] (-) TimerEvent: {}
+[23.766874] (-) TimerEvent: {}
+[23.867129] (-) TimerEvent: {}
+[23.967386] (-) TimerEvent: {}
+[24.067642] (-) TimerEvent: {}
+[24.167908] (-) TimerEvent: {}
+[24.268173] (-) TimerEvent: {}
+[24.368442] (-) TimerEvent: {}
+[24.468698] (-) TimerEvent: {}
+[24.568956] (-) TimerEvent: {}
+[24.669216] (-) TimerEvent: {}
+[24.769474] (-) TimerEvent: {}
+[24.869736] (-) TimerEvent: {}
+[24.969993] (-) TimerEvent: {}
+[25.070249] (-) TimerEvent: {}
+[25.170507] (-) TimerEvent: {}
+[25.270773] (-) TimerEvent: {}
+[25.371031] (-) TimerEvent: {}
+[25.471293] (-) TimerEvent: {}
+[25.571552] (-) TimerEvent: {}
+[25.671818] (-) TimerEvent: {}
+[25.772088] (-) TimerEvent: {}
+[25.872312] (-) TimerEvent: {}
+[25.972551] (-) TimerEvent: {}
+[26.072847] (-) TimerEvent: {}
+[26.173122] (-) TimerEvent: {}
+[26.273392] (-) TimerEvent: {}
+[26.373664] (-) TimerEvent: {}
+[26.473937] (-) TimerEvent: {}
+[26.574207] (-) TimerEvent: {}
+[26.674469] (-) TimerEvent: {}
+[26.774734] (-) TimerEvent: {}
+[26.875023] (-) TimerEvent: {}
+[26.975305] (-) TimerEvent: {}
+[27.075599] (-) TimerEvent: {}
+[27.175851] (-) TimerEvent: {}
+[27.184861] (catch_and_throw) StdoutLine: {'line': b'[ 75%] \x1b[32m\x1b[1mLinking CXX executable joint_state_node_trained\x1b[0m\n'}
+[27.275975] (-) TimerEvent: {}
+[27.376282] (-) TimerEvent: {}
+[27.476585] (-) TimerEvent: {}
+[27.576870] (-) TimerEvent: {}
+[27.677186] (-) TimerEvent: {}
+[27.777538] (-) TimerEvent: {}
+[27.877872] (-) TimerEvent: {}
+[27.978136] (-) TimerEvent: {}
+[28.078404] (-) TimerEvent: {}
+[28.178672] (-) TimerEvent: {}
+[28.224175] (catch_and_throw) StdoutLine: {'line': b'[ 75%] Built target joint_state_node_trained\n'}
+[28.278782] (-) TimerEvent: {}
+[28.379026] (-) TimerEvent: {}
+[28.479290] (-) TimerEvent: {}
+[28.579565] (-) TimerEvent: {}
+[28.679827] (-) TimerEvent: {}
+[28.780100] (-) TimerEvent: {}
+[28.880382] (-) TimerEvent: {}
+[28.980650] (-) TimerEvent: {}
+[29.013989] (catch_and_throw) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable joint_state_node\x1b[0m\n'}
+[29.080742] (-) TimerEvent: {}
+[29.181072] (-) TimerEvent: {}
+[29.281355] (-) TimerEvent: {}
+[29.381595] (-) TimerEvent: {}
+[29.481923] (-) TimerEvent: {}
+[29.582188] (-) TimerEvent: {}
+[29.682518] (-) TimerEvent: {}
+[29.782770] (-) TimerEvent: {}
+[29.883066] (-) TimerEvent: {}
+[29.983369] (-) TimerEvent: {}
+[30.083629] (-) TimerEvent: {}
+[30.152024] (catch_and_throw) StdoutLine: {'line': b'[100%] Built target joint_state_node\n'}
+[30.161525] (catch_and_throw) CommandEnded: {'returncode': 0}
+[30.162245] (catch_and_throw) JobProgress: {'identifier': 'catch_and_throw', 'progress': 'install'}
+[30.170178] (catch_and_throw) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/user/kuka_rl_ros2/src/catch_and_throw/build/catch_and_throw'], 'cwd': '/home/user/kuka_rl_ros2/src/catch_and_throw/build/catch_and_throw', 'env': OrderedDict([('GZ_SIM_RESOURCE_PATH', '/home/user/kuka_rl_ros2/install/lbr_description/share'), ('HOSTNAME', 'prismalab'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/kuka_rl_ros2/install/lbr_ros2_control/lib:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp/lib:/home/user/kuka_rl_ros2/install/lbr_fri_ros2/lib:/home/user/kuka_rl_ros2/install/lbr_fri_idl/lib:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/kuka_rl_ros2/src/catch_and_throw/launch'), ('ROS_PYTHON_VERSION', '3'), ('COLCON_PREFIX_PATH', '/home/user/kuka_rl_ros2/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/x86_64-linux-gnu/pkgconfig:/home/user/kuka_rl_ros2/install/fri_client_sdk/lib/pkgconfig'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('QT_X11_NO_MITSHM', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '20'), ('AMENT_PREFIX_PATH', '/home/user/kuka_rl_ros2/install/optitrack_listener:/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/opt/ros/humble'), ('PWD', '/home/user/kuka_rl_ros2/src/catch_and_throw/build/catch_and_throw'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/kuka_rl_ros2/install/optitrack_listener/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_demos_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_bringup/local/lib/python3.10/dist-packages:/home/user/kuka_rl_ros2/install/lbr_moveit/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py/lib/python3.10/site-packages:/home/user/kuka_rl_ros2/install/lbr_fri_idl/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/kuka_rl_ros2/install/med7_moveit_config:/home/user/kuka_rl_ros2/install/med14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_fri_ros2_stack:/home/user/kuka_rl_ros2/install/lbr_demos_cpp:/home/user/kuka_rl_ros2/install/lbr_bringup:/home/user/kuka_rl_ros2/install/lbr_ros2_control:/home/user/kuka_rl_ros2/install/lbr_moveit_cpp:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_cpp:/home/user/kuka_rl_ros2/install/lbr_fri_ros2:/home/user/kuka_rl_ros2/install/catch_and_throw:/home/user/kuka_rl_ros2/install/lbr_fri_idl:/home/user/kuka_rl_ros2/install/iiwa7_moveit_config:/home/user/kuka_rl_ros2/install/iiwa14_moveit_config:/home/user/kuka_rl_ros2/install/lbr_description:/home/user/kuka_rl_ros2/install/fri_client_sdk:/home/user/kuka_rl_ros2/install/optitrack_listener:/home/user/kuka_rl_ros2/install/lbr_demos_py:/home/user/kuka_rl_ros2/install/lbr_moveit:/home/user/kuka_rl_ros2/install/lbr_demos_advanced_py:/opt/ros/humble')]), 'shell': False}
+[30.176324] (catch_and_throw) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[30.176545] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/lib/catch_and_throw/joint_state_node\n'}
+[30.183743] (-) TimerEvent: {}
+[30.185482] (catch_and_throw) StdoutLine: {'line': b'-- Set runtime path of "/home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/lib/catch_and_throw/joint_state_node" to ""\n'}
+[30.185665] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/lib/catch_and_throw/joint_state_node_trained\n'}
+[30.193173] (catch_and_throw) StdoutLine: {'line': b'-- Set runtime path of "/home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/lib/catch_and_throw/joint_state_node_trained" to ""\n'}
+[30.193365] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw//launch\n'}
+[30.193500] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw//launch/manipulator_optitrack.launch.py\n'}
+[30.193645] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/ament_index/resource_index/package_run_dependencies/catch_and_throw\n'}
+[30.193760] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/ament_index/resource_index/parent_prefix_path/catch_and_throw\n'}
+[30.193871] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/environment/ament_prefix_path.sh\n'}
+[30.193983] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/environment/ament_prefix_path.dsv\n'}
+[30.194107] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/environment/path.sh\n'}
+[30.194222] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/environment/path.dsv\n'}
+[30.194360] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/local_setup.bash\n'}
+[30.194452] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/local_setup.sh\n'}
+[30.194568] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/local_setup.zsh\n'}
+[30.194710] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/local_setup.dsv\n'}
+[30.194799] (catch_and_throw) StdoutLine: {'line': b'-- Installing: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/package.dsv\n'}
+[30.194888] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/ament_index/resource_index/packages/catch_and_throw\n'}
+[30.194988] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/cmake/catch_and_throwConfig.cmake\n'}
+[30.195076] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/cmake/catch_and_throwConfig-version.cmake\n'}
+[30.195161] (catch_and_throw) StdoutLine: {'line': b'-- Up-to-date: /home/user/kuka_rl_ros2/src/catch_and_throw/install/catch_and_throw/share/catch_and_throw/package.xml\n'}
+[30.196306] (catch_and_throw) CommandEnded: {'returncode': 0}
+[30.220247] (catch_and_throw) JobEnded: {'identifier': 'catch_and_throw', 'rc': 0}
+[30.220815] (-) EventReactorShutdown: {}

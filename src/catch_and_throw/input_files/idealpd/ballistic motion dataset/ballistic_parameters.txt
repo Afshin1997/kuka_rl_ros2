@@ -1,0 +1,94 @@
+BALLISTIC MODEL PARAMETER FITTING RESULTS
+============================================================
+
+Ball mass: 0.052 kg
+Ball diameter: 0.072 m
+Air density: 1.1839 kg/m³
+Gravity: 9.81 m/s²
+
+GLOBAL DRAG COEFFICIENT: 0.0754 ± 0.0313
+
+Individual trajectory results:
+------------------------------------------------------------
+
+Trajectory: 1
+  cw: 0.1433
+  RMSE: 17.08 mm
+  RMSE per axis (mm): X=11.23, Y=1.19, Z=27.33
+
+Trajectory: 15
+  cw: 0.0703
+  RMSE: 14.69 mm
+  RMSE per axis (mm): X=10.62, Y=3.05, Z=22.92
+
+Trajectory: 16
+  cw: 0.0561
+  RMSE: 5.58 mm
+  RMSE per axis (mm): X=3.83, Y=6.52, Z=6.03
+
+Trajectory: 18
+  cw: 0.0595
+  RMSE: 2.56 mm
+  RMSE per axis (mm): X=2.04, Y=2.18, Z=3.27
+
+Trajectory: 19
+  cw: 0.0784
+  RMSE: 5.86 mm
+  RMSE per axis (mm): X=3.40, Y=4.58, Z=8.40
+
+Trajectory: 20
+  cw: 0.0463
+  RMSE: 6.65 mm
+  RMSE per axis (mm): X=5.48, Y=6.34, Z=7.91
+
+Trajectory: 22
+  cw: 0.0611
+  RMSE: 8.48 mm
+
+Trajectory: 25
+  cw: 0.1612
+  RMSE: 25.17 mm
+
+Trajectory: 27
+  cw: 0.0772
+  RMSE: 12.53 mm
+
+Trajectory: 29
+  cw: 0.0877
+  RMSE: 6.39 mm
+
+Trajectory: 35
+  cw: 0.1108
+  RMSE: 6.51 mm
+
+Trajectory: 37
+  cw: 0.0568
+  RMSE: 10.81 mm
+
+Trajectory: 38
+  cw: 0.0656
+  RMSE: 5.30 mm
+
+Trajectory: 41
+  cw: 0.0729
+  RMSE: 3.74 mm
+
+Trajectory: 44
+  cw: 0.0388
+  RMSE: 9.37 mm
+
+Trajectory: 45
+  cw: 0.0786
+  RMSE: 6.56 mm
+
+Trajectory: 52
+  cw: 0.0675
+  RMSE: 6.68 mm
+
+Trajectory: 53
+  cw: 0.0376
+  RMSE: 8.21 mm
+
+Trajectory: 8
+  cw: 0.0621
+  RMSE: 3.87 mm
